@@ -21,6 +21,13 @@ $query = "SELECT page_id, page_title FROM page WHERE page_title = '$page_title';
 $results = mysql_query($query);
 $row = mysql_fetch_array($results);
 
+/* its jeremy, guess more checks here to denote whether string has 
+multiple occurrences (via while looping through db results) or a variation 
+of the query of db above, afterwards conditional on what to do with found 
+information. one result is normal, more than one is ambiguity, none is... 
+impossible with autocomplete? hope that question mark doesnt screw ne 
+thing up */
+
 if ($row) {
 	$page_id = $row["page_id"];
 } else {
