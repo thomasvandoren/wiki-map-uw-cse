@@ -1,0 +1,6 @@
+syntax: glob
+
+# ignore local builds and configs
+client/FlexClient/Test-WikiGraph/bin/*
+client/FlexClient/Test-WikiGraph/obj/*
+Thumbs.db
