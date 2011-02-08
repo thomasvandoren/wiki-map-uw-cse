@@ -10,7 +10,7 @@
 
 # Check for parameters, first parameter is the branch to checkout
 b='dev'
-if  $1 = 'release' 
+if [ "$1" == "release" ]
 then
   b='release'
 fi
@@ -30,8 +30,8 @@ cd $BUILD_DIR
 hg checkout $b
 
 # Zip up the client and services into the build output
-tar -czvf ../$CLIENT_NAME client/*
-tar -czvf ../$SERVICES_NAME services/*
+tar -czvf ../$CLIENT_NAME `find client -regextype posix-egrep -regex ".*\.(swf|html)"`
+tar -czvf ../$SERVICES_NAME `find services -regextype posix-egrep -regex ".*\.(php)"`
 
 # Remove the clone.
 cd ..
