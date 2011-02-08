@@ -4,4 +4,4 @@ Copyright (c) 2011
 This directory contains the build script, for now. It is a bash shell script. It works
 on cubist.
 
-Later, the build script will be a make or ant file...
+Later, the build script will be a make or ant file.
