@@ -1,0 +1,6 @@
+WikiGraph
+Copyright (c) 2011
+
+The WikiGraph database source.
+
+Initialization sql script drops unnecessary fields from page and pagelinks, and eliminates unnecessary rows. It only needs to be run once, whenever new wikipedia tables are downloaded.

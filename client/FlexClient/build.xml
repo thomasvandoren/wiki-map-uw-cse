@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+ <!--
+ WikiGraph
+ Copyright (c) 2011
+ 
+ Author: thomas.vandoren@gmail.com, 2011-01-27
+ 
+ This builds a local copy of the FlexClient in the same way that 
+ the build service does.
+ 
+ TODO - get rid of the absolute class paths and generalize for more 
+         than just my local copy. FLEX_HOME mainly.
+ -->
+ <project name="Test WikiGraph" default="main" basedir=".">
+    <property name="FLEX_HOME" value="C:/Program\ Files\ (x86)/FlashDevelop/Tools/flexsdk" />
+    <!-- <taskdef resource="${FLEX_HOME}/ant/flexTasks.tasks" classpath="${FLEX_HOME}/ant/lib/flexTasks.jar" /> -->
+    <taskdef resource="C:/Program Files (x86)/FlashDevelop/Tools/flexsdk/ant/flexTasks.tasks" classpath="C:/Program Files (x86)/FlashDevelop/Tools/flexsdk/ant/lib/lesTasks.jar" />
+    <property name="SOURCE_ROOT" value="Test-WikiGraph/src" />
+    <property name="BUILD_OUTPUT" value="${basedir}/build" />
+    
+    <target name="main">
+        
+        <!-- Make the build directory. -->
+        <mkdir dir="${BUILD_OUTPUT}" />
+        
+        <mxmlc
+            file="${SOURCE_ROOT}/Main.mxml"
+            output="${BUILD_OUTPUT}/Main.swf"
+            actionscript-file-encoding="UTF-8"
+            keep-generated-actionscript="true"
+            incremental="true"
+        >
+            <!-- Load default compiler options, for now... -->
+            <load-config filename="${FLEX_HOME}/frameworks/flex-config.xml" />
+            
+            <!-- List of path elements that form the roots of ActionScript
+            class hierarchies. -->
+            <source-path path-element="${FLEX_HOME}/frameworks" />
+            
+            <!-- List of SWC files or directories that contain SWC files. -->
+            <compiler.library-path dir="${FLEX_HOME}/frameworks" append="true">
+                <include name="libs" />
+                <include name="../bundles/{locale}" />
+            </compiler.library-path>
+            
+            <!-- Set size of output SWF file. -->
+            <default-size width="800" height="600" />
+        </mxmlc>
+    </target>
+    
+    <target name="clean">
+        <delete dir="${SOURCE_ROOT}/generated/"/>
+        <delete>
+            <fileset dir="${BUILD_OUTPUT}" includes="Main.swf" />
+        </delete>
+    </target>
+    
+ </project>
+ 
