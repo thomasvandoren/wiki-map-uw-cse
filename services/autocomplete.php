@@ -13,7 +13,7 @@ include 'config.php';
 header('Content-Type:text/xml');
 print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 
-$db = mysql_connect("localhost", $user, $pass);
+$db = mysql_connect($host, $user, $pass);
 mysql_select_db($dbname);
 
 $likestring = mysql_real_escape_string($_REQUEST["q"]);
