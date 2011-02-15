@@ -13,6 +13,6 @@ anymore, unless it is *absolutely* necessary.
               wiki also contains documentation
   ext      -- contains third-party applications; nothing in this directory is 
               developed by the WikiGraph
-  server   -- source for the PHP data api service
+  services -- source for the PHP data api service
 
 

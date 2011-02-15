@@ -21,7 +21,7 @@ package
 			if (a.length > 0) {
 				environment.removeAllElements();
 				var j:Number = (2 * Math.PI) / (a.length - 1);
-				var centerNode:Node = new Node();
+				var centerNode:Node = new Node(environment);
 				centerNode.id = a[0][0];
 				centerNode.label = a[0][1];
 				centerNode.width = 120;
@@ -33,7 +33,7 @@ package
 				var lineStyle:SolidColorStroke = new SolidColorStroke(0x222222, 2, 1);
 				for (var k:Number = 1; k < a.length; k++) {
 					var newLine:UIComponent = new UIComponent();
-					newLine.graphics.lineStyle(3, 0xFF0000, 1);
+					newLine.graphics.lineStyle(3, 0x222222, 1);
 					newLine.name = a[k][0] + "_line";
 					var x:Number = ((Math.cos((k - 1) * j + (3*Math.PI / 2))) * environment.width * 0.42) + (environment.width / 2);
 					var y:Number = ((Math.sin((k - 1) * j + (3*Math.PI / 2))) * environment.height * 0.42) + (environment.height / 2);
@@ -44,7 +44,7 @@ package
 				environment.addElement(centerNode);
 				//draw nodes
 				for (var i:Number = 1; i < a.length; i++) {
-					var newNode:Node = new Node();
+					var newNode:Node = new Node(environment);
 					newNode.id = a[i][0];
 					newNode.label = a[i][1];
 					newNode.width = 120;
