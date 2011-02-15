@@ -10,6 +10,12 @@ Autocomplete service
 
 include 'config.php';
 
+// Die if no query provided
+if (!isset($REQUEST["q"])) {
+  header("HTTP/1.1 400 Bad Request");
+  die("HTTP error 400 occurred: No query provided\n");
+}
+
 header('Content-Type:text/xml');
 print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 

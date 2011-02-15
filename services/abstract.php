@@ -17,12 +17,24 @@ TODO: Page might be valid, but it might not have an abstract?
 
 include 'config.php';
 
+// Die if no ID provided
+if (!isset($REQUEST["id"])) {
+  header("HTTP/1.1 400 Bad Request");
+  die("HTTP error 400 occurred: No id provided\n");
+}
+
 $db = mysql_connect($host, $user, $pass);
 mysql_select_db($dbname);
 
-$page_id = isset($_REQUEST["id"]) ? $_REQUEST["id"] : "";
-$page_id = mysql_real_escape_string($page_id);
+$page_id = (int)$_REQUEST["id"];
 
+// Die if invalid ID provided (cast returns 0)
+if ($page_id == 0) {
+  header("HTTP/1.1 400 Bad Request");
+  die("HTTP error 400 occurred: Invalid id provided ($_REQUEST["id"])\n");
+}
+
+// Fetch title and abstract
 $query = "SELECT page_title, abstract_text FROM page, abstract WHERE abstract_id = $page_id AND page_id = $page_id;";
 $results = mysql_query($query);
 $row = mysql_fetch_array($results);
