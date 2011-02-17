@@ -7,6 +7,7 @@ There are several top-level directories in this source. Please do not add
 anymore, unless it is *absolutely* necessary.
 
 ./
+  build    -- stuff...
   client   -- source for the flash client, including browser ui
   database -- database models/schema/config
   docs     -- contains documentation relevant to this project; the Google Code 
