@@ -18,43 +18,24 @@
 	
 	<fx:Script>
 		<![CDATA[
+		import Parse;
 		import Node;
 		import DrawGraph;
 		import mx.rpc.events.ResultEvent;
 		import mx.rpc.events.FaultEvent;
 		import mx.controls.Alert;
+		
 		private var alert:Alert;
 		public var sample:Array = new Array();
+		
 		public function initu():void {
-		sample[0] = ["dispenser", "need a dispenser here"];
-		sample[1] = ["teleporter", "teleporter coming up"];
-		sample[2] = ["sentry", "sentry going up"];
-		sample[3] = ["red", "Red Team"];
-		sample[4] = ["blu", "Blu Team"];
-		sample[5] = ["one", "two"];
-		sample[6] = ["dispenser", "need a dispenser here"];
-		sample[7] = ["teleporter", "teleporter coming up"];
-		sample[8] = ["sentry", "sentry going up"];
-		sample[9] = ["red", "Red Team"];
-		sample[10] = ["blu", "Blu Team"];
-		sample[11] = ["one", "two"];
-		sample[12] = ["dispenser", "need a dispenser here"];
-		sample[13] = ["teleporter", "teleporter coming up"];
-		sample[14] = ["sentry", "sentry going up"];
-		sample[15] = ["red", "Red Team"];
-		sample[16] = ["blu", "Blu Team"];
-		sample[17] = ["blu", "Blu Team"];
-		sample[18] = ["one", "two"];
-		sample[19] = ["dispenser", "need a dispenser here"];
-		sample[20] = ["teleporter", "teleporter coming up"];
-		sample[21] = ["sentry", "sentry going up"];
-		sample[22] = ["red", "Red Team"];
-		sample[23] = ["blu", "Blu Team"];
-		sample[24] = ["this better work", "this better work"];
+			sample = Parse.getArray("http://wikigraph.cs.washington.edu/api/graph/?q=Ruby_Programming");
 		}
+		
 		private function send_data():void {
             searchRequest.send();
         }
+		
 		private function httpService_fault(evt:FaultEvent):void {
 			var title:String = evt.type + " (" + evt.fault.faultCode + ")";
 			var text:String = evt.fault.faultString;
