@@ -11,7 +11,7 @@ Autocomplete service
 include 'config.php';
 
 // Die if no query provided
-if (!isset($REQUEST["q"])) {
+if (!isset($_REQUEST["q"])) {
   header("HTTP/1.1 400 Bad Request");
   die("HTTP error 400 occurred: No query provided\n");
 }
@@ -19,11 +19,13 @@ if (!isset($REQUEST["q"])) {
 header('Content-Type:text/xml');
 print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 
+// Establish mysql connection and use database.
+
 $db = mysql_connect($host, $user, $pass);
 mysql_select_db($dbname);
 
 $likestring = mysql_real_escape_string($_REQUEST["q"]);
-$query = "SELECT page_id, page_title FROM page WHERE page_title LIKE \"" . $likestring . "%\" LIMIT 10;";
+$query = "SELECT page_id, page_title FROM page WHERE page_title LIKE \"$likestring%\" LIMIT 10;";
 
 $results = mysql_query($query);
 
