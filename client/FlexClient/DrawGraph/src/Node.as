@@ -19,7 +19,7 @@ package
 		public var tipCreated:Boolean; //specifies whether the toolTip needs to be created (false = not made)
 		private function ChangeLabel(event:MouseEvent):void
 		{
-			label = "lolol";
+			label = "Clicked!";
 		}
 		//indicates that the user has started hovering over the node
 		private function GetArticle(event:MouseEvent):void

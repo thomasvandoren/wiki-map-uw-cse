@@ -4,22 +4,13 @@ package{
 	import flash.net.URLRequest;
 	import flash.xml.XMLNode;
 	
-	public class Parse{
+	public class Parse {
 		private static var list:Array;
 		private static var myXML:XML;
 		private static var myLoader:URLLoader;
 		
-		public static function getArray(xmlFile:String):Array {
+		public static function parseXML(myXML:XML):Array {
 			list = new Array();
-			myXML = new XML();
-			var myXMLURL:URLRequest = new URLRequest(xmlFile);
-			myLoader = new URLLoader(myXMLURL);
-			myLoader.addEventListener("complete", xmlLoaded);
-			return list;
-		}
-		
-		public static function xmlLoaded(event:Event):void {
-			myXML = XML(myLoader.data);
 			// gets all children, called source, in a xml file
 			var node:XMLList = myXML.children();
 			// puts all the children's id & title in two dimention array called list
@@ -29,6 +20,7 @@ package{
 				a[1] = node[i].attribute("title");
 				list.push(a);
 			}
+			return list;
+		}
 	}
-}
 }
