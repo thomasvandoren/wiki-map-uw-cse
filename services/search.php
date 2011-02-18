@@ -45,8 +45,10 @@ if($row) {
 ?>
 <search query="<?= $searchQuery ?>">
 
-<!-- Content coming soon! -->
+   <!-- Real content coming soon! -->
 
+   <item id="844" title="Ruby Programming" />
+   <item id="950" title="Sanskrit" />
 <?php
 //loop here over searched results somehow
 //	<item id="BLAH" title="BLAH"/>
