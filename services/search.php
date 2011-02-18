@@ -17,23 +17,26 @@ TODO: query wikipedia for searches, add to XML
 include 'config.php';
 
 //Die if no query provided
-if(!isset($REQUEST["q"])) {
+if(!isset($_REQUEST["q"]) || count($_REQUEST["q"]) == 0) {
 	header("HTTP/1.1 400 Bad Request");
 	die("HTTP error 400 occurred: No query provided\n");
 }
 
 $wikiUrl = "";
+
+//TODO: this string needs to be escaped before we do anything with...
+
 $searchQuery = $_REQUEST["q"];
 
 //Die if bad query given
 if($searchQuery == "") {
 	header("HTTP/1.1 400 Bad Request");
-	die("HTTP error 400 occurred: Invalid query ".$searchQuery."\n");
+	die("HTTP error 400 occurred: Invalid query \"$searchQuery\"\n");
 }
 
 //Fetch wikis search results
 
-$row = "";
+$row = true;
 
 if($row) {
 	header('Content-Type:text/xml');
@@ -42,14 +45,18 @@ if($row) {
 ?>
 <search query="<?= $searchQuery ?>">
 
+<!-- Content coming soon! -->
+
+<?php
 //loop here over searched results somehow
 //	<item id="BLAH" title="BLAH"/>
+?>
 
 </search>
 
 <?php
 } else {
-	header("HTTP/1.1 400 File Not Found");
-	die("HTTP error 400 occurred: Query not found ".$searchQuery."\n");
+	header("HTTP/1.1 404 File Not Found");
+	die("HTTP error 404 occurred: Query not found \"$searchQuery\"\n");
 }
 ?>
