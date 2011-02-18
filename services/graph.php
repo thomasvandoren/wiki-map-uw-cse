@@ -12,19 +12,19 @@ Currently takes the title of the node
 	
 include 'config.php';
 
-if (!isset($REQUEST["q"])) {
+if (!isset($_REQUEST["id"]) || count($_REQUEST["id"]) == 0) {
   header("HTTP/1.1 400 Bad Request");
   die("HTTP error 400 occurred: No query provided\n");
 }
 
+// Establish connection to MySQL server and use database.
+
 $db = mysql_connect($host, $user, $pass);
 mysql_select_db($dbname);
 
-// This will change when graph gets an ID instead
-// of a title
-$page_title = mysql_real_escape_string($_REQUEST["q"]);
+$page_id = mysql_real_escape_string($_REQUEST["id"]);
 
-$query = "SELECT page_id, page_title FROM page WHERE page_title = '$page_title';";
+$query = "SELECT page_id, page_title FROM page WHERE page_id = '$page_id';";
 $results = mysql_query($query);
 $row = mysql_fetch_array($results);
 
