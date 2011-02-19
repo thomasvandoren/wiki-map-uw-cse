@@ -22,9 +22,15 @@ if (!isset($_REQUEST["id"]) || count($_REQUEST["id"]) == 0) {
 $db = mysql_connect($host, $user, $pass);
 mysql_select_db($dbname);
 
-$page_id = mysql_real_escape_string($_REQUEST["id"]);
+$page_id = (int)($_REQUEST["id"]);
 
-$query = "SELECT page_id, page_title FROM page WHERE page_id = '$page_id';";
+if ($page_id === 0)
+{
+  header("HTTP/1.1 400 Bad Request");
+  die("HTTP 400 Bad Request: invalid id \"$page_id\"");
+}
+
+$query = "SELECT page_id, page_title FROM page WHERE page_id = $page_id;";
 $results = mysql_query($query);
 $row = mysql_fetch_array($results);
 
