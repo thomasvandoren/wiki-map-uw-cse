@@ -12,7 +12,7 @@ Currently takes the title of the node
 	
 include 'config.php';
 
-if (!isset($_REQUEST["id"]) || count($_REQUEST["id"]) == 0) {
+if (!isset($_REQUEST["id"]) || strlen($_REQUEST["id"]) == 0) {
   header("HTTP/1.1 400 Bad Request");
   die("HTTP error 400 occurred: No query provided\n");
 }
@@ -41,11 +41,9 @@ information. one result is normal, more than one is ambiguity, none is...
 impossible with autocomplete? hope that question mark doesnt screw ne 
 thing up */
 
-if ($row) {
-	$page_id = $row["page_id"];
-} else {
-	header("HTTP/1.1 404 File Not Found");
-	die("HTTP error 404 occurred: Page not found ($page_title)\n");
+if (!$row) {
+    header("HTTP/1.1 404 File Not Found");
+    die("HTTP error 404 occurred: Page not found (\"$page_title\")\n");
 }
 
 header('Content-Type:text/xml');
