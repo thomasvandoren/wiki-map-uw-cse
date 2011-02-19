@@ -25,7 +25,7 @@ OUTPUT = $(DEF_OUT)/output
 endif
 
 FLEXOUT = bin
-REPO = .
+REPO = $(CURDIR)
 
 REPOURL = https://wiki-map-uw-cse.googlecode.com/hg/
 
@@ -59,7 +59,7 @@ check: output
 	cd ../.. ;
 
 checktest: output
-	cd $(REPO)/services/test ; \ 
+	cd $(REPO)/services/test ; \
 	$(PHPUNIT) $(PHPUNITPRE)/$(ALLTESTS).xml $(ALLTESTS) ; \
 	cd ../.. ;
 
