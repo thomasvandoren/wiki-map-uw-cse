@@ -26,7 +26,7 @@ if (!isset($_REQUEST["id"])) {
 $db = mysql_connect($host, $user, $pass);
 mysql_select_db($dbname);
 
-$page_id = mysql_escape_string($_REQUEST["id"]);
+$page_id = (int)($_REQUEST["id"]);
 
 // Die if invalid ID provided (cast returns 0)
 if ($page_id == 0) {
@@ -41,7 +41,8 @@ $row = mysql_fetch_array($results);
 
 if ($row) {
 
-  //TODO: miscellaneous wiki styles need to be removed. The most common is [] that are supposed to indicate a link.
+  //TODO: miscellaneous wiki styles need to be removed. The most common is [] 
+  //      that are supposed to indicate a link.
 
   header('Content-Type:text/xml');
   print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
