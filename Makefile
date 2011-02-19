@@ -7,8 +7,11 @@
 # Build the various WikiGraph targets.
 #
 # TODO: add revision or build number to output name
+# TODO: make a DrawGraphConfig.xml (or use one that already exists)
 
 MXMLC = $FLEX_PATH/mxmlc
+MXMLCONFIG = config/DrawGraphConfig.xml
+MXMLCOPTS = -load-config+=$(MXMLCONFIG) -debug=true -incremental=true -benchmark=false -static-link-runtime-shared-libraries=true -o obj\DrawGraph634326822282731919
 HG = hg
 PHPUNIT = phpunit
 Z = tar -czvf
