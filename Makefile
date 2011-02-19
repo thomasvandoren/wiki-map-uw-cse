@@ -20,6 +20,8 @@ OUTPUT = output
 FLEXOUT = bin
 REPO = .
 
+REPOURL = https://wiki-map-uw-cse.googlecode.com/hg/
+
 APINAME = WikiGraph-Services
 TESTAPINAME = WikiGraph-Test-Services
 
@@ -29,11 +31,16 @@ TESTCLIENTNAME = WikiGraph-Test-FlashClient
 TESTBRANCH = dev
 BRANCH = release
 
+BUILDTAG = 
+
 ALLTESTS = AllTests
 
 all: graph api
 
 build: testapi test
+
+clone:
+	$(HG) clone $(REPOURL) 
 
 pull:
 	$(HG) pull
@@ -57,30 +64,48 @@ checkclient: pull
 checkclienttest: pull
 	$(HG) checkout $(TESTBRANCH)
 
-graph: checkclient
+graph: checkclient hudsongraph
+
+hudsongraph: clientoutput
 	cd client ; \  # TODO: this need to actually compile the sources
-	$(Z) ../$(OUTPUT)/$(CLIENTNAME).tar.gz *.swf *.html ; \
+	$(Z) ../$(OUTPUT)/$(CLIENTNAME)/$(BUILDTAG).tar.gz *.swf *.html ; \
 	cd .. ;
 
-test: checkclienttest
+test: checkclienttest hudsontest
+
+hudsontest: testclientoutput
 	cd client ; \ # TODO: this needs to actually compile the sources
-	$(Z) ../$(OUTPUT)/$(TESTCLIENTNAME).tar.gz *.swf *.html ; \
+	$(Z) ../$(OUTPUT)/$(TESTCLIENTNAME)/$(BUILDTAG).tar.gz *.swf *.html ; \
 	cd .. ;
 
-api: check
+api: check hudsonapi
+
+hudsonapi: apioutput
 	cd services ; \
-	$(Z) ../$(OUTPUT)/$(APINAME).tar.gz `find . -type f -regextype posix-egrep -regex ".*\.php" | grep -v test/* | grep -v config.php`; \
+	$(Z) ../$(OUTPUT)/$(APINAME)/$(BUILDTAG).tar.gz `find . -type f -regextype posix-egrep -regex ".*\.php" | grep -v test/* | grep -v config.php`; \
 	cd .. ; 
 
+testapi: checktest hudsontestapi
 
-testapi: checktest output
+hudsontestapi: testapioutput
 	cd services ; \
-	$(Z) ../$(OUTPUT)/$(TESTAPINAME).tar.gz `find . -type f -regextype posix-egrep -regex ".*\.php" | grep -v test/* | grep -v config.php`; \
+	$(Z) ../$(OUTPUT)/$(TESTAPINAME)/$(BUILDTAG).tar.gz `find . -type f -regextype posix-egrep -regex ".*\.php" | grep -v test/* | grep -v config.php`; \
 	cd .. ;
+
+clientoutput: output
+	test -d $(OUTPUT)/$(CLIENTNAME) || mkdir $(OUTPUT)/$(CLIENTNAME)
+
+testclientoutput: output
+	test -d $(OUTPUT)/$(TESTCLIENTNAME) || mkdir $(OUTPUT)/$(TESTCLIENTNAME)
+
+apioutput: output
+	test -d $(OUTPUT)/$(APINAME) || mkdir $(OUTPUT)/$(APINAME)
+
+testapioutput: output
+	test -d $(OUTPUT)/$(TESTAPINAME) || mkdir $(OUTPUT)/$(TESTAPINAME)
 
 output:
 	test -d $(OUTPUT) || mkdir $(OUTPUT)
-	test -d $(OUTPUT)/$(FLEXOUT) || mkdir $(OUTPUT)/$(FLEXOUT)
 
 clean:
 	rm -rf $(OUTPUT)
