@@ -6,7 +6,6 @@
 #
 # Build the various WikiGraph targets.
 #
-# TODO: add revision or build number to output name
 # TODO: make a DrawGraphConfig.xml (or use one that already exists)
 
 DEF_OUT = $(CURDIR)/build
@@ -62,7 +61,7 @@ check: output
 
 checktest: output
 	$(HG) checkout $(TESTBRANCH)
-	cd $(REPO)/services/test ; \
+	cd $(REPO)/services/test ; \ 
 	$(PHPUNIT) $(PHPUNITPRE)/$(ALLTESTS).xml $(ALLTESTS) ; \
 	cd ../.. ;
 
