@@ -9,17 +9,20 @@
 # TODO: add revision or build number to output name
 # TODO: make a DrawGraphConfig.xml (or use one that already exists)
 
+DEF_OUT = $(CURDIR)/build
+
 MXMLC = $FLEX_PATH/mxmlc
 MXMLCONFIG = config/DrawGraphConfig.xml
 MXMLCOPTS = -load-config+=$(MXMLCONFIG) -debug=true -incremental=true -benchmark=false -static-link-runtime-shared-libraries=true -o obj\DrawGraph634326822282731919
 HG = hg
-PHPUNIT = phpunit
+PHPUNITPRE = $(DEF_OUT)/phpunit-log
+PHPUNIT = phpunit --log-junit
 Z = tar -czvf
 
 OUTPUT =
 
 ifeq ($(strip $(OUTPUT)),)
-OUTPUT = output
+OUTPUT = $(DEF_OUT)/output
 endif
 
 FLEXOUT = bin
@@ -51,51 +54,56 @@ pull:
 	$(HG) pull
 	$(HG) update
 
-check: pull
+check: output
 	$(HG) checkout $(BRANCH)
 	cd $(REPO)/services/test ; \
-	$(PHPUNIT) $(ALLTESTS) ; \
+	$(PHPUNIT) $(PHPUNITPRE)/$(ALLTESTS).xml $(ALLTESTS) ; \
 	cd ../.. ;
 
-checktest: pull
+checktest: output
 	$(HG) checkout $(TESTBRANCH)
 	cd $(REPO)/services/test ; \
-	$(PHPUNIT) $(ALLTESTS) ; \
+	$(PHPUNIT) $(PHPUNITPRE)/$(ALLTESTS).xml $(ALLTESTS) ; \
 	cd ../.. ;
 
-checkclient: pull
-	$(HG) checkout $(BRANCH)
+checkclient:
+	$(HG) checkout $(BRANCH) # TODO: add flex unit code here
 
-checkclienttest: pull
-	$(HG) checkout $(TESTBRANCH)
+checkclienttest:
+	$(HG) checkout $(TESTBRANCH) # TODO: add flex unit code here
 
-graph: checkclient hudsongraph
+graph: pull  hudsongraph
 
-hudsongraph: clientoutput
+hudsongraph: checkclient clientoutput
 	cd client ; \  # TODO: this need to actually compile the sources
-	$(Z) ../$(OUTPUT)/$(CLIENTNAME)/$(BUILDTAG).tar.gz *.swf *.html ; \
+	$(Z) $(OUTPUT)/$(CLIENTNAME)/$(BUILDTAG).tar.gz *.swf *.html ; \
 	cd .. ;
 
-test: checkclienttest hudsontest
+test: pull hudsontest
 
-hudsontest: testclientoutput
+hudsontest: checkclienttest testclientoutput
 	cd client ; \ # TODO: this needs to actually compile the sources
-	$(Z) ../$(OUTPUT)/$(TESTCLIENTNAME)/$(BUILDTAG).tar.gz *.swf *.html ; \
+	$(Z) $(OUTPUT)/$(TESTCLIENTNAME)/$(BUILDTAG).tar.gz *.swf *.html ; \
 	cd .. ;
 
-api: check hudsonapi
+api: pull hudsonapi
 
-hudsonapi: apioutput
+hudsonapi: check apioutput
 	cd services ; \
-	$(Z) ../$(OUTPUT)/$(APINAME)/$(BUILDTAG).tar.gz `find . -type f -regextype posix-egrep -regex ".*\.php" | grep -v test/* | grep -v config.php`; \
+	$(Z) $(OUTPUT)/$(APINAME)/$(BUILDTAG).tar.gz `find . -type f -regextype posix-egrep -regex ".*\.php" | grep -v test/* | grep -v config.php`; \
 	cd .. ; 
 
-testapi: checktest hudsontestapi
+testapi: pull hudsontestapi
 
-hudsontestapi: testapioutput
+hudsontestapi: checktest testapioutput
 	cd services ; \
-	$(Z) ../$(OUTPUT)/$(TESTAPINAME)/$(BUILDTAG).tar.gz `find . -type f -regextype posix-egrep -regex ".*\.php" | grep -v test/* | grep -v config.php`; \
+	$(Z) $(OUTPUT)/$(TESTAPINAME)/$(BUILDTAG).tar.gz `find . -type f -regextype posix-egrep -regex ".*\.php" | grep -v test/* | grep -v config.php`; \
 	cd .. ;
+
+output:
+	test -d $(DEF_OUT) || mkdir $(DEF_OUT)
+	test -d $(PHPUNITPRE) || mkdir $(PHPUNITPRE)
+	test -d $(OUTPUT) || mkdir $(OUTPUT)
 
 clientoutput: output
 	test -d $(OUTPUT)/$(CLIENTNAME) || mkdir $(OUTPUT)/$(CLIENTNAME)
@@ -109,8 +117,5 @@ apioutput: output
 testapioutput: output
 	test -d $(OUTPUT)/$(TESTAPINAME) || mkdir $(OUTPUT)/$(TESTAPINAME)
 
-output:
-	test -d $(OUTPUT) || mkdir $(OUTPUT)
-
 clean:
-	rm -rf $(OUTPUT)
+	rm -rf $(DEF_OUT)
