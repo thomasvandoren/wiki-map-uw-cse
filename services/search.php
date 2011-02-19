@@ -9,56 +9,60 @@ Search Service
 Takes a search query
 Returns similar page id's with page titles
 
-TODO: query wikipedia for searches, add to XML
+TODO: assess link strength
 
 
 */
 
-include 'config.php';
+require_once 'config.php';
 
 //Die if no query provided
-if(!isset($_REQUEST["q"]) || count($_REQUEST["q"]) == 0) {
+if(!isset($REQUEST["q"])) {
 	header("HTTP/1.1 400 Bad Request");
 	die("HTTP error 400 occurred: No query provided\n");
 }
 
-$wikiUrl = "";
-
-//TODO: this string needs to be escaped before we do anything with...
-
-$searchQuery = $_REQUEST["q"];
+$searchQuery = mysql_real_escape_string($_REQUEST["q"]);
+$db = mysql_connect($host, $user, $pass);
+mysql_select_db($dbname);
 
 //Die if bad query given
 if($searchQuery == "") {
 	header("HTTP/1.1 400 Bad Request");
-	die("HTTP error 400 occurred: Invalid query \"$searchQuery\"\n");
+	die("HTTP error 400 occurred: Invalid query ".$searchQuery."\n");
 }
 
 //Fetch wikis search results
 
-$row = true;
+$mysqlQuery = "SELECT page_id, page_title FROM page WHERE page_title 
+	LIKE $searchQuery";
+$results = mysql_query($mysqlQuery);
+$row = mysql_fetch_array($results);
 
-if($row) {
+if($row && (mysql_num_rows($results) > 1)) {
 	header('Content-Type:text/xml');
 	print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 
 ?>
 <search query="<?= $searchQuery ?>">
+<?php			
 
-   <!-- Real content coming soon! -->
-
-   <item id="844" title="Ruby Programming" />
-   <item id="950" title="Sanskrit" />
+	while($row) {
+?>	
+	<item id="<?= $row["page_id"] ?>" title="<?= $row["page_title"] ?>"/>	
 <?php
-//loop here over searched results somehow
-//	<item id="BLAH" title="BLAH"/>
-?>
+		$row = mysql_fetch_array($results);
+	}
 
+?>
 </search>
 
 <?php
+} else if($row) {
+	//call graph.php with current page id
+	print("this is incomplete!");
 } else {
-	header("HTTP/1.1 404 File Not Found");
-	die("HTTP error 404 occurred: Query not found \"$searchQuery\"\n");
+	header("HTTP/1.1 400 File Not Found");
+	die("HTTP error 400 occurred: Query not found ".$searchQuery."\n");
 }
 ?>
