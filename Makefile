@@ -54,24 +54,21 @@ pull:
 	$(HG) update
 
 check: output
-	$(HG) checkout $(BRANCH)
 	cd $(REPO)/services/test ; \
 	$(PHPUNIT) $(PHPUNITPRE)/$(ALLTESTS).xml $(ALLTESTS) ; \
 	cd ../.. ;
 
 checktest: output
-	$(HG) checkout $(TESTBRANCH)
 	cd $(REPO)/services/test ; \ 
 	$(PHPUNIT) $(PHPUNITPRE)/$(ALLTESTS).xml $(ALLTESTS) ; \
 	cd ../.. ;
 
-checkclient:
-	$(HG) checkout $(BRANCH) # TODO: add flex unit code here
+checkclient: # TODO: add flex unit code here
 
-checkclienttest:
-	$(HG) checkout $(TESTBRANCH) # TODO: add flex unit code here
+checkclienttest: # TODO: add flex unit code here
 
 graph: pull  hudsongraph
+	$(HG) checkout $(BRANCH)
 
 hudsongraph: checkclient clientoutput
 	cd client ; \  # TODO: this need to actually compile the sources
@@ -79,6 +76,7 @@ hudsongraph: checkclient clientoutput
 	cd .. ;
 
 test: pull hudsontest
+	$(HG) checkout $(TESTBRANCH)
 
 hudsontest: checkclienttest testclientoutput
 	cd client ; \ # TODO: this needs to actually compile the sources
@@ -86,6 +84,7 @@ hudsontest: checkclienttest testclientoutput
 	cd .. ;
 
 api: pull hudsonapi
+	$(HG) checkout $(BRANCH)
 
 hudsonapi: check apioutput
 	cd services ; \
@@ -93,6 +92,7 @@ hudsonapi: check apioutput
 	cd .. ; 
 
 testapi: pull hudsontestapi
+	$(HG) checkout $(TESTBRANCH)
 
 hudsontestapi: checktest testapioutput
 	cd services ; \
