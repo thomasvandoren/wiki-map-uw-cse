@@ -2,8 +2,9 @@ syntax: glob
 
 # ignore local builds and configs
 output/*
-client/FlexClient/Test-WikiGraph/bin/*
-client/FlexClient/Test-WikiGraph/obj/*
+
+client/FlexClient/*/bin/*
+client/FlexClient/*/obj/*
 Thumbs.db
 
 # ignore temporary files
