@@ -4,3 +4,7 @@ syntax: glob
 client/FlexClient/Test-WikiGraph/bin/*
 client/FlexClient/Test-WikiGraph/obj/*
 Thumbs.db
+
+# ignore temporary files
+*~
+#*#
