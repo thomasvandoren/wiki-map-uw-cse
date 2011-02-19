@@ -71,8 +71,7 @@
 	
 		
 	<s:Group id="qq" height="100%" width="100%">
-		<s:BorderContainer backgroundColor="0xEEEEEE" cornerRadius="8" borderStyle="solid" borderWeight="2" 
-		 height="72" width="144" alpha="1" />
+
 	</s:Group>
 	<mx:Button id="searchButton" x="0" y="0" width="100" label = "Search" />
 	<mx:TextInput id="searchText" x="100" y="0" width="700"></mx:TextInput>

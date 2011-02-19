@@ -60,6 +60,7 @@ package
 					environment.addElement(newNode);
 				}
 			}
+			environment.visible = true;
 		}	
 	}
 }

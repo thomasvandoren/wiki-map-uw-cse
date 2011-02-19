@@ -12,6 +12,7 @@ package
 	 */
 	public class Node extends Button 
 	{	
+		import Network;
 		import AbstractToolTip;
 		public var environment:Group; //the drawing area (group) where the node goes
 		public var abstractTimer:Timer; //after hovering for a certain amount of time, display the abstract
@@ -19,7 +20,7 @@ package
 		public var tipCreated:Boolean; //specifies whether the toolTip needs to be created (false = not made)
 		private function ChangeLabel(event:MouseEvent):void
 		{
-			label = "Clicked!";
+			Network.search("name", label, environment);
 		}
 		//indicates that the user has started hovering over the node
 		private function GetArticle(event:MouseEvent):void
@@ -36,11 +37,11 @@ package
 				abToolTip.abstractTimer.reset();
 				abToolTip.alpha = 1;
 			} else { //tip not created, do so now
-			this.abToolTip = new AbstractToolTip(environment);
+			this.abToolTip = new AbstractToolTip(environment,label);
 			abToolTip.x = (this.x) - (1.25 *(this.width));
 			abToolTip.y = (this.y);
 			tipCreated = true;
-			//this.addChild(abToolTip);
+			abToolTip.articleTitle = label;
 			environment.addElement(abToolTip);
 			}
 		}
@@ -57,7 +58,7 @@ package
 		public function Node(environment:Group) 
 		{	//set up timer
 			this.environment = environment;
-			this.abstractTimer = new Timer(1500, 1);
+			this.abstractTimer = new Timer(500, 1);
 			this.abstractTimer.addEventListener(TimerEvent.TIMER, TimerDing);
 			//set up mouste events
 			addEventListener(MouseEvent.CLICK, ChangeLabel);

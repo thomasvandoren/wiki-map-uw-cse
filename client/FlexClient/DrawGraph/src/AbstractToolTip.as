@@ -2,13 +2,14 @@ package
 {
 	import flash.events.MouseEvent;
 	import flash.events.TimerEvent;
-	import flash.text.StyleSheet;
 	import flash.text.TextFormat;
 	import flash.utils.Timer;
 	import mx.controls.Text;
 	import mx.styles.CSSStyleDeclaration;
 	import spark.components.Group;
 	import spark.components.BorderContainer;
+	import flash.net.URLRequest;
+	import flash.net.navigateToURL;
 	/**
 	 * ...
 	 * @author Austin Nakamura
@@ -18,11 +19,15 @@ package
 		public var abstractText:Text;
 		public var environment:Group;
 		public var abstractTimer:Timer;
-		public var tipStyle:StyleSheet;
-		public var abStyle:CSSStyleDeclaration
+		public var abStyle:CSSStyleDeclaration;
+		public var articleTitle:String;
+		public var articleURL:URLRequest;
 		private function OpenArticle(event:MouseEvent):void
 		{
-			abstractText.text = "grumble";
+			articleURL = new URLRequest("http://en.wikipedia.org/wiki/" + articleTitle);
+			navigateToURL(articleURL, "_blank");
+			//abstractText.text = "grumble";
+			
 		}
 		private function KeepUp(event:MouseEvent):void
 		{
@@ -37,22 +42,22 @@ package
 			alpha = 0;
 		}
 		//constructor, on creation we'll expand it to call the server for the abstract info
-		public function AbstractToolTip(environment:Group) 
+		public function AbstractToolTip(environment:Group,articleTitle:String) 
 		{
-			var testing:String = new String();
+			var defaultText:String = new String();
 			//can set the font style with this
 			//testing (I'll change it later) will recieve the abstract
 			//where it will be formatted
-			testing = "<font size = '10'><b>";
-			testing += "loading...";;
-			testing += "</b></font>";
+			defaultText = "<font size = '10'><b>";
+			defaultText += "loading...";
+			defaultText += "</b></font>";
 			//sets the height and width of the toolTip
 			this.height = 72;
 			this.width = 144;
 			//creates the abstract text
 			abstractText = new Text();
 			abstractText.width = 144;
-			abstractText.htmlText = testing;
+			abstractText.htmlText = defaultText;
 			abstractText.selectable = false;
 			//add elements and events
 			addElement(abstractText);
@@ -60,9 +65,13 @@ package
 			addEventListener(MouseEvent.MOUSE_OVER, KeepUp);
 			addEventListener(MouseEvent.MOUSE_OUT, RestartTimer);
 			//setup the timer
-			this.abstractTimer = new Timer(1200, 1);
+			this.abstractTimer = new Timer(400, 1);
 			this.abstractTimer.addEventListener(TimerEvent.TIMER, TimerDing);
-			//abstractTimer.start();
+			//transfer the article name
+			this.articleTitle = articleTitle;
+			//at this point, start a search for the abstract text
+			//once we get it, it will probably return to some function
+			//which will update the abstractText object to have the article text in it.
 		}
 		
 	}
