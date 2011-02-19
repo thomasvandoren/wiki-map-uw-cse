@@ -1,3 +1,4 @@
+<?php
 /*
 WikiGraph
 Copyright (c) 2011
@@ -9,6 +10,7 @@ services.
 
 Functions in this file:
 
+  close_db();
   connect_db();
   error($error_number, $error_msg);
   query($query_str);
@@ -16,6 +18,8 @@ Functions in this file:
 */
 
 require_once('config.php');
+
+// The global link to the database connection.
 
 $mysql_link = null;
 
@@ -74,3 +78,5 @@ function query($query_str)
 	return null;
     }
 }
+
+?>
