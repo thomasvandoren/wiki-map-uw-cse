@@ -16,7 +16,12 @@ HG = hg
 PHPUNIT = phpunit
 Z = tar -czvf
 
+OUTPUT =
+
+ifeq ($(strip $(OUTPUT)),)
 OUTPUT = output
+endif
+
 FLEXOUT = bin
 REPO = .
 
