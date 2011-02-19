@@ -11,30 +11,12 @@
    * 
    */
 
-require_once("PHPUnit/Framework.php");
+require_once('PHPUnit/Framework.php');
+require_once("../config.php");
+require_once("../util.php");
 
 class AllTests extends PHPUnit_Framework_TestCase
 {
-    protected function setUp()
-    {
-	require_once('../config.php');
-	require_once('../util.php');
-
-	/*
-	 $this->sharedMysqlLink = new PDO('mysql:host=wopr;dbname=test',
-					 'user',
-					 'pass');
-	*/
-
-    }
-
-    protected function tearDown()
-    {
-	/*
-	 $this->sharedMysqlLink = NULL;
-	*/
-    }
-    
     /**
      * Test that config.php is properly formatted and creates the expected
      * environment when used in require_once.
@@ -42,12 +24,14 @@ class AllTests extends PHPUnit_Framework_TestCase
     public function testRequireConfig()
     {
 	$this->assertFileExists('../config.php', 'config file does not exist');
-
+	
 	require_once('../config.php');
+
+	global $host, $user, $pass, $dbname, $LINK_URL;
 	
 	// Check that all of the expected variables exist and are not null
 
-	$this->assertTrue(isset($host));
+	$this->assertTrue(isset($host), 'what what');
 	$this->assertTrue(isset($user));
 	$this->assertTrue(isset($pass));
 	$this->assertTrue(isset($dbname));
