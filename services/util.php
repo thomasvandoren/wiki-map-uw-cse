@@ -43,11 +43,13 @@ function close_db()
  */
 function connect_db()
 {
+  global $mysql_link, $host, $user, $pass, $dbname;
+
     $mysql_link = mysql_connect($host, $user, $pass);
 
     if (!$mysql_link || !mysql_select_db($dbname))
     {
-	error(500, "could not connect to database");
+      error(500, "could not connect to database " . mysql_error());
     }
 }
 

@@ -15,16 +15,19 @@ TODO: assess link strength
 */
 
 require_once 'config.php';
+require_once 'util.php';
 
 //Die if no query provided
-if(!isset($REQUEST["q"])) {
+if(!isset($_REQUEST["q"])) {
 	header("HTTP/1.1 400 Bad Request");
 	die("HTTP error 400 occurred: No query provided\n");
 }
 
+
+connect_db();
+
 $searchQuery = mysql_real_escape_string($_REQUEST["q"]);
-$db = mysql_connect($host, $user, $pass);
-mysql_select_db($dbname);
+
 
 //Die if bad query given
 if($searchQuery == "") {
@@ -35,7 +38,7 @@ if($searchQuery == "") {
 //Fetch wikis search results
 
 $mysqlQuery = "SELECT page_id, page_title FROM page WHERE page_title 
-	LIKE $searchQuery";
+	LIKE '%$searchQuery%' LIMIT 24";
 $results = mysql_query($mysqlQuery);
 $row = mysql_fetch_array($results);
 
