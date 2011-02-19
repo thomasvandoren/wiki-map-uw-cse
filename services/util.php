@@ -21,12 +21,14 @@ $mysql_link = null;
 
 /**
  * Close the connection to the database if it is open.
+ *
+ * This function is not particularly useful, except for testing.
  */
-close_db()
+function close_db()
 {
-    if ($mysql_link != null)
+    if ($mysql_link != null && !mysql_close($mysql_link))
     {
-	mysql_close($mysql_link);
+	error(500, "could not close database");
     }
 }
 
@@ -35,7 +37,7 @@ close_db()
  *
  * Depends on $host and $dbname.
  */
-connect_db()
+function connect_db()
 {
     $mysql_link = mysql_connect($host, $user, $pass);
 
@@ -49,7 +51,7 @@ connect_db()
  * Kills the current execution and writes the error message to
  * page.
  */
-error($error_number, $error_msg)
+function error($error_number, $error_msg)
 {
     header("HTTP/1.1 $error_number");
     die("HTTP $error_number : $error_msg");
@@ -61,7 +63,7 @@ error($error_number, $error_msg)
  * This assumes that query_str is a sanitized, escaped
  * query string.
  */
-query($query_str)
+function query($query_str)
 {
     if ($mysql_link != null)
     {
