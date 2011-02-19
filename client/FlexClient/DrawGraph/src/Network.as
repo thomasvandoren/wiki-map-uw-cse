@@ -51,7 +51,21 @@ package
 		public static function xmlLoaded(event:Event):void {
 			myXML = XML(myLoader.data);
 			list = Parse.parseXML(myXML);
-			DrawGraph.DrawG(list, env);
+			draw();
+		}
+		
+		// draw graph
+		private static function draw():void {
+			if(list!=null){
+				DrawGraph.DrawG(list, env);
+				env.visible = true;
+			}
+		}
+		
+		// redraw graph
+		public static function reDraw(qq:Group):void {
+			env = qq;
+			draw();
 		}
 		
 		//If the URL request was a failure, then

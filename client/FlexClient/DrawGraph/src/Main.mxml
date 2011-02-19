@@ -11,16 +11,43 @@
 		<![CDATA[
 		import flash.events.Event;
 		import flash.events.MouseEvent;
+		import flash.text.TextFormat;
 		import Parse;
 		import Node;
 		import DrawGraph;
 		import Network;
 		import spark.components.Group;
+		import flash.ui.Keyboard;
+		import flash.events.KeyboardEvent;
 		
-
+		// handles the Enter on the keyboard pressed  					
+		public function enterHandler(event:KeyboardEvent):void{
+			if(event.keyCode == Keyboard.ENTER){
+				handleSearch(event);
+			}
+		}
+		
+		// resizes graph
+		private function resizeHandler(event:Event):void {
+			qq.width = this.width;
+			qq.height = this.height;
+			setTextInput();
+			if (qq.visible) {
+				Network.reDraw(qq);
+			}
+		}
+		
+		// sets width of the text input
+		private function setTextInput():void {
+			searchText.width = this.width - searchText.x - 2;
+		}
+		
 		public function initu():void {
 			qq.visible = false;	
 			searchButton.addEventListener(MouseEvent.CLICK, handleSearch);
+			setTextInput();
+			searchText.addEventListener(KeyboardEvent.KEY_DOWN, enterHandler);
+			this.addEventListener(Event.RESIZE, resizeHandler);
 		}
 		
 		//Handles mouse click events on the search button to search by the given searchText
@@ -36,7 +63,7 @@
 		private function search(type:String, arg:String):void {
 			Network.search(type, arg, qq);
 			//Austin, can you make this happen once you have drawn all of the nodes?
-			qq.visible = true;		
+			// qq.visible = true;		
 		}
 
 		]]> 
