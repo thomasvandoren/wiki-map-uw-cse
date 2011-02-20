@@ -6,28 +6,41 @@
 #
 # Build the various WikiGraph targets.
 #
-# TODO: make a DrawGraphConfig.xml (or use one that already exists)
 
 DEF_OUT = $(CURDIR)/build
 
-MXMLC = $FLEX_PATH/mxmlc
-MXMLCONFIG = config/DrawGraphConfig.xml
-MXMLCOPTS = -load-config+=$(MXMLCONFIG) -debug=true -incremental=true -benchmark=false -static-link-runtime-shared-libraries=true -o obj\DrawGraph634326822282731919
+MXMLC = mxmlc
 HG = hg
-PHPUNITPRE = $(DEF_OUT)/phpunit-log
 PHPUNIT = phpunit --log-junit
 Z = tar -czvf
 
+# This command produces all of the filenames that are a part of the services.
+# It does not include the services/test directory or anything named config.php.
+
+FINDPHPSERVICES = `find services/ -type f -regextype posix-egrep -regex ".+\.php" | sed sAservices\/AA | grep -v test/* | grep -v config.php`
+
+# OUTPUT and BUILDTAG can be set from the command line.
+
 OUTPUT =
+BUILDTAG = 
 
 ifeq ($(strip $(OUTPUT)),)
 OUTPUT = $(DEF_OUT)/output
 endif
 
-FLEXOUT = bin
+ifeq ($(strip $(BUILDTAG)),)
+BUILDTAG = unknown-WikiGraph-unknown
+endif
+
+PHPUNITPRE = $(DEF_OUT)/phpunit-log
+FLEXUNITPRE = $(DEF_OUT)/flexunit-log
+
 REPO = $(CURDIR)
 
 REPOURL = https://wiki-map-uw-cse.googlecode.com/hg/
+CLONENAME = WikiGraph-Build-Clone
+
+FLEXOUT = bin
 
 APINAME = WikiGraph-Services
 TESTAPINAME = WikiGraph-Test-Services
@@ -38,7 +51,14 @@ TESTCLIENTNAME = WikiGraph-Test-FlashClient
 TESTBRANCH = dev
 BRANCH = release
 
-BUILDTAG = 
+SWFDIR = $(OUTPUT)/$(FLEXOUT)
+SWFNAME = WikiGraph.swf
+SWFTMPDIR = $(CURDIR)/client/FlexClient/DrawGraph/template
+SWFTMPNAME = index.html
+
+MXMLCONFIG = $(CURDIR)/client/FlexClient/DrawGraph/config/DrawGraphConfig.xml
+MXMLSRC = $(CURDIR)/client/FlexClient/DrawGraph/src/Main.mxml
+MXMLCOPTS = -load-config+=$(MXMLCONFIG) -output $(SWFDIR)/$(SWFNAME) -- $(MXMLSRC)
 
 ALLTESTS = AllTests
 
@@ -46,61 +66,113 @@ all: graph api
 
 build: testapi test
 
+#
+# The following four targets are responsible for Mercurial (hg)
+# operations.
+#
+
 clone:
-	$(HG) clone $(REPOURL) 
+	$(HG) clone $(REPOURL) $(CLONENAME)
 
 pull:
 	$(HG) pull
 	$(HG) update
 
-check: output
-	cd $(REPO)/services/test ; \
-	$(PHPUNIT) $(PHPUNITPRE)/$(ALLTESTS).xml $(ALLTESTS) ; \
-	cd ../.. ;
+checkoutdev: pull
+	$(HG) checkout $(TESTBRANCH)
 
-checktest: output
-	cd $(REPO)/services/test ; \
-	$(PHPUNIT) $(PHPUNITPRE)/$(ALLTESTS).xml $(ALLTESTS) ; \
-	cd ../.. ;
-
-checkclient: # TODO: add flex unit code here
-
-checkclienttest: # TODO: add flex unit code here
-
-graph: pull  hudsongraph
+checkoutrelease: pull
 	$(HG) checkout $(BRANCH)
+
+#
+# check runs both the client and services unit tests.
+#
+
+check: checkapi checkclient
+
+#
+# checkapi runs the services unit tests
+#
+
+checkapi: output
+	cd $(REPO)/services/test ; \
+	$(PHPUNIT) $(PHPUNITPRE)/$(ALLTESTS).xml $(ALLTESTS) ; \
+	cd ../.. ;
+
+#
+# checkclient runs the client unit tests
+#
+
+checkclient: output # TODO: add flex unit code here
+
+#
+# graph checks out a new repository on the release branch, runs the
+# unit tests for the client, and then compiles and packages the client.
+#
+
+graph: checkoutrelease  hudsongraph
+
+#
+# hudsongraph runs the unit tests for the client, then compiles
+# and packages the client.
+#
 
 hudsongraph: checkclient clientoutput
-	cd client ; \  # TODO: this need to actually compile the sources
-	$(Z) $(OUTPUT)/$(CLIENTNAME)/$(BUILDTAG).tar.gz *.swf *.html ; \
-	cd .. ;
+	$(MXMLC) $(MXMLCOPTS)
+	$(Z) $(OUTPUT)/$(CLIENTNAME)/$(BUILDTAG).tar.gz -C $(SWFDIR) $(SWFNAME) -C $(SWFTMPDIR) $(SWFTMPNAME)
 
-test: pull hudsontest
-	$(HG) checkout $(TESTBRANCH)
+#
+# test does the same thing as graph, but on the dev branch.
+#
 
-hudsontest: checkclienttest testclientoutput
-	cd client ; \ # TODO: this needs to actually compile the sources
-	$(Z) $(OUTPUT)/$(TESTCLIENTNAME)/$(BUILDTAG).tar.gz *.swf *.html ; \
-	cd .. ;
+test: checkoutdev hudsontest
 
-api: pull hudsonapi
-	$(HG) checkout $(BRANCH)
+#
+# hudsontest does the same thing as hudsongraph, with a different output
+# directory for the package.
+#
 
-hudsonapi: check apioutput
-	cd services ; \
-	$(Z) $(OUTPUT)/$(APINAME)/$(BUILDTAG).tar.gz `find . -type f -regextype posix-egrep -regex ".*\.php" | grep -v test/* | grep -v config.php`; \
-	cd .. ; 
+hudsontest: checkclient testclientoutput
+	$(MXMLC) $(MXMLCOPTS)
+	$(Z) $(OUTPUT)/$(TESTCLIENTNAME)/$(BUILDTAG).tar.gz -C $(SWFDIR) $(SWFNAME) -C $(SWFTMPDIR) $(SWFTMPNAME)
 
-testapi: pull hudsontestapi
-	$(HG) checkout $(TESTBRANCH)
+#
+# api checks out a new repository on the release branch, runs the
+# unit tests for the services, and then compiles and packages the services.
+#
 
-hudsontestapi: checktest testapioutput
-	cd services ; \
-	$(Z) $(OUTPUT)/$(TESTAPINAME)/$(BUILDTAG).tar.gz `find . -type f -regextype posix-egrep -regex ".*\.php" | grep -v test/* | grep -v config.php`; \
-	cd .. ;
+api: checkoutrelease hudsonapi
+
+#
+# hudsongraph runs the unit tests for the services, then compiles
+# and packages the services api.
+#
+
+hudsonapi: checkapi apioutput
+	$(Z) $(OUTPUT)/$(APINAME)/$(BUILDTAG).tar.gz -C services $(FINDPHPSERVICES)
+
+#
+# testapi does the same thing as api, just on the dev branch.
+#
+
+testapi: checkoutdev hudsontestapi
+
+#
+# hudsontest does the same thing at hudsonapi, with a different output
+# directory for the package.
+#
+
+hudsontestapi: checkapi testapioutput
+	$(Z) $(OUTPUT)/$(TESTAPINAME)/$(BUILDTAG).tar.gz -C services $(FINDPHPSERVICES)
+
+#
+# These output targets create the necessary directories for
+# the build output.
+#
 
 output:
 	test -d $(DEF_OUT) || mkdir $(DEF_OUT)
+	test -d $(FLEXUNITPRE) || mkdir $(FLEXUNITPRE)
 	test -d $(PHPUNITPRE) || mkdir $(PHPUNITPRE)
 	test -d $(OUTPUT) || mkdir $(OUTPUT)
 
@@ -115,6 +187,15 @@ apioutput: output
 
 testapioutput: output
 	test -d $(OUTPUT)/$(TESTAPINAME) || mkdir $(OUTPUT)/$(TESTAPINAME)
+
+flexoutput: output
+	test -d $(OUTPUT)/$(FLEX) || mkdir $(OUTPUT)/$(FLEX)
+
+#
+# Removes all of the generated build output. On a local build machine
+# this includes the packages (OUTPUT = DEF_OUT). On Hudson this would
+# just remove the logs.
+#
 
 clean:
 	rm -rf $(DEF_OUT)
