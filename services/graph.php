@@ -43,7 +43,7 @@ thing up */
 
 if (!$row) {
     header("HTTP/1.1 404 File Not Found");
-    die("HTTP error 404 occurred: Page not found (\"$page_title\")\n");
+    die("HTTP error 404 occurred: Page not found (\"$page_id\")\n");
 }
 
 header('Content-Type:text/xml');

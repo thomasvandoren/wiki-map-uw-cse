@@ -29,7 +29,7 @@ mysql_select_db($dbname);
 $page_id = (int)($_REQUEST["id"]);
 
 // Die if invalid ID provided (cast returns 0)
-if ($page_id == 0) {
+if ($page_id === 0) {
   header("HTTP/1.1 400 Bad Request");
   die("HTTP error 400 occurred: Invalid id provided ($page_id)\n");
 }
