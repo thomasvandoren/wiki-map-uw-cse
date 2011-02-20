@@ -4,7 +4,7 @@
   <output>
     <movie disabled="False" />
     <movie input="" />
-    <movie path="bin\DrawGraph.swf" />
+    <movie path="bin\WikiGraph.swf" />
     <movie fps="30" />
     <movie width="800" />
     <movie height="600" />
@@ -69,11 +69,11 @@
   </intrinsics>
   <!-- Assets to embed into the output SWF -->
   <library>
-    <asset path="lib\flexUnitTasks-4.0.0.jar" update="..\..\..\..\..\..\..\..\..\..\Downloads\flexunit-4.0.0-flex4.0\flexunit\flexUnitTasks-4.0.0.jar" />
+    <asset path="lib\flexUnitTasks-4.0.0.jar" />
   </library>
   <!-- Class files to compile (other referenced classes will automatically be included) -->
   <compileTargets>
-    <compile path="test\TestRunner.mxml" />
+    <compile path="src\Main.mxml" />
   </compileTargets>
   <!-- Paths to exclude from the Project Explorer tree -->
   <hiddenPaths>
