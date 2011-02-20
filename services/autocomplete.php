@@ -9,6 +9,7 @@ Autocomplete service
 */
 
 include 'config.php';
+include 'util.php';
 
 // Die if no query provided
 if (!isset($_REQUEST["q"])) {
@@ -21,23 +22,19 @@ print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 
 // Establish mysql connection and use database.
 
-$db = mysql_connect($host, $user, $pass);
-mysql_select_db($dbname);
+$db = new GraphDB($DB_HOST, $DB_USER, $DB_PASS, $DB_NAME);
 
-$likestring = mysql_real_escape_string($_REQUEST["q"]);
-$query = "SELECT page_id, page_title FROM page WHERE page_title LIKE \"$likestring%\" LIMIT 10;";
+$like = $db->escape($_REQUEST["q"]);
 
-$results = mysql_query($query);
+$results = $db->get_autocomplete($like);
 
-$row = mysql_fetch_array($results);
 ?>
 <list phrase="<?= $likestring ?>">
 <?php
-while ($row) {
+foreach ($results as $row) {
 ?>
 	<item id="<?= $row["page_id"] ?>" title="<?= $row["page_title"] ?>"/>
 <?php
-$row = mysql_fetch_array($results);
 }
 ?>
 </list>

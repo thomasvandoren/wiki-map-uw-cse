@@ -16,6 +16,7 @@ TODO: Page might be valid, but it might not have an abstract?
 */
 
 include 'config.php';
+include 'util.php';
 
 // Die if no ID provided
 if (!isset($_REQUEST["id"])) {
@@ -23,8 +24,7 @@ if (!isset($_REQUEST["id"])) {
   die("HTTP error 400 occurred: No id provided\n");
 }
 
-$db = mysql_connect($host, $user, $pass);
-mysql_select_db($dbname);
+$db = new GraphDB($DB_HOST, $DB_USER, $DB_PASS, $DB_NAME);
 
 $page_id = (int)($_REQUEST["id"]);
 
@@ -34,12 +34,10 @@ if ($page_id == 0) {
   die("HTTP error 400 occurred: Invalid id provided ($page_id)\n");
 }
 
-// Fetch title and abstract
-$query = "SELECT page_title, abstract_text FROM page, abstract WHERE abstract_id = $page_id AND page_id = $page_id;";
-$results = mysql_query($query);
-$row = mysql_fetch_array($results);
+$abstract_results = $db->get_abstract($page_id);
+$page_results = $db->get_page_info($page_id);
 
-if ($row) {
+if (count($page_results) == 1) {
 
   //TODO: miscellaneous wiki styles need to be removed. The most common is [] 
   //      that are supposed to indicate a link.
@@ -48,9 +46,19 @@ if ($row) {
   print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 ?>
 <info id="<?= $page_id ?>">
-  <title><?= $row["page_title"] ?></title>
-  <abstract><?= $row["abstract_text"] ?></abstract>
-  <link><?= $LINK_URL . $row["page_title"] ?></link>
+  <title><?= $page_results[0]["page_title"] ?></title>
+<?php
+   if (count($abstract_results) == 1) {
+?>
+  <abstract><?= $abstract_results[0]["abstract_text"] ?></abstract>
+<?php
+   } else {
+?>
+  <abstract>No abstract found.</abstract>
+<?php
+   }
+?>
+  <link><?= $LINK_URL . $page_results[0]["page_title"] ?></link>
 </info>
 
 <?php
