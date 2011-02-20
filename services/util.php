@@ -30,6 +30,7 @@ $mysql_link = null;
  */
 function close_db()
 {
+    global $mysql_link;
     if ($mysql_link != null && !mysql_close($mysql_link))
     {
 	error(500, "could not close database");
@@ -43,13 +44,13 @@ function close_db()
  */
 function connect_db()
 {
-  global $mysql_link, $host, $user, $pass, $dbname;
+    global $mysql_link, $host, $user, $pass, $dbname;
 
     $mysql_link = mysql_connect($host, $user, $pass);
 
     if (!$mysql_link || !mysql_select_db($dbname))
     {
-      error(500, "could not connect to database " . mysql_error());
+      error(500, "could not connect to database");
     }
 }
 
@@ -71,6 +72,8 @@ function error($error_number, $error_msg)
  */
 function query($query_str)
 {
+    global $mysql_link;
+
     if ($mysql_link != null)
     {
 	return mysql_query($query_str, $mysql_link);
