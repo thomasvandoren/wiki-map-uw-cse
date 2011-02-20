@@ -1,0 +1,13 @@
+syntax: glob
+
+# ignore local builds and configs
+output/*
+build/*
+
+client/FlexClient/*/bin/*
+client/FlexClient/*/obj/*
+Thumbs.db
+
+# ignore temporary files
+*~
+\#*\#
