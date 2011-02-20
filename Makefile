@@ -57,8 +57,11 @@ SWFTMPDIR = $(CURDIR)/client/FlexClient/DrawGraph/template
 SWFTMPNAME = index.html
 
 MXMLCONFIG = $(CURDIR)/client/FlexClient/DrawGraph/config/DrawGraphConfig.xml
+MXMLTESTCONFIG = $(CURDIR)/client/FlexClient/DrawGraph/config/TestDrawGraphConfig.xml
+
 MXMLSRC = $(CURDIR)/client/FlexClient/DrawGraph/src/Main.mxml
 MXMLCOPTS = -load-config+=$(MXMLCONFIG) -output $(SWFDIR)/$(SWFNAME) -- $(MXMLSRC)
+MXMLCTESTOPTS = -load-config+=$(MXMLTESTCONFIG) -output $(SWFDIR)/$(SWFNAME) -- $(MXMLSRC)
 
 ALLTESTS = AllTests
 
@@ -133,7 +136,7 @@ test: checkoutdev hudsontest
 #
 
 hudsontest: checkclient testclientoutput
-	$(MXMLC) $(MXMLCOPTS)
+	$(MXMLC) $(MXMLCTESTOPTS)
 	$(Z) $(OUTPUT)/$(TESTCLIENTNAME)/$(BUILDTAG).tar.gz -C $(SWFDIR) $(SWFNAME) -C $(SWFTMPDIR) $(SWFTMPNAME)
 
 #
