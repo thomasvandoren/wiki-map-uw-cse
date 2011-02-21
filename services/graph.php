@@ -77,8 +77,16 @@ foreach ($page_data as $page) {
 <graph center="<?= $page_id ?>">
 <?php
   foreach ($pages as $id => $i) {
+
+  // Find out if page is a disambiguation page
+  // Set field and adjust title as needed
+  $disambig = "false";
+  $title = preg_replace("/_\(disambiguation\)$/", "", $i["title"]);
+  if (strcmp($title, $i["title"]) != 0) {
+    $disambig = "true";
+  }
 ?>
-  <source id="<?= $id ?>" title="<?= $i["title"] ?>" len="<?= $i["len"] ?>">
+  <source id="<?= $id ?>" title="<?= $title ?>" len="<?= $i["len"] ?>" is_disambiguation="<?= $disambig ?>">
 <?php
   if (isset($links[$id]))
       foreach ($links[$id] as $dst => $_) {
