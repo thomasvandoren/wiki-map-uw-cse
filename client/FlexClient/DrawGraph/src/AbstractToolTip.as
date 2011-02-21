@@ -21,7 +21,16 @@ package
 		public var abstractTimer:Timer;
 		public var abStyle:CSSStyleDeclaration;
 		public var articleTitle:String;
+		public var articleID:String;
 		public var articleURL:URLRequest;
+		public function UpdateAbstract(information:String):void
+		{
+			var newText:String = new String();
+			newText = "<font size = '10'><b>";
+			newText += information;
+			newText += "</b></font>";
+			abstractText.htmlText = newText;
+		}
 		private function OpenArticle(event:MouseEvent):void
 		{
 			articleURL = new URLRequest("http://en.wikipedia.org/wiki/" + articleTitle);
@@ -42,7 +51,7 @@ package
 			alpha = 0;
 		}
 		//constructor, on creation we'll expand it to call the server for the abstract info
-		public function AbstractToolTip(environment:Group,articleTitle:String) 
+		public function AbstractToolTip(environment:Group,articleTitle:String,articleID:String) 
 		{
 			var defaultText:String = new String();
 			//can set the font style with this
@@ -69,9 +78,11 @@ package
 			this.abstractTimer.addEventListener(TimerEvent.TIMER, TimerDing);
 			//transfer the article name
 			this.articleTitle = articleTitle;
+			this.articleID = articleID;
 			//at this point, start a search for the abstract text
 			//once we get it, it will probably return to some function
 			//which will update the abstractText object to have the article text in it.
+			Network.abstractGet(articleID, environment, this);
 		}
 		
 	}

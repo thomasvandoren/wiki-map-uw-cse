@@ -24,8 +24,14 @@ $db = new GraphDB($DB_HOST, $DB_USER, $DB_PASS, $DB_NAME);
 $page_id = (int)($_REQUEST["id"]);
 
 // Die if invalid ID provided (cast returns 0)
+<<<<<<< local
 if ($page_id == 0) {
   error(400, "Invalid id provided ($page_id)\n");
+=======
+if ($page_id === 0) {
+  header("HTTP/1.1 400 Bad Request");
+  die("HTTP error 400 occurred: Invalid id provided ($page_id)\n");
+>>>>>>> other
 }
 
 $abstract_results = $db->get_abstract($page_id);

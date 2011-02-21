@@ -36,6 +36,13 @@ information. one result is normal, more than one is ambiguity, none is...
 impossible with autocomplete? hope that question mark doesnt screw ne 
 thing up */
 
+<<<<<<< local
+=======
+if (!$row) {
+    header("HTTP/1.1 404 File Not Found");
+    die("HTTP error 404 occurred: Page not found (\"$page_id\")\n");
+}
+>>>>>>> other
 
 header('Content-Type:text/xml');
 print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
