@@ -23,15 +23,13 @@ class AllTests extends PHPUnit_Framework_TestCase
      */
     public function testRequireConfig()
     {
-	$this->assertFileExists('../config.php', 'config file does not exist');
+	$this->assertFileExists('config.php');
 	
-	require_once('../config.php');
-
 	global $DB_HOST, $DB_USER, $DB_PASS, $DB_NAME, $LINK_URL;
 	
 	// Check that all of the expected variables exist and are not null
 
-	$this->assertTrue(isset($DB_HOST), 'what what');
+	$this->assertTrue(isset($DB_HOST));
 	$this->assertTrue(isset($DB_USER));
 	$this->assertTrue(isset($DB_PASS));
 	$this->assertTrue(isset($DB_NAME));
