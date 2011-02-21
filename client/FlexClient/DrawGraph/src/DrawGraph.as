@@ -1,6 +1,8 @@
 package  
 {
+		import flash.text.TextField;
 		import mx.containers.Canvas;
+		import mx.controls.TextArea;
 		import mx.core.Application;
 		import mx.core.UIComponent;
 		import mx.graphics.SolidColorStroke;
@@ -20,7 +22,13 @@ package
 		import mx.states.AddChild;
 		import Node;
 		
-			
+		public static function drawSplash(environment:Group):void {
+			var hint:TextArea = new TextArea();
+			hint.text = "Text ad da d dd a a d da \n and a dda";
+			hint.x = 200;
+			hint.y = 300;
+			environment.addElement(hint);
+		}
 		
 		//tells the program to draw a bunch of nodes in the drawing area
 		public static function DrawG(a:Array, environment:Group):void {
@@ -29,7 +37,7 @@ package
 				
 				//presently this is how we're calculating the node's postion
 				var j:Number;
-				if (a.length > 25) {
+				if (a.length > 25 || a.length==1) {
 					j = (2 * Math.PI) / 24;
 				}else{
 					j = (2 * Math.PI) / (a.length - 1);
@@ -52,7 +60,7 @@ package
 					newNode.title = a[i][1];
 					var title:String = new String(a[i][1]);
 					newNode.label = title.split("_").join(" ");
-					newNode.width = environment.width/6;
+					newNode.width = environment.width/8;
 					newNode.height = environment.height/20;
 					newNode.x = newNode.getX(0.40, newNode);
 					newNode.y = newNode.getY(0.40, newNode);

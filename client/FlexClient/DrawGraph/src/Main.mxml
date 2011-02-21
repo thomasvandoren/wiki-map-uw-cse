@@ -17,10 +17,12 @@
 		import flash.text.TextField;
 		import flash.text.TextFormat;
 		import mx.controls.Image;
+		import mx.controls.Text;
 		import Parse;
 		import Node;
 		import DrawGraph;
 		import Network;
+		import DrawSplash;
 		import spark.components.Group;
 		import flash.ui.Keyboard;
 		import flash.events.KeyboardEvent;
@@ -35,11 +37,11 @@
 		
 		// resizes graph
 		private function resizeHandler(event:Event):void {
-			qq.width = this.width;
-			qq.height = this.height;
+			graph.width = this.width;
+			graph.height = this.height;
 			setTextInput();
-			if (qq.visible) {
-				Network.reDraw(qq);
+			if (graph.visible) {
+				Network.reDraw(graph);
 			}
 		}
 		
@@ -48,8 +50,10 @@
 			searchText.width = this.width - searchText.x - 2;
 		}
 		
+		private var myText:TextField = new TextField();
+		
 		public function initu():void {
-			qq.visible = false;	
+			graph.visible = false;	
 			searchButton.addEventListener(MouseEvent.CLICK, handleSearch);
 			setTextInput();
 			// sets search text is focus
@@ -66,7 +70,7 @@
 		
 		// loads splash page (will add more)
 		private function loadSplash(event:Event):void {
-			qq.removeAllElements();
+			graph.removeAllElements();
 		}
 		
 		//Handles mouse click events on the search button to search by the given searchText
@@ -80,18 +84,22 @@
 		//-"id" to search by article id (not yet working on backend),
 		//-"autocomplete" to get a list of relevant search requests (May change once backend gets graph and search request in one query
 		private function search(type:String, arg:String):void {
-			Network.search(type, arg, qq);
+			Network.search(type, arg, graph);
 			//Austin, can you make this happen once you have drawn all of the nodes?
-			// qq.visible = true;		
+			// graph.visible = true;		
 		}
+		
+		public function drawSplash(env:Group):void { 
+				DrawSplash.DrawS(env); 
+			} 
+
 
 		]]> 
 	</fx:Script>
 	
 		
-	<s:Group id="qq" y="20" height="100%" width="100%">
+	<s:Group id="graph" height="100%" width="100%" addedToStage="drawSplash(graph)"> </s:Group>
 
-	</s:Group>
 	<mx:Button id="splash" x="2" y="2" width="100" label="WikiGraph" />
 	<mx:Button id="searchButton" x="104" y="2" width="100" label = "Search"></mx:Button>
 	<mx:TextInput id="searchText" x="206" y="2"></mx:TextInput>

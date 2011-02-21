@@ -28,6 +28,7 @@ package
 			abstractTimer.start(); //starts the timer
 			if (tipCreated) {
 				abToolTip.abstractTimer.reset(); //resets the toolTip timer
+				this.setStyle(currentCSSState, 2);
 			}
 		}
 		//since the hold was long enough, now we need to create the toolTip
@@ -38,13 +39,18 @@ package
 				abToolTip.visible = true;
 			} else { //tip not created, do so now
 				this.abToolTip = new AbstractToolTip(environment, label);
-				abToolTip.x = getX(0.1, abToolTip);
-				abToolTip.y = getY(0.1, abToolTip);
+				if (index == 0) {
+					abToolTip.x = getX(0.3, abToolTip);
+					abToolTip.y = getY(0.3, abToolTip);
+				}else{
+					abToolTip.x = getX(0.1, abToolTip);
+					abToolTip.y = getY(0.1, abToolTip);
+				}
 				tipCreated = true;
 				abToolTip.articleTitle = label;
 				environment.addElement(abToolTip);
 			}
-			
+			this.setStyle(currentCSSState, 2);
 		}
 		//user stopped hovering over node, stop the toolTip creation/reinsertion
 		private function StopTimer(event:MouseEvent):void

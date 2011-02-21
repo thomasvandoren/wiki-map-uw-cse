@@ -32,7 +32,6 @@ package
 		}
 		private function KeepUp(event:MouseEvent):void
 		{
-			
 			abstractTimer.reset();
 		}
 		private function RestartTimer(event:MouseEvent):void
@@ -51,7 +50,7 @@ package
 			//can set the font style with this
 			//testing (I'll change it later) will recieve the abstract
 			//where it will be formatted
-			defaultText = "<u>Title</u>: <b>" + articleTitle.split("_").join(" ") + "</b>";
+			defaultText = "<u>Title</u>: <b>" + articleTitle + "</b>";
 			defaultText += "<br><br><font size = '12'>";
 			defaultText += "loading...";
 			defaultText += "</font>";
