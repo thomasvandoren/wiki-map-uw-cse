@@ -22,8 +22,8 @@ package
 		private static var list:Array;
 		
 		//Redirects a search request to the appropriate URL with the corresponding arguments
-		public static function search(type:String, arg:String, qq:Group):void {
-			env = qq;
+		public static function search(type:String, arg:String, graph:Group):void {
+			env = graph;
 			if (type == "name") {
 				requestData("http://wikigraph.cs.washington.edu/api/graph/?q=" + arg);
 			}
@@ -32,6 +32,9 @@ package
 			} 
 			else if (type == "autocomplete") {
 				requestData("http://wikigraph.cs.washington.edu/api/autocomplete/" + arg);
+			}
+			else if (type == "abstract") {
+				requestData("http://wikigraph.cs.washington.edu/api/abstract/" + arg);
 			}
 		}	
 		
@@ -50,8 +53,13 @@ package
 		//Passes the parsed list of nodes to the drawer to draw the nodes to the UI
 		public static function xmlLoaded(event:Event):void {
 			myXML = XML(myLoader.data);
-			list = Parse.parseXML(myXML);
-			draw();
+			trace(myXML.name());
+			if(myXML.name() == "graph") {
+				list = Parse.parseXML(myXML);
+				draw();
+			} else if (myXML.name() == "info") {
+				//Austin: Add abstract functionality here
+			}
 		}
 		
 		// draw graph
@@ -63,8 +71,8 @@ package
 		}
 		
 		// redraw graph
-		public static function reDraw(qq:Group):void {
-			env = qq;
+		public static function reDraw(graph:Group):void {
+			env = graph;
 			draw();
 		}
 		

@@ -2,13 +2,26 @@
 <s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
                xmlns:s="library://ns.adobe.com/flex/spark"
                xmlns:mx="library://ns.adobe.com/flex/mx"
+			   xmlns:flashcommander="org.flashcommander.*"
+			   xmlns:components="org.flashcommander.components.*"
 			   creationComplete="initu()"
 			   height="100%"
 			   width="100%"
 			   >
-	
+			   
+		<fx:Declarations>
+			   <s:HTTPService id="loader" url="http://wikigraph.cs.washington.edu/api/autocomplete/" 
+				resultFormat="object" result="xmlLoaded(event)" useProxy="false">
+				<mx:request xmlns=""> 
+					<q>{searchText.text}</q>
+				</mx:request>
+				</s:HTTPService>
+		</fx:Declarations>
+		
 	<fx:Script>
 		<![CDATA[
+		import mx.collections.ArrayCollection;
+		import org.flashcommander.event.CustomEvent;
 		import flash.events.Event;
 		import flash.events.MouseEvent;
 		import flash.text.TextFormat;
@@ -19,6 +32,8 @@
 		import spark.components.Group;
 		import flash.ui.Keyboard;
 		import flash.events.KeyboardEvent;
+		import flash.utils.Timer;
+		public var myTimer:Timer;
 		
 		// handles the Enter on the keyboard pressed  					
 		public function enterHandler(event:KeyboardEvent):void{
@@ -29,25 +44,28 @@
 		
 		// resizes graph
 		private function resizeHandler(event:Event):void {
-			qq.width = this.width;
-			qq.height = this.height;
+			graph.width = this.width;
+			graph.height = this.height;
 			setTextInput();
-			if (qq.visible) {
-				Network.reDraw(qq);
+			if (graph.visible) {
+				Network.reDraw(graph);
 			}
 		}
 		
 		// sets width of the text input
 		private function setTextInput():void {
-			searchText.width = this.width - searchText.x - 2;
+			ac2.width = this.width - ac2.x - 2;
 		}
 		
 		public function initu():void {
-			qq.visible = false;	
+			myTimer = new Timer(2000, 0);
+            myTimer.addEventListener("timer", timerHandler);
+            myTimer.start();
 			searchButton.addEventListener(MouseEvent.CLICK, handleSearch);
 			setTextInput();
 			searchText.addEventListener(KeyboardEvent.KEY_DOWN, enterHandler);
 			this.addEventListener(Event.RESIZE, resizeHandler);
+			//ac2.addEventListener(KeyboardEvent.KEY_UP, resetTimer);
 		}
 		
 		//Handles mouse click events on the search button to search by the given searchText
@@ -61,22 +79,53 @@
 		//-"id" to search by article id (not yet working on backend),
 		//-"autocomplete" to get a list of relevant search requests (May change once backend gets graph and search request in one query
 		private function search(type:String, arg:String):void {
-			Network.search(type, arg, qq);
-			//Austin, can you make this happen once you have drawn all of the nodes?
-			// qq.visible = true;		
+			Network.search(type, arg, graph);	
 		}
-
+		
+		// display name as label
+		private function customLabelFunction(item:Object):String{
+			if(item != null && item.title != null) {	
+				return item.title;
+			} else {
+				return "";
+			}
+		}
+		
+		// autocopmlete dispatches "select" event when user selects an item in the dropdown 
+		private function handleSelect(event:CustomEvent):void {
+			var item:Object = event.data;
+			trace("Selected " + item.title);
+			myTimer.stop();
+			search("name", item.title);
+			myTimer.start();
+			ac2.text = "";
+		}
+		
+		private function xmlLoaded(event:Event):void {
+			ac2.dataProvider = loader.lastResult.list.item as ArrayCollection;
+		}
+		
+		
+		private function timerHandler(event:TimerEvent):void {
+			searchText.text = ac2.text;
+			loader.send();
+			trace("timerHandler: " + event);
+		}
+		
 		]]> 
 	</fx:Script>
 	
 		
-	<s:Group id="qq" height="100%" width="100%">
-
+	<s:Group id="graph" height="100%" width="100%">
 	</s:Group>
+	
 	<mx:Button id="searchButton" x="0" y="0" width="100" label = "Search" />
-	<mx:TextInput id="searchText" x="100" y="0" width="700"></mx:TextInput>
-
-		
-
+	
+	<mx:TextInput id="searchText" visible="false" x="100" y="0" width="700"></mx:TextInput>
+	<components:AutoComplete id="ac2" x="100" y="0" width="700"
+		returnField="item"
+		requireSelection="true"
+		labelFunction="customLabelFunction"
+		select="handleSelect(event)" />
 
 </s:Application>
