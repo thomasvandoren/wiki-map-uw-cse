@@ -12,7 +12,7 @@
    */
 
 require_once('PHPUnit/Framework.php');
-require_once("../config.php");
+require_once("config.php");
 require_once("../util.php");
 
 class AllTests extends PHPUnit_Framework_TestCase
