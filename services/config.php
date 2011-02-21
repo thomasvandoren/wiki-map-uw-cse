@@ -15,9 +15,4 @@ $DB_NAME = "somename";
 
 $LINK_URL = "http://en.wikibooks.com/wiki/";
 
-if (stripos($dbname, "test") === FALSE)
-{
-  $LINK_URL = "http://en.wikipedia.org/wiki/";
-}
-
 ?>

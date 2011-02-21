@@ -92,7 +92,7 @@ class GraphDB {
    * Takes the id of the page
    */
   public function get_page_links($id) {
-    $q = "SELECT * FROM pagelinks WHERE pl_from = $id OR pl_to = $id";
+    $q = "SELECT pl_from, pl_to FROM pagelinks WHERE pl_from = $id OR pl_to = $id";
     return $this->query($q);
   }
 
