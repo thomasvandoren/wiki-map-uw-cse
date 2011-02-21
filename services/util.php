@@ -22,41 +22,6 @@ Classes in this file:
 */
 
 /**
-<<<<<<< local
- * Helper function to deal with errors
-=======
- * Close the connection to the database if it is open.
- *
- * This function is not particularly useful, except for testing.
- */
-function close_db()
-{
-    global $mysql_link;
-    if ($mysql_link != null && !mysql_close($mysql_link))
-    {
-	error(500, "could not close database");
-    }
-}
-
-/**
- * Connect to database and use default.
- *
- * Depends on $host and $dbname.
- */
-function connect_db()
-{
-    global $mysql_link, $host, $user, $pass, $dbname;
-
-    $mysql_link = mysql_connect($host, $user, $pass);
-
-    if (!$mysql_link || !mysql_select_db($dbname))
-    {
-      error(500, "could not connect to database");
-    }
-}
-
-/**
->>>>>>> other
  * Kills the current execution and writes the error message to
  * page.
  */
@@ -65,23 +30,11 @@ function error($error_number, $error_msg) {
   die("HTTP $error_number : $error_msg");
 }
 
-<<<<<<< local
+
 class GraphDB {
   // Link to the database
   private $db;
-=======
-/**
- * Query the database if a connection exists.
- *
- * This assumes that query_str is a sanitized, escaped
- * query string.
- */
-function query($query_str)
-{
-    global $mysql_link;
->>>>>>> other
 
-<<<<<<< local
   /**
    * Creates a connection to the given MySQL host
    * and selects the given database
@@ -90,11 +43,6 @@ function query($query_str)
     $this->db = mysql_connect($host, $user, $pass);
     if (!$this->db) {
       error(500, "Could not connect to database: " . mysql_error($this->db));
-=======
-    if ($mysql_link != null)
-    {
-	return mysql_query($query_str, $mysql_link);
->>>>>>> other
     }
 
     if (!mysql_select_db($dbname, $this->db)) {
