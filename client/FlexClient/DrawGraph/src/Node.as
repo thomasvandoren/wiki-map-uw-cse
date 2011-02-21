@@ -38,7 +38,7 @@ package
 				abToolTip.abstractTimer.reset();
 				abToolTip.visible = true;
 			} else { //tip not created, do so now
-				this.abToolTip = new AbstractToolTip(environment, label);
+				this.abToolTip = new AbstractToolTip(environment, label, id);
 				if (index == 0) {
 					abToolTip.x = getX(0.3, abToolTip);
 					abToolTip.y = getY(0.3, abToolTip);

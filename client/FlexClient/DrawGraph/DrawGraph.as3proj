@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <project>
   <!-- Output SWF options -->
   <output>
     <movie disabled="False" />
     <movie input="" />
-    <movie path="bin\DrawGraph.swf" />
+    <movie path="bin\WikiGraph.swf" />
     <movie fps="30" />
     <movie width="800" />
     <movie height="600" />
@@ -14,6 +14,8 @@
   <!-- Other classes to be compiled into your SWF -->
   <classpaths>
     <class path="src" />
+    <class path="lib" />
+    <class path="test" />
   </classpaths>
   <!-- Build options -->
   <build>
@@ -21,10 +23,12 @@
     <option allowSourcePathOverlap="False" />
     <option benchmark="False" />
     <option es="False" />
+    <option locale="" />
     <option loadConfig="" />
     <option optimize="True" />
     <option showActionScriptWarnings="True" />
     <option showBindingWarnings="True" />
+    <option showInvalidCSS="True" />
     <option showDeprecationWarnings="True" />
     <option showUnusedTypeSelectorWarnings="True" />
     <option strict="True" />
@@ -32,8 +36,11 @@
     <option useResourceBundleMetadata="True" />
     <option warnings="True" />
     <option verboseStackTraces="False" />
+    <option linkReport="" />
+    <option loadExterns="" />
     <option staticLinkRSL="True" />
     <option additional="" />
+    <option compilerConstants="" />
     <option customSDK="" />
   </build>
   <!-- SWC Include Libraries -->
@@ -42,7 +49,11 @@
   </includeLibraries>
   <!-- SWC Libraries -->
   <libraryPaths>
-    <!-- example: <element path="..." /> -->
+    <element path="lib\flexunit-4.0.0.swc" />
+    <element path="lib\flexunit-aircilistener-4.0.0.swc" />
+    <element path="lib\flexunit-cilistener-4.0.0.swc" />
+    <element path="lib\flexunit-flexcoverlistener-4.0.0.swc" />
+    <element path="lib\flexunit-uilistener-4.0.0.swc" />
   </libraryPaths>
   <!-- External Libraries -->
   <externalLibraryPaths>
@@ -58,7 +69,7 @@
   </intrinsics>
   <!-- Assets to embed into the output SWF -->
   <library>
-    <!-- example: <asset path="..." id="..." update="..." glyphs="..." mode="..." place="..." sharepoint="..." /> -->
+    <asset path="lib\flexUnitTasks-4.0.0.jar" />
   </library>
   <!-- Class files to compile (other referenced classes will automatically be included) -->
   <compileTargets>

@@ -8,16 +8,11 @@ Author: Rob McClure <mgracecubs@gmail.com>
 Database configuration file
 Change these values when you deploy the application
 */
-$host = "fakehost";
-$user = "username";
-$pass = "passphrase";
-$dbname = "somename";
+$DB_HOST = "fakehost";
+$DB_USER = "username";
+$DB_PASS = "passphrase";
+$DB_NAME = "somename";
 
 $LINK_URL = "http://en.wikibooks.com/wiki/";
-
-if (stripos($dbname, "test") === FALSE)
-{
-  $LINK_URL = "http://en.wikipedia.org/wiki/";
-}
 
 ?>

@@ -11,28 +11,22 @@ Currently takes the title of the node
 */
 	
 include 'config.php';
+include 'util.php';
 
 if (!isset($_REQUEST["id"]) || strlen($_REQUEST["id"]) == 0) {
-  header("HTTP/1.1 400 Bad Request");
-  die("HTTP error 400 occurred: No query provided\n");
+  error(400, "No query provided.\n");
 }
 
 // Establish connection to MySQL server and use database.
 
-$db = mysql_connect($host, $user, $pass);
-mysql_select_db($dbname);
+$db = new GraphDB($DB_HOST, $DB_USER, $DB_PASS, $DB_NAME);
 
 $page_id = (int)($_REQUEST["id"]);
 
 if ($page_id === 0)
 {
-  header("HTTP/1.1 400 Bad Request");
-  die("HTTP 400 Bad Request: invalid id \"$page_id\"");
+  error(400, "Invalid ID ($page_id).\n");
 }
-
-$query = "SELECT page_id, page_title FROM page WHERE page_id = $page_id;";
-$results = mysql_query($query);
-$row = mysql_fetch_array($results);
 
 /* its jeremy, guess more checks here to denote whether string has 
 multiple occurrences (via while looping through db results) or a variation 
@@ -41,53 +35,58 @@ information. one result is normal, more than one is ambiguity, none is...
 impossible with autocomplete? hope that question mark doesnt screw ne 
 thing up */
 
-if (!$row) {
-    header("HTTP/1.1 404 File Not Found");
-    die("HTTP error 404 occurred: Page not found (\"$page_id\")\n");
-}
 
 header('Content-Type:text/xml');
 print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 
 // Fetch all links with our target page as a source or destination
 // including page info (title, length)
-$query = "SELECT src.page_id src_id, src.page_title src_title, src.page_len src_len, dst.page_id dst_id, dst.page_title dst_title, dst.page_len dst_len "
-	   . "FROM page src, page dst, pagelinks pl "
-       .  "WHERE src.page_id = pl.pl_from AND dst.page_id = pl.pl_to AND (src.page_id = $page_id OR dst.page_id = $page_id);";
-
-$results = mysql_query($query);
-$row = mysql_fetch_array($results);
-
-$info = array();
+$link_data = $db->get_page_links($page_id);
 $links = array();
+$pages = array();
+foreach ($link_data as $link) {
+  $id_from = (int)($link["pl_from"]);
+  $id_to = (int)($link["pl_to"]);
 
-// Loop through the results to populate our arrays
-while($row) {
-  $src_id = (int)$row["src_id"];
-  $dst_id = (int)$row["dst_id"];
+  // Set link data
+  if (!isset($links[$id_from]))
+    $links[$id_from] = array();
+  $links[$id_from][$id_to] = true;
 
-  // Store title and length for pages
-  if (!isset($info[$src_id]))
-    $info[$src_id] = array("title" => $row["src_title"], "len" => (int)$row["src_len"]);
-  if (!isset($info[$dst_id]))
-    $info[$dst_id] = array("title" => $row["dst_title"], "len" => (int)$row["dst_len"]);
+  // Update pages to get info for
+  $pages[$id_from] = true;
+  $pages[$id_to] = true;
+}
 
-  // Store links from src -> dst
-  if (!isset($links[$src_id]))
-    $links[$src_id] = array();
-  $links[$src_id][$dst_id] = true;
+// Collect all ids to find info for
+$ids = array();
+foreach ($pages as $id => $_) {
+  array_push($ids, $id);
+}
 
-
-  $row = mysql_fetch_array($results);
+// Put page data in array
+$page_data =  $db->get_page_info($ids);
+foreach ($page_data as $page) {
+  $id = (int)($page["page_id"]);
+  $pages[$id] = array("title" => $page["page_title"],
+		      "len" => $page["page_len"]);
 }
 
 // Now generate XML
 ?>
 <graph center="<?= $page_id ?>">
 <?php
-  foreach ($info as $id => $i) {
+  foreach ($pages as $id => $i) {
+
+  // Find out if page is a disambiguation page
+  // Set field and adjust title as needed
+  $disambig = "false";
+  $title = preg_replace("/_\(disambiguation\)$/", "", $i["title"]);
+  if (strcmp($title, $i["title"]) != 0) {
+    $disambig = "true";
+  }
 ?>
-  <source id="<?= $id ?>" title="<?= $i["title"] ?>" len="<?= $i["len"] ?>">
+  <source id="<?= $id ?>" title="<?= $title ?>" len="<?= $i["len"] ?>" is_disambiguation="<?= $disambig ?>">
 <?php
   if (isset($links[$id]))
       foreach ($links[$id] as $dst => $_) {

@@ -2,13 +2,26 @@
 <s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
                xmlns:s="library://ns.adobe.com/flex/spark"
                xmlns:mx="library://ns.adobe.com/flex/mx"
+			   xmlns:flashcommander="org.flashcommander.*"
+			   xmlns:components="org.flashcommander.components.*"
 			   creationComplete="initu()"
 			   height="100%"
 			   width="100%"
 			   >
-	
+			   
+		<fx:Declarations>
+			   <s:HTTPService id="loader" url="http://wikigraph.cs.washington.edu/api/autocomplete/" 
+				resultFormat="object" result="xmlLoaded(event)" useProxy="false">
+				<mx:request xmlns=""> 
+					<q>{searchText.text}</q>
+				</mx:request>
+				</s:HTTPService>
+		</fx:Declarations>
+		
 	<fx:Script>
 		<![CDATA[
+		import mx.collections.ArrayCollection;
+		import org.flashcommander.event.CustomEvent;
 		import flash.display.Loader;
 		import flash.display.MovieClip;
 		import flash.events.Event;
@@ -26,9 +39,11 @@
 		import spark.components.Group;
 		import flash.ui.Keyboard;
 		import flash.events.KeyboardEvent;
+		import flash.utils.Timer;
+		public var myTimer:Timer;
+		private var keyCount:int;
 		
-		
-		// handles the Enter on the keyboard pressed  					
+		// handles the Enter on the keyboard pressed
 		public function enterHandler(event:KeyboardEvent):void{
 			if(event.keyCode == Keyboard.ENTER){
 				handleSearch(event);
@@ -47,25 +62,29 @@
 		
 		// sets width of the text input
 		private function setTextInput():void {
-			searchText.width = this.width - searchText.x - 2;
+			ac2.width = this.width - ac2.x - 2;
 		}
 		
 		private var myText:TextField = new TextField();
 		
 		public function initu():void {
+			myTimer = new Timer(500, 0);
+            myTimer.addEventListener("timer", timerTickHandler);
 			graph.visible = false;	
+
 			searchButton.addEventListener(MouseEvent.CLICK, handleSearch);
 			setTextInput();
+
+			ac2.addEventListener(KeyboardEvent.KEY_DOWN, timerKeyHandler);
+
 			// sets search text is focus
 			searchText.setFocus();
 			searchText.addEventListener(KeyboardEvent.KEY_DOWN, enterHandler);
+
 			this.addEventListener(Event.RESIZE, resizeHandler);
 			
-			
-			// Start add
 			splash.addEventListener(MouseEvent.CLICK, loadSplash);
 			
-			// End
 		}
 		
 		// loads splash page (will add more)
@@ -79,32 +98,83 @@
 		}
 		
 		//Sends a search request of given type, with given arguments over the network to the backend.
-		//Type may currently be"
+		//Type may currently be
 		//-"name" to search by article name, 
 		//-"id" to search by article id (not yet working on backend),
-		//-"autocomplete" to get a list of relevant search requests (May change once backend gets graph and search request in one query
+		//-"autocomplete" to get a list of relevant search requests (May change once backend gets graph and search request in one query)
 		private function search(type:String, arg:String):void {
+
 			Network.search(type, arg, graph);
 			//Austin, can you make this happen once you have drawn all of the nodes?
 			// graph.visible = true;		
 		}
 		
-		public function drawSplash(env:Group):void { 
-				DrawSplash.DrawS(env); 
-			} 
-
+		// display name as label
+		private function customLabelFunction(item:Object):String{
+			if(item != null && item.title != null) {	
+				return item.title;
+			} else {
+				return "";
+			}
+		}
+		
+		// autocopmlete dispatches "select" event when user selects an item in the dropdown 
+		private function handleSelect(event:CustomEvent):void {
+			var item:Object = event.data;
+			trace("Selected " + item.title);
+			search("name", item.title);
+			ac2.text = "";
+		}
+		
+		private function xmlLoaded(event:Event):void {
+			ac2.dataProvider = loader.lastResult.list.item as ArrayCollection;
+		}
+		
+		
+		private function timerTickHandler(event:TimerEvent):void {
+			myTimer.reset();
+			timerHandler();
+		}
+		
+		private function timerKeyHandler(event:KeyboardEvent):void {
+			if (myTimer.running == false) {
+				myTimer.start();
+			}
+			keyCount = (keyCount + 1) % 4;
+			trace(keyCount);
+			if (keyCount == 3) {
+				timerHandler();
+			} else {
+				myTimer.reset();
+				myTimer.start();
+			}
+		}
+		
+		private function timerHandler():void {
+			searchText.text = ac2.text;
+			loader.send();
+			trace("Sending Search Request: " + searchText.text);
+		}
+		
+		public function drawSplash(env:Group):void {
+			DrawSplash.DrawS(env);
+		}
 
 		]]> 
 	</fx:Script>
 	
-		
-	<s:Group id="graph" height="100%" width="100%" addedToStage="drawSplash(graph)"> </s:Group>
+	<s:Group id="graph" height="100%" width="100%" addedToStage="drawSplash(graph)">
+	</s:Group>
 
 	<mx:Button id="splash" x="2" y="2" width="100" label="WikiGraph" />
-	<mx:Button id="searchButton" x="104" y="2" width="100" label = "Search"></mx:Button>
-	<mx:TextInput id="searchText" x="206" y="2"></mx:TextInput>
-
-		
-
+	
+	<mx:Button id="searchButton" x="0" y="0" width="100" label = "Search" />
+	
+	<mx:TextInput id="searchText" visible="false" x="100" y="0" width="700"></mx:TextInput>
+	<components:AutoComplete id="ac2" x="100" y="0" width="700"
+		returnField="item"
+		requireSelection="true"
+		labelFunction="customLabelFunction"
+		select="handleSelect(event)" />
 
 </s:Application>

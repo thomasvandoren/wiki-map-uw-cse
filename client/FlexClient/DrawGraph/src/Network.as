@@ -21,9 +21,19 @@ package
 		public static var env:Group;
 		private static var list:Array;
 		
+		public static var toolTip:AbstractToolTip;
+		
+		//Used to get the appropriate abstract for a cooresponding toolTip
+		public static function abstractGet(arg:String, graph:Group, specificTip:AbstractToolTip):void {
+			env = graph;
+			toolTip = specificTip;
+			//Alert.show(arg);
+			requestData("http://wikigraph.cs.washington.edu/api/abstract/" + arg + "/");
+		}
+		
 		//Redirects a search request to the appropriate URL with the corresponding arguments
-		public static function search(type:String, arg:String, qq:Group):void {
-			env = qq;
+		public static function search(type:String, arg:String, graph:Group):void {
+			env = graph;
 			if (type == "name") {
 				requestData("http://wikigraph.cs.washington.edu/api/graph/?q=" + arg);
 			}
@@ -50,8 +60,18 @@ package
 		//Passes the parsed list of nodes to the drawer to draw the nodes to the UI
 		public static function xmlLoaded(event:Event):void {
 			myXML = XML(myLoader.data);
-			list = Parse.parseXML(myXML);
-			draw();
+			trace(myXML.name());
+			if(myXML.name() == "graph") {
+				list = Parse.parseXML(myXML);
+				draw();
+			} else if (myXML.name() == "info") {
+				var abstractText:String;
+				abstractText = Parse.parseAbs(myXML);
+				Alert.show(abstractText);
+				toolTip.UpdateAbstract(abstractText);
+			} else {
+
+			}
 		}
 		
 		// draw graph
@@ -63,8 +83,8 @@ package
 		}
 		
 		// redraw graph
-		public static function reDraw(qq:Group):void {
-			env = qq;
+		public static function reDraw(graph:Group):void {
+			env = graph;
 			draw();
 		}
 		
