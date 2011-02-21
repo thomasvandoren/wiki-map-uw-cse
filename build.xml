@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+ <!--
+    WikiGraph
+    Copyright (c) 2011
+
+    Author: Thomas Van Doren <thomas.vandoren@gmail.com>
+
+    This runs the unit tests on the flash client.
+
+    init -> compile -> test
+
+   -->
+ <project name="TestWikiGraph" default="test" basedir=".">
+   <!--
+      Print logo message with setup warnings.
+     -->
+   <echo message="WikiGraph" />
+   <echo message="Flash Client unit tests brought to you by FlexUnit" />
+   <echo message="" />
+   <echo message="The environment variable FLEX_HOME set to the location of" />
+   <echo message="the flex sdk on this computer." />
+   <echo message="" />
+   <echo message="A projector content debugger flash player from Adobe with" />
+   <echo message="with security permission granted to this directory is" />
+   <echo message="required to complete these unit tests." />
+   <echo message="" />
+   
+    <!-- 
+       Setup a prefix for all environment variables. 
+      -->
+    <property environment="env" />
+    
+    <!--
+       Import the FLEX_HOME and ANT_OUT variable. This can also be set at the cmd line.
+      -->
+    <property name="FLEX_HOME" location="${env.FLEX_HOME}" />
+    <property name="ANT_OUT" location="${env.ANT_OUT}" />
+    
+    <!--
+       Define necessary directories.
+      -->
+    <property name="repo.loc" location="${basedir}/client/FlexClient/DrawGraph" />
+    <property name="main.src.loc" location="${repo.loc}/src" />
+    <property name="test.src.loc" location="${repo.loc}/test" />
+    <property name="lib.loc" location="${repo.loc}/lib" />
+    <property name="config.loc" location="${repo.loc}/config" />
+    <property name="output.loc" location="${ANT_OUT}" />
+    <property name="bin.loc" location="${output.loc}/bin" />
+    <property name="report.loc" location="${output.loc}/flexunit-log" />
+    
+    <property name="main.swf.name" location="${bin.loc}/WikiGraph.swf" />
+    <property name="test.swf.name" location="${bin.loc}/TestWikiGraph.swf" />
+    
+    <!-- 
+       Load the Flex and FlexUnit ant tasks on.
+      -->
+    <taskdef resource="flexTasks.tasks" classpath="${FLEX_HOME}/ant/lib/flexTasks.jar" />
+    <taskdef resource="flexUnitTasks.tasks">
+        <classpath>
+            <fileset dir="${lib.loc}">
+                <include name="flexUnitTasks*.jar" />
+            </fileset>
+        </classpath>
+    </taskdef>
+    
+    <!--
+       Create the needed directories for build artifacts and logging the results.
+      -->
+    <target name="init">
+        <mkdir dir="${output.loc}" />
+        <mkdir dir="${bin.loc}" />
+        <mkdir dir="${report.loc}" />
+    </target>
+    
+    <!--
+       Compile the DrawGraph SWF applications.
+      -->
+    <target name="compile" depends="init">
+        <mxmlc file="${main.src.loc}/Main.mxml" output="${main.swf.name}">
+            <!-- 
+               Requires that both the default flex config and the local config
+               be included. 
+              -->
+            <load-config filename="${FLEX_HOME}/frameworks/flex-config.xml" />
+            <load-config filename="${config.loc}/TestDrawGraphConfig.xml" />
+            
+            <compiler.verbose-stacktraces>true</compiler.verbose-stacktraces>
+			<compiler.headless-server>true</compiler.headless-server>
+        </mxmlc>
+    </target>
+    
+    <!--
+       Run the unit tests for the client SWF application.
+      -->
+    <target name="test" depends="compile">
+        <!--
+           Compile the test runner.
+          -->
+        <mxmlc file="${test.src.loc}/TestRunner.mxml" output="${test.swf.name}">
+            <!-- 
+               Requires that both the default flex config and the local config
+               be included. 
+              -->
+            <load-config filename="${FLEX_HOME}/frameworks/flex-config.xml" />
+            <load-config filename="${config.loc}/TestDrawGraphConfig.xml" />
+            
+            <compiler.verbose-stacktraces>true</compiler.verbose-stacktraces>
+			<compiler.headless-server>true</compiler.headless-server>
+        </mxmlc>
+        
+        <!--
+           Execute TestWikiGraph.swf as flexunit tests and publish reports to this ant job.
+          -->
+        <flexunit swf="${test.swf.name}"
+                    toDir="${report.loc}"
+                    haltonFailure="false"
+                    verbose="true"
+                    localTrusted="true" />
+        
+        <!--
+           Generate the jUnit-like reports.
+          -->
+        <junitreport todir="${report.loc}">
+            <fileset dir="${report.loc}">
+                <include name="TEST-*.xml" />
+            </fileset>
+            <report format="noframes" todir="${report.loc}" />
+        </junitreport>
+        
+    </target>
+    
+ </project>
+ 

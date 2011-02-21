@@ -33,6 +33,7 @@ BUILDTAG = unknown-WikiGraph-unknown
 endif
 
 PHPUNITPRE = $(DEF_OUT)/phpunit-log
+ANT_OUT = $(DEF_OUT)
 FLEXUNITPRE = $(DEF_OUT)/flexunit-log
 
 REPO = $(CURDIR)
