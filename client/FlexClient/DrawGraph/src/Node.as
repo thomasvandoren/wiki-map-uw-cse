@@ -37,11 +37,10 @@ package
 				abToolTip.abstractTimer.reset();
 				abToolTip.alpha = 1;
 			} else { //tip not created, do so now
-			this.abToolTip = new AbstractToolTip(environment,label);
+			this.abToolTip = new AbstractToolTip(environment,label,id);
 			abToolTip.x = (this.x) - (1.25 *(this.width));
 			abToolTip.y = (this.y);
 			tipCreated = true;
-			abToolTip.articleTitle = label;
 			environment.addElement(abToolTip);
 			}
 		}

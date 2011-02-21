@@ -22,5 +22,12 @@ package{
 			}
 			return list;
 		}
+		
+		public static function parseAbs(myXML:XML):String {
+			var abstract:String = new String();
+			var node:XML = myXML.children();
+			abstract = node.attribute("abstract");
+			return abstract;
+		}
 	}
 }

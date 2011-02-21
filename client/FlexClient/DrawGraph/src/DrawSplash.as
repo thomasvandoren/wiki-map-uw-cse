@@ -22,7 +22,7 @@ package
 			environment.removeAllElements(); //clear everything in env
 			var title:Text = new Text();
 			title.x = (environment.width / 8);
-			title.width = (environment.width / 1.5);
+			title.width = (environment.width / 8) * 6;
 			title.y = (environment.height / 4);
 			title.htmlText = "<font size = '64'><b>Wiki Graph</b></font><BR/>";
 			title.htmlText += "<font size = '24'>Instructions</font><BR/>";

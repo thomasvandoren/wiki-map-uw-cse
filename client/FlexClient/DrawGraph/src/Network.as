@@ -21,6 +21,16 @@ package
 		public static var env:Group;
 		private static var list:Array;
 		
+		public static var toolTip:AbstractToolTip;
+		
+		//Used to get the appropriate abstract for a cooresponding toolTip
+		public static function abstractGet(arg:String, graph:Group, specificTip:AbstractToolTip) {
+			env = graph;
+			toolTip = specificTip;
+			//Alert.show(arg);
+			requestData("http://wikigraph.cs.washington.edu/api/abstract/" + arg + "/");
+		}
+		
 		//Redirects a search request to the appropriate URL with the corresponding arguments
 		public static function search(type:String, arg:String, graph:Group):void {
 			env = graph;
@@ -32,9 +42,6 @@ package
 			} 
 			else if (type == "autocomplete") {
 				requestData("http://wikigraph.cs.washington.edu/api/autocomplete/" + arg);
-			}
-			else if (type == "abstract") {
-				requestData("http://wikigraph.cs.washington.edu/api/abstract/" + arg);
 			}
 		}	
 		
@@ -58,7 +65,12 @@ package
 				list = Parse.parseXML(myXML);
 				draw();
 			} else if (myXML.name() == "info") {
-				//Austin: Add abstract functionality here
+				var abstractText:String;
+				abstractText = Parse.parseAbs(myXML);
+				Alert.show(abstractText);
+				toolTip.UpdateAbstract(abstractText);
+			} else {
+
 			}
 		}
 		
