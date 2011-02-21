@@ -107,7 +107,8 @@ checkapi: output
 # checkclient runs the client unit tests
 #
 
-checkclient: output # TODO: add flex unit code here
+checkclient: output
+	ant -DANT_OUT=$(ANT_OUT) test
 
 #
 # graph checks out a new repository on the release branch, runs the
