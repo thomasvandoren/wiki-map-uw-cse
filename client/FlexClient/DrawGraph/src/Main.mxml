@@ -29,6 +29,7 @@
 		import Node;
 		import DrawGraph;
 		import Network;
+		import DrawSplash;
 		import spark.components.Group;
 		import flash.ui.Keyboard;
 		import flash.events.KeyboardEvent;
@@ -121,11 +122,14 @@
 			trace("Sending Search Request: " + searchText.text);
 		}
 		
+		public function drawSplash(env:Group):void {
+			DrawSplash.DrawS(env);
+		}
 		]]> 
 	</fx:Script>
 	
 		
-	<s:Group id="graph" height="100%" width="100%">
+	<s:Group id="graph" height="100%" width="100%" addedToStage="drawSplash(graph)">
 	</s:Group>
 	
 	<mx:Button id="searchButton" x="0" y="0" width="100" label = "Search" />

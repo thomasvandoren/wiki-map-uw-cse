@@ -1,6 +1,5 @@
 package  
 {
-		import mx.containers.Canvas;
 		import mx.core.Application;
 		import mx.core.UIComponent;
 		import mx.graphics.SolidColorStroke;
