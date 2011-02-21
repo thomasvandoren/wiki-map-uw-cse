@@ -34,13 +34,7 @@
 		import flash.events.KeyboardEvent;
 		import flash.utils.Timer;
 		public var myTimer:Timer;
-		
-		// handles the Enter on the keyboard pressed  					
-		public function enterHandler(event:KeyboardEvent):void{
-			if(event.keyCode == Keyboard.ENTER){
-				handleSearch(event);
-			}
-		}
+		private var keyCount:int;
 		
 		// resizes graph
 		private function resizeHandler(event:Event):void {
@@ -58,14 +52,12 @@
 		}
 		
 		public function initu():void {
-			myTimer = new Timer(2000, 0);
-            myTimer.addEventListener("timer", timerHandler);
-            myTimer.start();
+			myTimer = new Timer(500, 0);
+            myTimer.addEventListener("timer", timerTickHandler);
 			searchButton.addEventListener(MouseEvent.CLICK, handleSearch);
 			setTextInput();
-			searchText.addEventListener(KeyboardEvent.KEY_DOWN, enterHandler);
+			ac2.addEventListener(KeyboardEvent.KEY_DOWN, timerKeyHandler);
 			this.addEventListener(Event.RESIZE, resizeHandler);
-			//ac2.addEventListener(KeyboardEvent.KEY_UP, resetTimer);
 		}
 		
 		//Handles mouse click events on the search button to search by the given searchText
@@ -95,9 +87,7 @@
 		private function handleSelect(event:CustomEvent):void {
 			var item:Object = event.data;
 			trace("Selected " + item.title);
-			myTimer.stop();
 			search("name", item.title);
-			myTimer.start();
 			ac2.text = "";
 		}
 		
@@ -106,10 +96,29 @@
 		}
 		
 		
-		private function timerHandler(event:TimerEvent):void {
+		private function timerTickHandler(event:TimerEvent):void {
+			myTimer.reset();
+			timerHandler();
+		}
+		
+		private function timerKeyHandler(event:KeyboardEvent):void {
+			if (myTimer.running == false) {
+				myTimer.start();
+			}
+			keyCount = (keyCount + 1) % 4;
+			trace(keyCount);
+			if (keyCount == 3) {
+				timerHandler();
+			} else {
+				myTimer.reset();
+				myTimer.start();
+			}
+		}
+		
+		private function timerHandler():void {
 			searchText.text = ac2.text;
 			loader.send();
-			trace("timerHandler: " + event);
+			trace("Sending Search Request: " + searchText.text);
 		}
 		
 		]]> 
