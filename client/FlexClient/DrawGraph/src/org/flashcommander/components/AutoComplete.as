@@ -1,6 +1,7 @@
 package org.flashcommander.components
 {
 
+	import flash.events.Event;
 	import flash.events.FocusEvent;
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
@@ -73,8 +74,8 @@ package org.flashcommander.components
 			if (instance==list){
 				list.dataProvider = collection;
 				list.labelField = labelField;
-				list.labelFunction = labelFunction
-				list.addEventListener(FlexEvent.CREATION_COMPLETE, addClickListener)
+				list.labelFunction = labelFunction;
+				list.addEventListener(FlexEvent.CREATION_COMPLETE, addClickListener);
 				list.focusEnabled = false;
 				list.requireSelection = requireSelection
 			}
@@ -206,7 +207,7 @@ package org.flashcommander.components
 		public function itemToLabel(item:Object):String
 		{
 			if (item == null) return "";
-			
+		
 			if (labelFunction)
 				return labelFunction(item);
 			else if (labelField && item[labelField])
@@ -322,7 +323,7 @@ package org.flashcommander.components
 			}
 		}
 		
-		private function mouseOutsideHandler(event) : void {
+		private function mouseOutsideHandler(event:Event) : void {
 			if (event is FlexMouseEvent){
 				var e:FlexMouseEvent = event as FlexMouseEvent;
 				if (inputTxt.hitTestPoint(e.stageX, e.stageY)) return;
@@ -331,11 +332,11 @@ package org.flashcommander.components
 			close(event);
 		}
 		
-		private function close(event) : void {
+		private function close(event:Event) : void {
 			popUp.displayPopUp = false;
 		}
 		
-		private function addClickListener(event) : void {
+		private function addClickListener(event:Event) : void {
 			list.dataGroup.addEventListener(MouseEvent.CLICK, listItemClick)
 		}
 		

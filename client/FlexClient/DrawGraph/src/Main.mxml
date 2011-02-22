@@ -65,14 +65,13 @@
 			ac2.width = this.width - ac2.x - 2;
 		}
 		
-		private var myText:TextField = new TextField();
-		
 		public function initu():void {
 			myTimer = new Timer(500, 0);
             myTimer.addEventListener("timer", timerTickHandler);
 			graph.visible = false;	
 
 			searchButton.addEventListener(MouseEvent.CLICK, handleSearch);
+			// sets width of the text input
 			setTextInput();
 
 			ac2.addEventListener(KeyboardEvent.KEY_DOWN, timerKeyHandler);
@@ -83,8 +82,7 @@
 
 			this.addEventListener(Event.RESIZE, resizeHandler);
 			
-			splash.addEventListener(MouseEvent.CLICK, loadSplash);
-			
+			//splash.addEventListener(MouseEvent.CLICK, drawSplash);
 		}
 		
 		// loads splash page (will add more)
@@ -103,10 +101,7 @@
 		//-"id" to search by article id (not yet working on backend),
 		//-"autocomplete" to get a list of relevant search requests (May change once backend gets graph and search request in one query)
 		private function search(type:String, arg:String):void {
-
-			Network.search(type, arg, graph);
-			//Austin, can you make this happen once you have drawn all of the nodes?
-			// graph.visible = true;		
+			Network.search(type, arg, graph);		
 		}
 		
 		// display name as label
@@ -165,8 +160,6 @@
 	
 	<s:Group id="graph" height="100%" width="100%" addedToStage="drawSplash(graph)">
 	</s:Group>
-
-	<mx:Button id="splash" x="2" y="2" width="100" label="WikiGraph" />
 	
 	<mx:Button id="searchButton" x="0" y="0" width="100" label = "Search" />
 	

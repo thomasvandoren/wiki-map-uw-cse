@@ -22,14 +22,6 @@ package
 		import mx.states.AddChild;
 		import Node;
 		
-		public static function drawSplash(environment:Group):void {
-			var hint:TextArea = new TextArea();
-			hint.text = "Text ad da d dd a a d da \n and a dda";
-			hint.x = 200;
-			hint.y = 300;
-			environment.addElement(hint);
-		}
-		
 		//tells the program to draw a bunch of nodes in the drawing area
 		public static function DrawG(a:Array, environment:Group):void {
 			if (a.length > 0) {
