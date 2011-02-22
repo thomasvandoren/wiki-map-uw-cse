@@ -55,9 +55,10 @@ if (count($results) > 1) {
   </search>
 
       <?php
-      } else if (count($results) == 1) {
-  //call graph.php with current page id
-  print("this is incomplete!");
+} else if (count($results) == 1) {
+  header("Location: 
+http://wikigraph.cs.washington.edu/test-api/graph/" . 
+$results["page_id"] . "/");
 } else {
   error(400, "Query not found ($searchQuery).\n");
 }
