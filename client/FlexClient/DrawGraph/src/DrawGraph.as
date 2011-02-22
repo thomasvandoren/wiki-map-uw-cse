@@ -10,6 +10,7 @@ package
 		import spark.components.Group;
 		import spark.primitives.Line;
 		import mx.controls.Alert;
+		import mx.managers.ToolTipManager;
 	/**
 	 * ...
 	 * @author Austin Nakamura
@@ -25,6 +26,7 @@ package
 		
 		//tells the program to draw a bunch of nodes in the drawing area
 		public static function DrawG(a:Array, environment:Group):void {
+			ToolTipManager.enabled = false;
 			if (a.length > 0) {
 				environment.removeAllElements(); //clear the previous graph
 				
@@ -38,6 +40,8 @@ package
 				
 				var centerNode:Node = new Node(environment,j,0); //the center node is created first, since it always belongs in the middle
 				centerNode.id = a[0][0];
+				var centerTitle:String = new String(a[0][1]);
+				centerNode.label = centerTitle.split("_").join(" ");
 				centerNode.label = a[0][1];
 				centerNode.width = environment.width/6;
 				centerNode.height = environment.height/13;
@@ -45,7 +49,6 @@ package
 				centerNode.y = (environment.height / 2) - (centerNode.height / 2);
 				centerNode.alpha = 1;
 				centerNode.title = a[0][1];
-				
 				// draw lines and nodes
 				var lineStyle:SolidColorStroke = new SolidColorStroke(0x222222, 2, 1);
 				for (var i:Number = 1; i < 25 && i < a.length; i++) {
@@ -59,7 +62,6 @@ package
 					newNode.x = newNode.getX(0.40, newNode);
 					newNode.y = newNode.getY(0.40, newNode);
 					newNode.alpha = 1;
-					newNode.title = a[i][1];
 					
 					var newLine:UIComponent = new UIComponent();
 					//line color defined here
