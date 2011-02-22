@@ -1,7 +1,18 @@
 WikiGraph
 Copyright (c) 2011
 
-This directory contains the _DEPRECATED_ build script, for now. It is a bash shell script. It works
-on cubist.
+This directory contains the deployment script. It integrates with 
+Hudson to deploy given builds.
 
-Later, the build script will be a make or ant file.
+This script will gain more functionality over the next cycle. It currently is pretty
+flimsy and does not really handle errors.
+
+Usage: deploy -b <build-number> <Project-Name>
+       deploy suggest <Project-Name>
+
+  In the first form it deploys the given project to the appropriate location.
+
+  In the second form it suggests the most recent builds for each project
+  For example:
+    deploy suggest Test-Services # returns the newest build for WikiGraph-Test-Services
+    deploy -b 28 Test-Services   # will deploy hudson-WikiGraph-Test-Services-28.tar.gz
