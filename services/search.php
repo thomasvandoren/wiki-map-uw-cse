@@ -58,6 +58,6 @@ if (count($results) > 1) {
 } else if (count($results) == 1) {
   header("Location: ../graph/" . $results["page_id"] . "/");
 } else {
-  error(400, "Query not found ($searchQuery).\n");
+  error(404, "Query not found ($searchQuery).\n");
 }
 ?>
