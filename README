@@ -6,6 +6,12 @@ Welcome to WikiGraph!
 There are several top-level directories in this source. Please do not add 
 anymore, unless it is *absolutely* necessary.
 
+Visit the WikiGraph wiki for more into:
+
+    http://code.google.com/p/wiki-map-uw-cse/wiki/
+
+The repo layout
+
 ./
   bld       -- the deployment script that integrates with the Hudson build
   client    -- source for the flash client, including browser ui
