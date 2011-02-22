@@ -109,7 +109,7 @@ class GraphDB {
    * Takes the string to search for
    */
   public function get_search_results($like) {
-    $q =  "SELECT page_id, page_title FROM page WHERE page_title LIKE '%$like%' LIMIT 24";
+    $q =  "SELECT page_id, page_title FROM page WHERE page_title LIKE '$like%' LIMIT 24";
     return $this->query($q);
   }
 

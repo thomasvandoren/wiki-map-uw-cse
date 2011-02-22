@@ -56,9 +56,7 @@ if (count($results) > 1) {
 
       <?php
 } else if (count($results) == 1) {
-  header("Location: 
-http://wikigraph.cs.washington.edu/test-api/graph/" . 
-$results["page_id"] . "/");
+  header("Location: ../graph/" . $results["page_id"] . "/");
 } else {
   error(400, "Query not found ($searchQuery).\n");
 }
