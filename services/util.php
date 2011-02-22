@@ -24,10 +24,15 @@ Classes in this file:
 /**
  * Kills the current execution and writes the error message to
  * page.
+ * If testing, throws an exception instead of quitting
  */
 function error($error_number, $error_msg) {
+  global $TESTING;
   header("HTTP/1.1 $error_number");
-  die("HTTP $error_number : $error_msg");
+  if ($TESTING)
+    throw new Exception($error_msg);
+  else
+    die("HTTP $error_number : $error_msg");
 }
 
 
@@ -67,7 +72,7 @@ class GraphDB {
     $result = mysql_query($q, $this->db);
     $rows = array();
     $i = 0;
-    while ($row = mysql_fetch_array($result)) {
+    while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
       $rows[$i++] = $row;
     }
     return $rows;
