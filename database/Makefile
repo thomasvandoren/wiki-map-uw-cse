@@ -73,5 +73,4 @@ endif
 	rm abstract_tmp
 
 clean:
-	rm -f config.php page.sql pagelinks.sql abstract.xml abstract.sql
-
+	rm -f config.php page.sql pagelinks.sql abstract.xml abstract*.sql
