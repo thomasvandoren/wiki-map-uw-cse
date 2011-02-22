@@ -1,17 +1,17 @@
 # Enter MySQL details here
-USER = vandot
-PASS = 5jnDv8Ze
+USER = user
+PASS = pass
 HOST = localhost
 PORT = 3306
-DB  = vandot_wgtest
+DB  = wikigraph
 
 # Possible SRC's:
 # enwikibooks
 # enwiki
-SRC = enwikibooks
+SRC = enwiki
 
 # Comment out the next line if the dump only has one abstract.xml file
-# MULTIABSTRACT = true
+MULTIABSTRACT = true
 
 LINK = http://dumps.wikimedia.org/$(SRC)/latest/$(SRC)-latest-
 LINKESC = http:\/\/dumps.wikimedia.org\/$(SRC)\/latest\/$(SRC)-latest-
