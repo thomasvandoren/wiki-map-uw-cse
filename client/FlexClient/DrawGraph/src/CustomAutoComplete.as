@@ -42,9 +42,9 @@ package
 			ac.id = "ac";
 			ac.requireSelection = true;
 			ac.labelFunction = customLabelFunction;
-			ac.x = 100;
-			ac.y = 0;
-			ac.width = 700;
+			ac.x = 104;
+			ac.y = 2;
+			ac.width = env.width - ac.x - 2;
 			ac.addEventListener("select", handleSelect);
 			ac.addEventListener(KeyboardEvent.KEY_DOWN, timerKeyHandler);
 			environment.addElement(ac);
