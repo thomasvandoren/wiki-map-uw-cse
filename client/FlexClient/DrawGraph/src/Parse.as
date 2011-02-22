@@ -33,8 +33,8 @@ package{
 		public static function parseAutoComplete(myXML:XML):Array {
 			var children:XMLList = myXML.children();
 			var list:Array = new Array();
-			for (var i:Number = 1; i < children.length(); i++) {
-				list[i-1] = children[i].attribute("title").toString();
+			for (var i:Number = 0; i < children.length(); i++) {
+				list[i] = children[i].attribute("title").toString();
 			}
 			return list;
 		}
