@@ -7,13 +7,14 @@ There are several top-level directories in this source. Please do not add
 anymore, unless it is *absolutely* necessary.
 
 ./
-  build    -- scripts for building WikiGraph client and services
-  client   -- source for the flash client, including browser ui
-  database -- database models/schema/config
-  docs     -- contains documentation relevant to this project; the Google Code 
-              wiki also contains documentation
-  ext      -- contains third-party applications; nothing in this directory is 
-              developed by the WikiGraph
-  services -- source for the PHP data api service
+  bld       -- the deployment script that integrates with the Hudson build
+  client    -- source for the flash client, including browser ui
+  database  -- database models/schema/config
+  docs      -- contains documentation relevant to this project; the Google Code 
+                wiki also contains documentation
+  ext       -- contains third-party applications; nothing in this directory is 
+                developed by the WikiGraph
+  services  -- source for the PHP data api service, including unit tests
 
-
+  build.xml -- Ant build file for executing flash client flexunit unit tests
+  Makefile  -- The master build file for WikiGraph
