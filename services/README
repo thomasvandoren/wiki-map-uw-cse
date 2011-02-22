@@ -3,3 +3,10 @@ Copyright (c) 2011
 
 The WikiGraph PHP data api services source.
 
+This module represents all of the scripts which compose our data services.
+PHPUnit unit tests are located in the test subdirectory.
+
+NOTE: config.php files are ignored on purpose. They contain mysql connetion
+      parameters which should not be committed to a public repository. Don't
+      worry the build system has options for creating/copying a config.php
+      at build time. See the wiki.
