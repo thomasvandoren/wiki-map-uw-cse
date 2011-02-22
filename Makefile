@@ -56,7 +56,7 @@ Z = tar -czvf
 # This command produces all of the filenames that are a part of the services.
 # It does not include the services/test directory or anything named config.php.
 
-FINDPHPSERVICES = `find services/ -type f -regextype posix-egrep -regex ".+\.php" | sed sAservices\/AA | grep -v test/* | grep -v config.php`
+FINDPHPSERVICES = `find services/ -type f -regextype posix-egrep -regex ".+\.php" | sed sAservices\/AA | grep -v test/*`
 
 # OUTPUT and BUILDTAG can be set from the command line.
 
@@ -244,7 +244,7 @@ api: checkoutrelease hudsonapi
 
 #
 # hudsongraph runs the unit tests for the services, then compiles
-# and packages the services api.
+# and packages the services api with the config.
 #
 
 hudsonapi: checkapi apioutput
