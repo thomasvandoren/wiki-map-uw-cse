@@ -25,8 +25,8 @@ package{
 		
 		public static function parseAbs(myXML:XML):String {
 			var abstract:String = new String();
-			var node:XML = myXML.children();
-			abstract = node.attribute("abstract");
+			var node:XMLList = myXML.child("abstract");
+			abstract = node[0].toString();
 			return abstract;
 		}
 		

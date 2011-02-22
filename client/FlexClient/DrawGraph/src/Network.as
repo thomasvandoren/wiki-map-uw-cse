@@ -68,8 +68,7 @@ package
 				list = Parse.parseXML(myXML);
 				draw();
 			} else if (myXML.name() == "info") {
-				var abstractText:String;
-				abstractText = Parse.parseAbs(myXML);
+				var abstractText:String = Parse.parseAbs(myXML);
 				toolTip.UpdateAbstract(abstractText);
 			} else if (myXML.name() == "search") {
 				list = Parse.parseSearch(myXML);
