@@ -38,5 +38,36 @@ package{
 			}
 			return list;
 		}
+		
+		/**
+		 * Parse the search results and returns an array
+		 */
+		public static function parseSearch(myXML:XML) : Array  
+		{
+			var children:XMLList = myXML.children();
+			return parseItems(children);
+		}
+		
+		/**
+		 * Parses all of the children (items) and returns an array of arrays.
+		 * 
+		 * items = Array ( Array (id, title) ) 
+		 */
+		private static function parseItems(children:XMLList) : Array
+		{
+			var items:Array = new Array();
+			
+			for (var i:Number = 0; i < children.length(); i++)
+			{
+				var item:Array = new Array();
+				
+				item[0] = children[i].attribute("id").toString();
+				item[1] = children[i].attribute("title").toString();
+				
+				items.push(item);
+			}
+			
+			return items;
+		}
 	}
 }

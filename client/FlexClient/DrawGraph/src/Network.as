@@ -35,13 +35,13 @@ package
 		public static function search(type:String, arg:String, graph:Group):void {
 			env = graph;
 			if (type == "name") {
-				requestData(Config.dataPath + "graph/?q=" + arg);
+				requestData(Config.dataPath + "search/?q=" + arg);
 			}
 			else if (type == "id") {
-				requestData(Config.dataPath + "graph/" + arg);
+				requestData(Config.dataPath + "graph/" + arg + "/");
 			} 
 			else if (type == "autocomplete") {
-				requestData(Config.dataPath + "autocomplete/" + arg);
+				requestData(Config.dataPath + "autocomplete/?q=" + arg);
 			}
 		}	
 		
@@ -49,9 +49,11 @@ package
 		public static function requestData(xmlFile:String):void {
 			myXML = new XML();
 			var myXMLURL:URLRequest = new URLRequest(xmlFile);
+			
 			myLoader = new URLLoader(myXMLURL);
 			myLoader.addEventListener(Event.COMPLETE, xmlLoaded);
 			myLoader.addEventListener(IOErrorEvent.IO_ERROR, errorHandler);
+			
             myLoader.load(myXMLURL);
 		}
 		
@@ -60,6 +62,7 @@ package
 		//Passes the parsed list of nodes to the drawer to draw the nodes to the UI
 		public static function xmlLoaded(event:Event):void {
 			myXML = XML(myLoader.data);
+			myXML.ignoreWhite = true;
 			trace(myXML.name());
 			if(myXML.name() == "graph") {
 				list = Parse.parseXML(myXML);
@@ -68,8 +71,9 @@ package
 				var abstractText:String;
 				abstractText = Parse.parseAbs(myXML);
 				toolTip.UpdateAbstract(abstractText);
-			} else {
-				
+			} else if (myXML.name() == "search") {
+				list = Parse.parseSearch(myXML);
+				drawSearch();
 			}
 		}
 		
@@ -85,6 +89,20 @@ package
 		public static function reDraw(graph:Group):void {
 			env = graph;
 			draw();
+		}
+		
+		/**
+		 * Draws the search results.
+		 * 
+		 * @param	graph
+		 */
+		public static function drawSearch() : void 
+		{
+			if (list != null)
+			{
+				DrawGraph.DrawSearch(list, env);
+				env.visible = true;
+			}
 		}
 		
 		//If the URL request was a failure, then
