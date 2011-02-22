@@ -10,6 +10,7 @@ package
 	import mx.graphics.Stroke;
 	import spark.components.Group;
 	import spark.primitives.Line;
+	import mx.controls.Alert;
 	/**
 	 * ...
 	 * @author Austin Nakamura
@@ -29,6 +30,8 @@ package
 			title.htmlText += "<font size = '16'>1.Enter a search term in the search bar</font><BR/>";
 			title.htmlText += "<font size = '16'>2.After the graph is drawn, click on nodes to traverse the graph</font><BR/>";
 			title.htmlText += "<font size = '16'>3.Hover over nodes to see the article abstracts, click the abstract to go to the article</font><BR/>";
+			title.visible = true;
+			environment.visible = true;
 			environment.addElement(title);
 		}
 	}

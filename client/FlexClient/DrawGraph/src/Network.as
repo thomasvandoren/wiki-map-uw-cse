@@ -67,7 +67,7 @@ package
 			} else if (myXML.name() == "info") {
 				var abstractText:String;
 				abstractText = Parse.parseAbs(myXML);
-				Alert.show(abstractText);
+				//Alert.show(abstractText);
 				toolTip.UpdateAbstract(abstractText);
 			} else {
 

@@ -34,7 +34,7 @@ package
 		}
 		private function OpenArticle(event:MouseEvent):void
 		{
-			articleURL = new URLRequest("http://en.wikipedia.org/wiki/" + articleTitle);
+			articleURL = new URLRequest("http://en.wikibooks.org/wiki/" + articleTitle);
 			navigateToURL(articleURL, "_blank");
 			//abstractText.text = "grumble";
 			

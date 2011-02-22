@@ -17,7 +17,12 @@ package
 		public var environment:Group; //the drawing area (group) where the node goes
 		public var abstractTimer:Timer; //after hovering for a certain amount of time, display the abstract
 		public var abToolTip:AbstractToolTip; //the abstract toolTip object
-		public var tipCreated:Boolean; //specifies whether the toolTip needs to be created (false = not made)
+		public var tipCreated:Boolean; //specifies whether the toolTip needs to be created (false = not made)		
+		// angle different between one node to next node
+		private var angleDiffer:Number;
+		// index of this graph's node
+		private var index:Number;
+		public var title:String;
 		private function ChangeLabel(event:MouseEvent):void
 		{
 			Network.search("name", title, environment);
@@ -86,11 +91,5 @@ package
 		public function getY(ratio:Number, obj:Object):Number {
 			return ((Math.sin((index - 1) * angleDiffer )) * environment.height * ratio) + (environment.height / 2) - (obj.height / 2);
 		}
-		
-		// angle different between one node to next node
-		private var angleDiffer:Number;
-		// index of this graph's node
-		private var index:Number;
-		public var title:String;
 	}
 }
