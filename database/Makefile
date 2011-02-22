@@ -1,9 +1,10 @@
 # Enter MySQL details here
-USER = user
-PASS = pass
-HOST = localhost
-PORT = 3306
-DB  = wikigraph
+DBHOST = 
+DBUSER = 
+DBPASS = 
+DBPORT = 
+DBNAME  = 
+LINKURL = 
 
 # Possible SRC's:
 # enwikibooks
@@ -13,14 +14,14 @@ SRC = enwiki
 # Comment out the next line if the dump only has one abstract.xml file
 MULTIABSTRACT = true
 
-LINK = http://dumps.wikimedia.org/$(SRC)/latest/$(SRC)-latest-
-LINKESC = http:\/\/dumps.wikimedia.org\/$(SRC)\/latest\/$(SRC)-latest-
+BASE_LINK = http://dumps.wikimedia.org/$(SRC)/latest/
+LINK = $(BASE_LINK)$(SRC)-latest-
 SQLFILES = page.sql pagelinks.sql
 
 # Generates a config file to be used later when adding values to the db.
 CONFIGLOC = config.php
 
-MYSQL = mysql --host=$(HOST) --port=$(PORT) --user=$(USER) --password=$(PASS) --database=$(DB)
+MYSQL = mysql --host=$(DBHOST) --port=$(DBPORT) --user=$(DBUSER) --password=$(DBPASS) --database=$(DBNAME)
 
 # Some machines need echo -e
 ECHO = echo
@@ -38,11 +39,13 @@ config.php :
 	$(ECHO) "    These values must represent the system that WikiGraph is run on." >> $(CONFIGLOC).tmp
 	$(ECHO) "*/" >> $(CONFIGLOC).tmp
 	$(ECHO) " " >> $(CONFIGLOC).tmp
-	$(ECHO) $(subst !,$(HOST),"\$$host='!';") >> $(CONFIGLOC).tmp
-	$(ECHO) $(subst !,$(USER),"\$$user='!';") >> $(CONFIGLOC).tmp
-	$(ECHO) $(subst !,$(PASS),"\$$pass='!';") >> $(CONFIGLOC).tmp
-	$(ECHO) $(subst !,$(PORT),"\$$port='!';") >> $(CONFIGLOC).tmp
-	$(ECHO) $(subst !,$(DB),"\$$dbname='!';") >> $(CONFIGLOC).tmp
+	$(ECHO) $(subst !,$(DBHOST),"\$$DB_HOST='!';") >> $(CONFIGLOC).tmp
+	$(ECHO) $(subst !,$(DBUSER),"\$$DB_USER='!';") >> $(CONFIGLOC).tmp
+	$(ECHO) $(subst !,$(DBPASS),"\$$DB_PASS='!';") >> $(CONFIGLOC).tmp
+	$(ECHO) $(subst !,$(DBPORT),"\$$DB_PORT='!';") >> $(CONFIGLOC).tmp
+	$(ECHO) $(subst !,$(DBNAME),"\$$DB_NAME='!';") >> $(CONFIGLOC).tmp
+	$(ECHO) "    " >> $(CONFIGLOC).tmp
+	$(ECHO) $(subst !,$(LINKURL),"\$$LINK_URL='!';") >> $(CONFIGLOC).tmp
 	$(ECHO) "?>" >> $(CONFIGLOC).tmp
 	cp $(CONFIGLOC).tmp $(CONFIGLOC)
 	rm $(CONFIGLOC).tmp
@@ -65,12 +68,10 @@ $(SQLFILES):
 
 abstract.sql: config.php 
 ifdef MULTIABSTRACT
-	wget -qO- http://dumps.wikimedia.org/enwiki/latest/ | grep -o "abstract[0-9]\{1,2\}\.xml" | uniq | sed 's/^\(.*\)$$/$(LINKESC)\1/g' > abstract_tmp
+	wget -qO- http://dumps.wikimedia.org/enwiki/latest/ | grep -o "abstract[0-9]\{1,2\}\.xml" | uniq | xargs php parse_abstracts.php "$(BASE_LINK)"
 else
-	echo $(LINK)abstract.xml > abstract_tmp
+	php parse_abstracts.php "$(BASE_LINK)" "$(SRC)-latest-abstract.xml"
 endif
-	php parse_abstracts.php
-	rm abstract_tmp
 
 clean:
 	rm -f config.php page.sql pagelinks.sql abstract.xml abstract*.sql

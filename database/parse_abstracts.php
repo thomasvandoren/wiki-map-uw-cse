@@ -12,15 +12,22 @@ and then creates a SQL script to create and fill the
 abstract table.
 Script relies on the page table that results from
 transform.sql
-Script relies on the paths to the XML files in abstract_tmp
-These paths can be URLs
+
+Script should be called like:
+php parse_abstracts.php [base_link_to_abstracts] [abstract1.xml] [abstract2.xml] ...
 */
+
+if (count($argv) <= 2) {
+  die("No files specified.\n");
+}
 
 include 'config.php';
 
-mysql_connect($host, $user, $pass);
-mysql_select_db($dbname);
+mysql_connect($DB_HOST, $DB_USER, $DB_PASS);
+mysql_select_db($DB_NAME);
 
+$base_url = $argv[1];
+$links = array_splice($argv, 2);
 
 $sqlfile = "abstract.sql";
 $fh = fopen($sqlfile, 'w');
@@ -38,16 +45,13 @@ STRING;
 
 fwrite($fh, $sql);
 
-
-$files = explode("\n", chop(file_get_contents("abstract_tmp")));
-
-foreach ($files as $i => $file) {
-  print("Parsing $file\n");
+foreach ($links as $i => $file) {
+  print("Parsing $base_url$file\n");
   fwrite($fh, "SOURCE abstract$i.sql;\n");
   $fhp = fopen("abstract$i.sql", 'w');
 
   $reader = new XMLReader();
-  $reader->open($file);
+  $reader->open($base_url . $file);
 
   $count = 0;
   $pairs = array();
