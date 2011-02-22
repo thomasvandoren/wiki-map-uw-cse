@@ -18,6 +18,7 @@ package
 	 */
 	public class AbstractToolTip extends BorderContainer 
 	{
+		public static var fontSize:int;
 		public var abstractText:Text;
 		public var environment:Group;
 		public var abstractTimer:Timer;
@@ -27,12 +28,28 @@ package
 		public var articleURL:URLRequest;
 		public function UpdateAbstract(information:String):void
 		{
-			var newText:String = new String();
-			newText = "<font size = '10'><b>";
-			newText += information;
-			newText += "</b></font>";
-			abstractText.htmlText = newText;
+			abstractText.htmlText = getAbstractText(information);
 		}
+		
+		/**
+		 * Returns an html string with the abstract title and text
+		 * to be inserted into the tooltip.
+		 * 
+		 * @param	information
+		 * @return
+		 */
+		private function getAbstractText(text:String) : String
+		{
+			var out:String = new String();
+			
+			out = "<u>Title</u>: <b>" + articleTitle + "</b>";
+			out += "<br><br><font size = '12'>";
+			out += text;
+			out += "</font>";
+			
+			return out;
+		}
+		
 		private function OpenArticle(event:MouseEvent):void
 		{
 			articleURL = new URLRequest(Config.wikiPath + articleTitle);
@@ -56,33 +73,38 @@ package
 		//constructor, on creation we'll expand it to call the server for the abstract info
 		public function AbstractToolTip(environment:Group,articleTitle:String,articleID:String) 
 		{
+			
+			//transfer the article name
+			this.articleTitle = articleTitle;
+			this.articleID = articleID;
+			
 			var defaultText:String = new String();
+			
 			//can set the font style with this
 			//testing (I'll change it later) will recieve the abstract
 			//where it will be formatted
-			defaultText = "<u>Title</u>: <b>" + articleTitle + "</b>";
-			defaultText += "<br><br><font size = '12'>";
-			defaultText += "loading...";
-			defaultText += "</font>";
+			defaultText = getAbstractText("loading...");
+			
 			//sets the height and width of the toolTip
 			this.height = environment.height/3;
-			this.width = environment.width/3;
+			this.width = environment.width / 3;
+			
 			//creates the abstract text
 			abstractText = new Text();
 			abstractText.width = this.width;
 			abstractText.htmlText = defaultText;
 			abstractText.selectable = false;
+			
 			//add elements and events
 			addElement(abstractText);
 			addEventListener(MouseEvent.CLICK, OpenArticle);
 			addEventListener(MouseEvent.MOUSE_OVER, KeepUp);
 			addEventListener(MouseEvent.MOUSE_OUT, RestartTimer);
+			
 			//setup the timer
 			this.abstractTimer = new Timer(400, 1);
 			this.abstractTimer.addEventListener(TimerEvent.TIMER, TimerDing);
-			//transfer the article name
-			this.articleTitle = articleTitle;
-			this.articleID = articleID;
+			
 			//at this point, start a search for the abstract text
 			//once we get it, it will probably return to some function
 			//which will update the abstractText object to have the article text in it.
