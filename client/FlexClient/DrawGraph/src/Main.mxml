@@ -45,6 +45,8 @@
 		private function resizeHandler(event:Event):void {
 			graph.width = this.width;
 			graph.height = this.height;
+			auto.width = this.width;
+			auto.height = this.height;
 			setTextInput();
 			if (graph.visible) {
 				Network.reDraw(graph);
@@ -103,7 +105,7 @@
 	<s:Group id="graph" height="100%" width="100%" addedToStage="drawSplash(graph)">
 	</s:Group>
 	
-	<mx:Button id="searchButton" x="0" y="0" width="100" label = "Search" />
+	<mx:Button id="searchButton" x="2" y="2" width="100" label = "Search" />
 	
 	<s:Group id="auto" height="100%" width="100%">
 	</s:Group>
