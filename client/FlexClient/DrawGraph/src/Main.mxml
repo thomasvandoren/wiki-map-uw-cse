@@ -20,6 +20,7 @@
 		
 	<fx:Script>
 		<![CDATA[
+		import Config;
 		import mx.collections.ArrayCollection;
 		import org.flashcommander.event.CustomEvent;
 		import flash.display.Loader;

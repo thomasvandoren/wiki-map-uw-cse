@@ -14,6 +14,7 @@ package
 		import flash.net.URLRequest;
 		import flash.xml.XMLNode;
 		import spark.components.Group;
+		import Config;
 		
 		private static var myXML:XML;
 		private static var myLoader:URLLoader;
@@ -28,20 +29,20 @@ package
 			env = graph;
 			toolTip = specificTip;
 			//Alert.show(arg);
-			requestData("http://wikigraph.cs.washington.edu/api/abstract/" + arg + "/");
+			requestData(Config.dataPath + "abstract/" + arg + "/");
 		}
 		
 		//Redirects a search request to the appropriate URL with the corresponding arguments
 		public static function search(type:String, arg:String, graph:Group):void {
 			env = graph;
 			if (type == "name") {
-				requestData("http://wikigraph.cs.washington.edu/api/graph/?q=" + arg);
+				requestData(Config.dataPath + "graph/?q=" + arg);
 			}
 			else if (type == "id") {
-				requestData("http://wikigraph.cs.washington.edu/api/graph/" + arg);
+				requestData(Config.dataPath + "graph/" + arg);
 			} 
 			else if (type == "autocomplete") {
-				requestData("http://wikigraph.cs.washington.edu/api/autocomplete/" + arg);
+				requestData(Config.dataPath + "autocomplete/" + arg);
 			}
 		}	
 		
@@ -70,7 +71,7 @@ package
 				//Alert.show(abstractText);
 				toolTip.UpdateAbstract(abstractText);
 			} else {
-
+				//Alert.show(myXML);
 			}
 		}
 		

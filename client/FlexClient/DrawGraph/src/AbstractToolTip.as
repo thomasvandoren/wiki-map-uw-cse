@@ -11,6 +11,7 @@ package
 	import spark.components.BorderContainer;
 	import flash.net.URLRequest;
 	import flash.net.navigateToURL;
+	import Config;
 	/**
 	 * ...
 	 * @author Austin Nakamura
@@ -34,7 +35,7 @@ package
 		}
 		private function OpenArticle(event:MouseEvent):void
 		{
-			articleURL = new URLRequest("http://en.wikibooks.org/wiki/" + articleTitle);
+			articleURL = new URLRequest(Config.wikiPath + articleTitle);
 			navigateToURL(articleURL, "_blank");
 			//abstractText.text = "grumble";
 			
