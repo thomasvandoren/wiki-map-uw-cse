@@ -81,6 +81,7 @@ class AllTests extends PHPUnit_Framework_TestCase
     $this->assertArrayHasKey('page_title', $row);
     $this->assertArrayHasKey('page_len', $row);
     $this->assertArrayHasKey('page_is_redirect', $row);
+    $this->assertArrayHasKey('page_is_ambiguous', $row);
 
     // Should be equivalent to above
     $arr2 = $db->get_page_info(array(10));
@@ -99,6 +100,7 @@ class AllTests extends PHPUnit_Framework_TestCase
       $this->assertArrayHasKey('page_title', $row);
       $this->assertArrayHasKey('page_len', $row);
       $this->assertArrayHasKey('page_is_redirect', $row);
+      $this->assertArrayHasKey('page_is_ambiguous', $row);
     }
   }
 
