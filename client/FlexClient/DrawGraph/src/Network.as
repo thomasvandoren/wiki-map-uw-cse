@@ -28,7 +28,6 @@ package
 		public static function abstractGet(arg:String, graph:Group, specificTip:AbstractToolTip):void {
 			env = graph;
 			toolTip = specificTip;
-			//Alert.show(arg);
 			requestData(Config.dataPath + "abstract/" + arg + "/");
 		}
 		
@@ -68,10 +67,9 @@ package
 			} else if (myXML.name() == "info") {
 				var abstractText:String;
 				abstractText = Parse.parseAbs(myXML);
-				//Alert.show(abstractText);
 				toolTip.UpdateAbstract(abstractText);
 			} else {
-				//Alert.show(myXML);
+				
 			}
 		}
 		

@@ -9,6 +9,7 @@ package
 		import mx.graphics.Stroke;
 		import spark.components.Group;
 		import spark.primitives.Line;
+		import mx.controls.Alert;
 	/**
 	 * ...
 	 * @author Austin Nakamura
@@ -43,6 +44,7 @@ package
 				centerNode.x = (environment.width / 2) - (centerNode.width / 2);
 				centerNode.y = (environment.height / 2) - (centerNode.height / 2);
 				centerNode.alpha = 1;
+				centerNode.title = a[0][1];
 				
 				// draw lines and nodes
 				var lineStyle:SolidColorStroke = new SolidColorStroke(0x222222, 2, 1);
@@ -57,6 +59,7 @@ package
 					newNode.x = newNode.getX(0.40, newNode);
 					newNode.y = newNode.getY(0.40, newNode);
 					newNode.alpha = 1;
+					newNode.title = a[i][1];
 					
 					var newLine:UIComponent = new UIComponent();
 					//line color defined here
