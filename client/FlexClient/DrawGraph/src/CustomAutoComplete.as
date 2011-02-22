@@ -37,6 +37,7 @@ package
 			graph = g;
 			env = environment;
 			
+			//Initialize an inner AutoComplete component
 			ac = new AutoComplete();
 			ac.id = "ac";
 			ac.requireSelection = true;
@@ -48,24 +49,27 @@ package
 			ac.addEventListener(KeyboardEvent.KEY_DOWN, timerKeyHandler);
 			environment.addElement(ac);
 			
-			
+			//Initialize a timer that will determine when the search queries occur
 			myTimer = new Timer(500, 0);
             myTimer.addEventListener("timer", timerTickHandler);
 			searchText = new TextInput();
 			
-			URL = "http://wikigraph.cs.washington.edu/api/autocomplete/";
+			//Initialize network components. TODO: Move to Network.as
+			URL = Config.dataPath + "autocomplete/";
 			myXMLURL = new URLRequest(URL);
 			myLoader = new URLLoader();
 			myLoader.addEventListener(Event.COMPLETE, xmlLoaded);
 			myLoader.addEventListener(IOErrorEvent.IO_ERROR, errorHandler);
 		}
 		
+		//After .5 seconds (if no characters were typed), reset the timer and query the search
 		private function timerTickHandler(event:Event):void {
 			myTimer.reset();
 			trace("TickHandler");
 			timerHandler();
 		}
 		
+		//After 4 characters have been pressed, query the search. Reset the timer on each character.
 		private function timerKeyHandler(event:KeyboardEvent):void {
 			if (myTimer.running == false) {
 				myTimer.start();
@@ -82,6 +86,7 @@ package
 			}
 		}
 		
+		//Query the search given in the autocomplete bar
 		private function timerHandler():void {
 			searchText.text = ac.text;
 			keyCount = 0;
@@ -101,10 +106,12 @@ package
 			Alert.show("Could not contact search service");
 		}
 		
+		//Display results in the suggestions box according to title
 		private function customLabelFunction(item:Object):String{
 			return item.toString();
 		}
 		
+		//Search for the suggestion if the user pressed enter, and clears the autocomplete bar
 		private function handleSelect(event:CustomEvent):void {
 			var item:Object = event.data;
 			trace("Selected " + item.toString());
@@ -112,10 +119,12 @@ package
 			ac.text = "";
 		}
 		
+		//Resizes the search bar to extend across the application width
 		public function reSize():void {
 			ac.width = env.width - ac.x - 2;
 		}
 		
+		//Returns the current text in the autocomplete bar
 		public function getText():String {
 			return searchText.text;
 		}
