@@ -42,7 +42,7 @@ package
 			ac.id = "ac";
 			ac.requireSelection = true;
 			ac.labelFunction = customLabelFunction;
-			ac.x = 104;
+			ac.x = 206;
 			ac.y = 2;
 			ac.width = env.width - ac.x - 2;
 			ac.addEventListener("select", handleSelect);

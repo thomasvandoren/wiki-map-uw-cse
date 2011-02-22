@@ -66,6 +66,8 @@
 			// sets width of the text input
 			setTextInput();
 			
+			logoButton.addEventListener(MouseEvent.CLICK, loadSplash);
+			
 			// sets search text is focus
 			//searchText.setFocus();
 			//searchText.addEventListener(KeyboardEvent.KEY_DOWN, enterHandler);
@@ -78,6 +80,7 @@
 		// loads splash page (will add more)
 		private function loadSplash(event:Event):void {
 			graph.removeAllElements();
+			drawSplash(graph);
 		}
 		
 		//Handles mouse click events on the search button to search by the given searchText
@@ -105,7 +108,9 @@
 	<s:Group id="graph" height="100%" width="100%" addedToStage="drawSplash(graph)">
 	</s:Group>
 	
-	<mx:Button id="searchButton" x="2" y="2" width="100" label = "Search" />
+	<mx:Button id="logoButton" x="2" y="2" width="100" label="WikiGraph" />
+	
+	<mx:Button id="searchButton" x="104" y="2" width="100" label = "Search" />
 	
 	<s:Group id="auto" height="100%" width="100%">
 	</s:Group>
