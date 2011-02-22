@@ -53,7 +53,7 @@ package
 					var title:String = new String(a[i][1]);
 					newNode.label = title.split("_").join(" ");
 					newNode.width = environment.width/8;
-					newNode.height = environment.height/20;
+					newNode.height = environment.height/24;
 					newNode.x = newNode.getX(0.40, newNode);
 					newNode.y = newNode.getY(0.40, newNode);
 					newNode.alpha = 1;
