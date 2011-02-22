@@ -13,6 +13,8 @@ Currently takes the title of the node
 include 'config.php';
 include 'util.php';
 
+$_REQUEST["id"] = 10;
+
 if (!isset($_REQUEST["id"]) || strlen($_REQUEST["id"]) == 0) {
   error(400, "No query provided.\n");
 }
@@ -28,22 +30,12 @@ if ($page_id === 0)
   error(400, "Invalid ID ($page_id).\n");
 }
 
-/* its jeremy, guess more checks here to denote whether string has 
-multiple occurrences (via while looping through db results) or a variation 
-of the query of db above, afterwards conditional on what to do with found 
-information. one result is normal, more than one is ambiguity, none is... 
-impossible with autocomplete? hope that question mark doesnt screw ne 
-thing up */
-
-
-header('Content-Type:text/xml');
-print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-
 // Fetch all links with our target page as a source or destination
 // including page info (title, length)
 $link_data = $db->get_page_links($page_id);
 $links = array();
 $pages = array();
+$pages[$page_id] = null;
 foreach ($link_data as $link) {
   $id_from = (int)($link["pl_from"]);
   $id_to = (int)($link["pl_to"]);
@@ -73,7 +65,15 @@ foreach ($page_data as $page) {
 		      "is_ambig" => ($page["page_is_ambiguous"] == "1") ? "true" : "false");
 }
 
+// If page info for center node isn't set
+// then it doesn't exist
+if ($pages[$page_id] === null) {
+  error(404, "ID not found ($page_id).\n");
+}
+
 // Now generate XML
+header('Content-Type:text/xml');
+print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 ?>
 <graph center="<?= $page_id ?>">
 <?php
