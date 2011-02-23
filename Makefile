@@ -30,9 +30,14 @@ LINKURL =
 
 ifeq ($(strip $(DBHOST)),)
 DBHOST = localhost
+endif
+ifeq ($(strip $(DBUSER)),)
 DBUSER = root
-DBPASS = 
+endif
+ifeq ($(strip $(DBNAME)),)
 DBNAME = wikigraph
+endif
+ifeq ($(strip $(LINKURL)),)
 LINKURL = http://en.wikipedia.org/wiki/
 endif
 
@@ -303,6 +308,21 @@ config: createconfig
 
 createconfig: output
 ifeq ($(strip $(CONFIG)),)
+	make -C database config.php CONFIGLOC=$(CONFIGLOC) DBHOST=$(DBHOST) DBPORT=$(DBPORT) DBUSER=$(DBUSER) DBPASS=$(DBPASS) DBNAME=$(DBNAME) LINKURL=$(LINKURL)
+else
+	cp $(CONFIG) $(CONFIGLOC)
+endif
+
+#
+# Removes all of the generated build output. On a local build machine
+# this includes the packages (OUTPUT = DEF_OUT). On Hudson this would
+# just remove the logs.
+#
+
+clean:
+	rm -rf $(DEF_OUT)
+
+bad:
 	$(ECHO) "<?php" > $(CONFIGLOC).tmp
 	$(ECHO) "/*" >> $(CONFIGLOC).tmp
 	$(ECHO) "    WikiGraph" >> $(CONFIGLOC).tmp
@@ -322,15 +342,3 @@ ifeq ($(strip $(CONFIG)),)
 	$(ECHO) "?>" >> $(CONFIGLOC).tmp
 	cp $(CONFIGLOC).tmp $(CONFIGLOC)
 	rm $(CONFIGLOC).tmp
-else
-	cp $(CONFIG) $(CONFIGLOC)
-endif
-
-#
-# Removes all of the generated build output. On a local build machine
-# this includes the packages (OUTPUT = DEF_OUT). On Hudson this would
-# just remove the logs.
-#
-
-clean:
-	rm -rf $(DEF_OUT)

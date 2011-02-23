@@ -5,7 +5,7 @@
 #
 # Author: Thomas Van Doren <thomas.vandoren@gmail.com>
 #
-# This script allows a user to easily deploy a build to one of the wikigraph live endpoint.
+# This script allows a user to easily deploy a build to one of the wikigraph live endpoints.
 #
 
 C=$#
@@ -48,6 +48,7 @@ then
 	DST="graph"
     else
 	echo "Invalid project name: $N"
+	exit 1
     fi
 
     echo "deploy build: #$B     project: $N to: /$DST "
@@ -59,6 +60,8 @@ then
 else
     echo "Usage: deploy -b <build-number> <Project-Name>"
     echo "       deploy suggest <Project-Name>"
+    echo ""
+    echo "  <Project-Name>: Services, Test-Services, FlashClient, Test-FlashClient"
     echo ""
     echo "  In the first form it deploys the given project to the appropriate location."
     echo ""
