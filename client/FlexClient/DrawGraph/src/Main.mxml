@@ -50,7 +50,6 @@
 			setTextInput();
 			if (graph.visible) {
 				Network.reDraw(graph);
-				DrawSplash.DrawS(graph);
 			}
 		}
 		
