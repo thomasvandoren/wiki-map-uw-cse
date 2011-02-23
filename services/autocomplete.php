@@ -27,7 +27,9 @@ $results = $db->get_autocomplete($like);
 header('Content-Type:text/xml');
 print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 ?>
-<list phrase="<?= htmlspecialchars($like, ENT_QUOTES) ?>">
+<list phrase="<?= htmlspecialchars($like, ENT_QUOTES) ?>"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:noNamespaceSchemaLocation="autocomplete.xsd">
 <?php
 foreach ($results as $row) {
 ?>

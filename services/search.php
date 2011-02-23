@@ -42,17 +42,19 @@ if (count($results) > 1) {
   print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 
   ?>
-  <search query="<?= htmlspecialchars($searchQuery, ENT_QUOTES) ?>">
+<search query="<?= htmlspecialchars($searchQuery, ENT_QUOTES) ?>"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:noNamespaceSchemaLocation="search.xsd">
      <?php			
 
      foreach ($results as $row) {
     ?>	
-    <item id="<?= $row["page_id"] ?>" title="<?= htmlspecialchars($row["page_title"], ENT_QUOTES) ?>"/>	
+  <item id="<?= $row["page_id"] ?>" title="<?= htmlspecialchars($row["page_title"], ENT_QUOTES) ?>"/>	
     <?php
   }
 
   ?>
-  </search>
+</search>
 
       <?php
 } else if (count($results) == 1) {

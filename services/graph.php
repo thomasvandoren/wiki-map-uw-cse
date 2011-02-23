@@ -73,7 +73,9 @@ if ($pages[$page_id] === null) {
 header('Content-Type:text/xml');
 print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 ?>
-<graph center="<?= $page_id ?>">
+<graph center="<?= $page_id ?>"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:noNamespaceSchemaLocation="graph.xsd">
 <?php
   foreach ($pages as $id => $i) {
 ?>

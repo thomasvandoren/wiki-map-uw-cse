@@ -39,7 +39,9 @@ if (count($page_results) == 1) {
   header('Content-Type:text/xml');
   print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 ?>
-<info id="<?= $page_id ?>">
+<info id="<?= $page_id ?>"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+ xsi:noNamespaceSchemaLocation="abstract.xsd">
    <title><?= htmlspecialchars($page_results[0]["page_title"], ENT_QUOTES) ?></title>
 <?php
    if (count($abstract_results) == 1) {

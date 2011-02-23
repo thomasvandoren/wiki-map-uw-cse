@@ -55,7 +55,8 @@ then
 
     DST="$WGROOT/$DST"
 
-    COMMAND="cp $BUILDPKGSRC $BUILDPKGDST ; tar -xzvf $BUILDPKGDST -C $BUILDBIN/WikiGraph-$N ; rm $BUILDPKGDST ; cp $BUILDBIN/WikiGraph-$N/*.php $DST/ ; rm -f $BUILDBIN/WikiGraph-$N/*.php"
+    COMMAND="cp $BUILDPKGSRC $BUILDPKGDST ; tar -xzvf $BUILDPKGDST -C $BUILDBIN/WikiGraph-$N ; rm $BUILDPKGDST ; cp $BUILDBIN/WikiGraph-$N/*.* $DST/ ; rm -f $BUILDBIN/WikiGraph-$N/*.*"
+    echo ""
 
 else
     echo "Usage: deploy -b <build-number> <Project-Name>"
