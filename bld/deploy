@@ -1,0 +1,87 @@
+#!/bin/bash
+#
+# WikiGraph
+# Copyright (c) 2011
+#
+# Author: Thomas Van Doren <thomas.vandoren@gmail.com>
+#
+# This script allows a user to easily deploy a build to one of the wikigraph live endpoints.
+#
+
+C=$#
+P=$1
+B=$2
+N=$3
+
+WGROOT="/projects/instr/cubist/11wi/cse403/WikiMap-M/proj"
+BUILDROOT="/projects/instr/cubist/11wi/cse403/WikiMap-M/builds"
+BUILDBIN="$BUILDROOT/bin"
+
+echo "WikiGraph Deployment"
+echo "Copyright (c) 2011"
+echo ""
+
+if [[ $P == "suggest" ]]
+then
+    echo "suggest: $2"
+    COMMAND="ls -tr $BUILDROOT/WikiGraph-$2* | tail -n 1";
+elif [[ $C -eq 3 ]]
+then
+    BUILDPKG="WikiGraph-$N/hudson-WikiGraph-$N-$B.tar.gz"
+
+    BUILDPKGSRC="$BUILDROOT/$BUILDPKG"
+    BUILDPKGDST="$BUILDBIN/$BUILDPKG"
+
+    DST=""
+
+    if [[ $N == "Test-Services" ]]
+    then
+	DST="test-api"
+    elif [[ $N == "Services" ]]
+    then
+	DST="api"
+    elif [[ $N == "Test-FlashClient" ]]
+    then
+	DST="test"
+    elif [[ $N == "FlashClient" ]]
+    then
+	DST="graph"
+    else
+	echo "Invalid project name: $N"
+	exit 1
+    fi
+
+    echo "deploy build: #$B     project: $N to: /$DST "
+
+    DST="$WGROOT/$DST"
+
+    COMMAND="cp $BUILDPKGSRC $BUILDPKGDST ; tar -xzvf $BUILDPKGDST -C $BUILDBIN/WikiGraph-$N ; rm $BUILDPKGDST ; cp $BUILDBIN/WikiGraph-$N/*.php $DST/ ; rm -f $BUILDBIN/WikiGraph-$N/*.php"
+
+else
+    echo "Usage: deploy -b <build-number> <Project-Name>"
+    echo "       deploy suggest <Project-Name>"
+    echo ""
+    echo "  <Project-Name>: Services, Test-Services, FlashClient, Test-FlashClient"
+    echo ""
+    echo "  In the first form it deploys the given project to the appropriate location."
+    echo ""
+    echo "  In the second form it suggests the most recent builds for each project"
+    echo "  For example:"
+    echo "    deploy suggest Test-Services # returns the newest build for WikiGraph-Test-Services"
+    echo "    deploy -b 28 Test-Services   # will deploy hudson-WikiGraph-Test-Services-28.tar.gz"
+    exit 1
+fi
+
+#
+# Requires user to use ssh, even if they are already on cubist.
+#
+
+echo "Beginning to ssh into cubist.cs.washington."
+echo -n "user: "
+
+read USER
+
+
+ssh $USER@cubist.cs.washington.edu "$COMMAND"
+
+exit 0
