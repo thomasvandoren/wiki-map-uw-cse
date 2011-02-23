@@ -69,9 +69,6 @@
 			setTextInput();
 			// adds resizable
 			this.addEventListener(Event.RESIZE, resizeHandler);
-			// draw logo
-			logoButton.addEventListener(MouseEvent.CLICK, drawSplash);
-			drawLogo()
 			
 		}
 		
@@ -95,10 +92,10 @@
 		}
 		
 		// draw logo
-		public function drawLogo():void{
-			logoButton.htmlText = "<font size='16'><b>  WikiGraph</b></font>";
-			logoButton.selectable = false;
-		}
+		//public function drawLogo():void{
+		//	logoButton.htmlText = "<font size='16'><b>  WikiGraph</b></font>";
+		//	logoButton.selectable = false;
+		//}
 
 		]]> 
 	</fx:Script>
@@ -106,9 +103,9 @@
 	<s:Group id="graph" height="100%" width="100%" addedToStage="drawSplash(graph)">
 	</s:Group>
 	
-	<mx:Text id="logoButton" x="2" y="2" width="100" visible="true" />
+	<mx:Button id="logoButton" label="WikiGraph" x="2" y="2" width="100" visible="true" click="drawSplash(graph)" />
 	
-	<mx:Button id="searchButton" y="2" width="100" label = "Search" />
+	<mx:Button id="searchButton" y="2" width="100" label="Search" />
 	
 	<s:Group id="auto" height="100%" width="100%">
 	</s:Group>
