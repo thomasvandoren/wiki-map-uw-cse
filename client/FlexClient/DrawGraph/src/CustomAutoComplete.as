@@ -42,12 +42,11 @@ package
 			ac.id = "ac";
 			ac.requireSelection = true;
 			ac.labelFunction = customLabelFunction;
-			ac.x = 206;
+			ac.x = 102;
 			ac.y = 2;
-			ac.width = env.width - ac.x - 2;
 			ac.addEventListener("select", handleSelect);
 			ac.addEventListener(KeyboardEvent.KEY_DOWN, timerKeyHandler);
-			environment.addElement(ac);
+			environment.addElement(ac); 
 			
 			//Initialize a timer that will determine when the search queries occur
 			myTimer = new Timer(500, 0);
@@ -121,7 +120,7 @@ package
 		
 		//Resizes the search bar to extend across the application width
 		public function reSize():void {
-			ac.width = env.width - ac.x - 2;
+			ac.width = env.width - 208;
 		}
 		
 		//Returns the current text in the autocomplete bar

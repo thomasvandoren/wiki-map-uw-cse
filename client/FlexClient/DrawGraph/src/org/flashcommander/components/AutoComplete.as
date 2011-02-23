@@ -208,7 +208,7 @@ package org.flashcommander.components
 		{
 			if (item == null) return "";
 		
-			if (labelFunction)
+			if (labelFunction())
 				return labelFunction(item);
 			else if (labelField && item[labelField])
 				return item[labelField];

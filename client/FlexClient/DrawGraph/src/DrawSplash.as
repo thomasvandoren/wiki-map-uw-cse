@@ -22,14 +22,14 @@ package
 		{
 			environment.removeAllElements(); //clear everything in env
 			var title:Text = new Text();
-			title.x = (environment.width / 8);
+			title.x = (environment.width / 6);
 			title.width = (environment.width / 8) * 6;
 			title.y = (environment.height / 4);
 			title.htmlText = "<font size = '64'><b>Wiki Graph</b></font><BR/>";
 			title.htmlText += "<font size = '24'>Instructions</font><BR/>";
-			title.htmlText += "<font size = '16'>1.Enter a search term in the search bar</font><BR/>";
-			title.htmlText += "<font size = '16'>2.After the graph is drawn, click on nodes to traverse the graph</font><BR/>";
-			title.htmlText += "<font size = '16'>3.Hover over nodes to see the article abstracts, click the abstract to go to the article</font><BR/>";
+			title.htmlText += "<font size = '16'>1. Enter a search term in the search bar</font><BR/>";
+			title.htmlText += "<font size = '16'>2. After the graph is drawn, click on nodes to traverse the graph</font><BR/>";
+			title.htmlText += "<font size = '16'>3. Hover over nodes to see the article abstracts, click the abstract to go to the article</font><BR/>";
 			title.visible = true;
 			environment.visible = true;
 			environment.addElement(title);

@@ -50,37 +50,29 @@
 			setTextInput();
 			if (graph.visible) {
 				Network.reDraw(graph);
+				DrawSplash.DrawS(graph);
 			}
 		}
 		
 		// sets width of the text input
 		private function setTextInput():void {
 			myAutoComplete.reSize();
+			searchButton.x = graph.width-103;
 		}
 		
 		public function initu():void {
 			myAutoComplete = new CustomAutoComplete(auto, graph);
 			graph.visible = false;	
-
+			
 			searchButton.addEventListener(MouseEvent.CLICK, handleSearch);
 			// sets width of the text input
 			setTextInput();
-			
-			logoButton.addEventListener(MouseEvent.CLICK, loadSplash);
-			
-			// sets search text is focus
-			//searchText.setFocus();
-			//searchText.addEventListener(KeyboardEvent.KEY_DOWN, enterHandler);
-
+			// adds resizable
 			this.addEventListener(Event.RESIZE, resizeHandler);
+			// draw logo
+			logoButton.addEventListener(MouseEvent.CLICK, drawSplash);
+			drawLogo()
 			
-			//splash.addEventListener(MouseEvent.CLICK, drawSplash);
-		}
-		
-		// loads splash page (will add more)
-		private function loadSplash(event:Event):void {
-			graph.removeAllElements();
-			drawSplash(graph);
 		}
 		
 		//Handles mouse click events on the search button to search by the given searchText
@@ -97,9 +89,15 @@
 			Network.search(type, arg, graph);		
 		}
 		
-		
+		// draw splace 
 		public function drawSplash(env:Group):void {
 			DrawSplash.DrawS(env);
+		}
+		
+		// draw logo
+		public function drawLogo():void{
+			logoButton.htmlText = "<font size='16'><b>  WikiGraph</b></font>";
+			logoButton.selectable = false;
 		}
 
 		]]> 
@@ -108,9 +106,9 @@
 	<s:Group id="graph" height="100%" width="100%" addedToStage="drawSplash(graph)">
 	</s:Group>
 	
-	<mx:Button id="logoButton" x="2" y="2" width="100" label="WikiGraph" />
+	<mx:Text id="logoButton" x="2" y="2" width="100" visible="true" />
 	
-	<mx:Button id="searchButton" x="104" y="2" width="100" label = "Search" />
+	<mx:Button id="searchButton" y="2" width="100" label = "Search" />
 	
 	<s:Group id="auto" height="100%" width="100%">
 	</s:Group>

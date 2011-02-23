@@ -42,6 +42,7 @@ package
 			if (tipCreated) { //tip already created, simply return alpha to 1 and reset the timer
 				abToolTip.abstractTimer.reset();
 				abToolTip.visible = true;
+				abToolTip.alpha = 0.6;
 			} else { //tip not created, do so now
 				this.abToolTip = new AbstractToolTip(environment, label, id);
 				if (index == 0) {
