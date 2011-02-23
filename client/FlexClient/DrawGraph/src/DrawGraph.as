@@ -41,8 +41,8 @@ package
 					j = (2 * Math.PI) / (a.length - 1);
 				}
 				
-				if(cNode != null) {
 				var centerNode:Node = new Node(environment,j,0); //the center node is created first, since it always belongs in the middle
+				if(cNode != null) {
 					centerNode.id = cNode.id;
 					centerNode.label = cNode.label;
 					centerNode.title = cNode.label;

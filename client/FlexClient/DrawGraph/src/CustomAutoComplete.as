@@ -70,19 +70,20 @@ package
 		
 		//After 4 characters have been pressed, query the search. Reset the timer on each character.
 		private function timerKeyHandler(event:KeyboardEvent):void {
-			if (myTimer.running == false) {
-				myTimer.start();
-			}
 			if (event.keyCode != Keyboard.UP && event.keyCode != Keyboard.DOWN) {
 				keyCount = (keyCount + 1) % 4;
+				if (myTimer.running == false) {
+					myTimer.start();
+				}
+				if (keyCount == 3) {
+					trace("KeyHandler");
+					timerHandler();
+				} else {
+					myTimer.reset();
+					myTimer.start();
+				}
 			}
-			if (keyCount == 3) {
-				trace("KeyHandler");
-				timerHandler();
-			} else {
-				myTimer.reset();
-				myTimer.start();
-			}
+			
 		}
 		
 		//Query the search given in the autocomplete bar
@@ -96,7 +97,7 @@ package
 		//Sets the autocomplete dataprovider equal to the returns titles
 		private function xmlLoaded(event:Event):void {
 			var myXML:XML = XML(myLoader.data);
-			ac.dataProvider = Parse.parseAutoComplete(myXML);
+			ac.dataProvider = Parse.parseXML(myXML);
 		}
 		
 		//If the URL request was a failure, then
@@ -107,14 +108,15 @@ package
 		
 		//Display results in the suggestions box according to title
 		private function customLabelFunction(item:Object):String{
-			return item.toString();
+			return item[1].toString();
 		}
 		
 		//Search for the suggestion if the user pressed enter, and clears the autocomplete bar
 		private function handleSelect(event:CustomEvent):void {
 			var item:Object = event.data;
-			trace("Selected " + item.toString());
-			Network.search("name", item.toString(), graph);
+			trace("Selected " + item[1].toString());
+			trace("Selected " + item[0].toString());
+			Network.search("id", item[0].toString(), graph);
 			ac.text = "";
 		}
 		

@@ -42,7 +42,7 @@ package
 		//Redirects a search request to the appropriate URL with the corresponding arguments
 		public static function search(type:String, arg:String, graph:Group):void {
 			env = graph;
-			if (type == "name") {
+			if (type == "search") { //Should no longer be used
 				requestData(Config.dataPath + "search/?q=" + arg);
 			}
 			else if (type == "id") {
@@ -74,6 +74,7 @@ package
 			trace(myXML.name());
 			if(myXML.name() == "graph") {
 				list = Parse.parseXML(myXML);
+				centerNode = singleNode(env, list[0][1], list[0][0]);
 				draw();
 			} else if (myXML.name() == "info") {
 				var abstractText:String = Parse.parseAbs(myXML);

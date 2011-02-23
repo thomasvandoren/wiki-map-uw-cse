@@ -74,7 +74,7 @@
 		
 		//Handles mouse click events on the search button to search by the given searchText
 		private function handleSearch(event:Event):void {
-			search("name", myAutoComplete.getText());
+			search("search", myAutoComplete.getText());
 		}
 		
 		//Sends a search request of given type, with given arguments over the network to the backend.
