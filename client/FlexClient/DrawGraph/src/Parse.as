@@ -15,20 +15,23 @@ package{
 			// gets all children, called source, in a xml file
 			var node:XMLList = myXML.children();
 			
+			if (node.length() == 0)
+			{
+				throw new Error("malformed XML");
+			}
+			
 			// puts all the children's id & title in two dimention array called list
 			for (var i:Number = 0; i < node.length(); i++) 
 			{
 				var a:Array = new Array();
 				
-				if (!node[0].hasOwnProperty("id") || !node[0].hasOwnProperty("title"))
+				if (node[i].@id.length() != 1 || node[i].@title.length() != 1)
 				{
 					throw new Error("malformed XML");
 				}
-				else
-				{
-					a[0] = node[i].attribute("id");
-					a[1] = node[i].attribute("title");
-				}
+				
+				a[0] = node[i].attribute("id");
+				a[1] = node[i].attribute("title");
 				
 				list.push(a);
 			}

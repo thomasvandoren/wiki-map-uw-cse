@@ -1,6 +1,7 @@
 package AllTestsSuite.tests 
 {
 	
+	import flash.system.IMEConversionMode;
 	import flashx.textLayout.conversion.ImportExportConfiguration;
 	import org.flexunit.Assert;
 	
@@ -24,14 +25,24 @@ package AllTestsSuite.tests
 	public class AllTests 
 	{
 		private var simpleXML : XML;
+		private var simpleListXML : XML;
 		private var testSearchXML : XML;
 		private var testAutocompleteXML : XML;
 		private var testAbstractXML : XML;
 		private var testGraphXML : XML;
 		
-		public function AllTest() : void
+		[Before]
+		public function setupXML() : void
 		{
-			simpleXML = <b />;
+			simpleXML = 
+				<b></b>;
+				
+			simpleListXML =
+				<list>
+					<item />
+					<item />
+				</list>;
+				
 			testSearchXML = 
 				<search query="what">
 					<item id="42" title="now" />
@@ -42,7 +53,7 @@ package AllTestsSuite.tests
 				<list phrase="what">
 					<item id="42" title="now" />
 					<item id="17" title="cow" />
-				</autocomplete>;
+				</list>;
 			
 			testAbstractXML = 
 				<info id="42">
@@ -80,10 +91,38 @@ package AllTestsSuite.tests
 			Assert.assertTrue(true);
 		}
 		
-		[Test(description="Test that Parse.parseXML throws exception for malformed XML", expects="Error")]
+		[Test(description = "Test that Parse.parseXML returns valid array for autocomplete xml")]
 		public function testParseXML() : void
 		{
+			var res : Array = Parse.parseXML(testAutocompleteXML);
+			
+			Assert.failNull("null array returned", res);
+			Assert.assertEquals(res.length, 2);
+			
+			Assert.failNull("null array returned", res[0]);
+			Assert.failNull("null array returned", res[1]);
+			
+			Assert.assertEquals(res[0].length, 2);
+			Assert.assertEquals(res[1].length, 2);
+			
+			Assert.assertEquals(res[0][0], "42");
+			Assert.assertEquals(res[0][1], "now");
+						
+			Assert.assertEquals(res[1][0], "17");
+			Assert.assertEquals(res[1][1], "cow");
+
+		}
+		
+		[Test(description="Test that Parse.parseXML throws error for malformed XML", expects="Error")]
+		public function testParseXMLError() : void
+		{
 			Parse.parseXML(simpleXML);
+		}
+		
+		[Test(description="Test that Parse.parseXML throws error for list item without id/title attributes", expects="Error")]
+		public function testParseXMLAttributeError() : void
+		{
+			Parse.parseXML(simpleListXML);
 		}
 	}
 
