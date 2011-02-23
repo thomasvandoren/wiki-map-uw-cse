@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
+               xmlns:s="library://ns.adobe.com/flex/spark"
+               xmlns:mx="library://ns.adobe.com/flex/mx">
+	<fx:Script>
+		<![CDATA[
+		import mx.rpc.events.ResultEvent;
+		
+		[Bindable]
+		private var testResult:Object;
+		
+		private function resultHandler(event:ResultEvent):void {
+			testResult = event.result.body as Object;
+		}
+		]]>
+	</fx:Script>
+			   
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		<mx:HTTPService id="httpTestXML" url="http://wikigraph.cs.washington.edu/api/test.php" useProxy="false" method="GET" 
+			resultFormat="object" result="resultHandler(event)" />
+	</fx:Declarations>
+	
+	<mx:Panel id="dataStatus" title="My Data Test" width="500">
+		<mx:Label text="Error:" width="100" />
+		<mx:Label text="{testResult.error}" width="350" />
+		
+		<mx:Label text="Status:" />
+		<mx:Label text="{testResult.status}" />
+		
+		<mx:TileList dataProvider="{testResult.data.item}"></mx:TileList>	
+		
+		<mx:Button label="Load Test Data from API" click="{httpTestXML.send()}" />
+	</mx:Panel>
+	
+</s:Application>

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
+               xmlns:s="library://ns.adobe.com/flex/spark"
+               xmlns:mx="library://ns.adobe.com/flex/mx"
+			   xmlns:flashcommander="org.flashcommander.*"
+			   xmlns:components="org.flashcommander.components.*"
+			   creationComplete="initu()"
+			   height="100%"
+			   width="100%"
+			   >
+		
+	<fx:Script>
+		<![CDATA[
+		import Config;
+		import mx.collections.ArrayCollection;
+		import org.flashcommander.event.CustomEvent;
+		import flash.display.Loader;
+		import flash.display.MovieClip;
+		import flash.events.Event;
+		import flash.events.MouseEvent;
+		import flash.net.URLRequest;
+		import flash.text.TextField;
+		import flash.text.TextFormat;
+		import mx.controls.Image;
+		import mx.controls.Text;
+		import Parse;
+		import Node;
+		import DrawGraph;
+		import Network;
+		import DrawSplash;
+		import spark.components.Group;
+		import flash.ui.Keyboard;
+		import flash.events.KeyboardEvent;
+		import flash.utils.Timer;
+		public var myAutoComplete:CustomAutoComplete;
+		
+		// handles the Enter on the keyboard pressed
+		public function enterHandler(event:KeyboardEvent):void{
+			if(event.keyCode == Keyboard.ENTER){
+				handleSearch(event);
+			}
+		}
+		
+		// resizes graph
+		private function resizeHandler(event:Event):void {
+			graph.width = this.width;
+			graph.height = this.height;
+			auto.width = this.width;
+			auto.height = this.height;
+			setTextInput();
+			if (graph.visible) {
+				Network.reDraw(graph);
+				DrawSplash.DrawS(graph);
+			}
+		}
+		
+		// sets width of the text input
+		private function setTextInput():void {
+			myAutoComplete.reSize();
+			searchButton.x = graph.width-103;
+		}
+		
+		public function initu():void {
+			myAutoComplete = new CustomAutoComplete(auto, graph);
+			graph.visible = false;	
+			
+			searchButton.addEventListener(MouseEvent.CLICK, handleSearch);
+			// sets width of the text input
+			setTextInput();
+			// adds resizable
+			this.addEventListener(Event.RESIZE, resizeHandler);
+			
+		}
+		
+		//Handles mouse click events on the search button to search by the given searchText
+		private function handleSearch(event:Event):void {
+			search("search", myAutoComplete.getText());
+		}
+		
+		//Sends a search request of given type, with given arguments over the network to the backend.
+		//Type may currently be
+		//-"name" to search by article name, 
+		//-"id" to search by article id (not yet working on backend),
+		//-"autocomplete" to get a list of relevant search requests (May change once backend gets graph and search request in one query)
+		private function search(type:String, arg:String):void {
+			Network.search(type, arg, graph);		
+		}
+		
+		// draw splace 
+		public function drawSplash(env:Group):void {
+			DrawSplash.DrawS(env);
+		}
+		
+		// draw logo
+		//public function drawLogo():void{
+		//	logoButton.htmlText = "<font size='16'><b>  WikiGraph</b></font>";
+		//	logoButton.selectable = false;
+		//}
+
+		]]> 
+	</fx:Script>
+	
+	<s:Group id="graph" height="100%" width="100%" addedToStage="drawSplash(graph)">
+	</s:Group>
+	
+	<mx:Button id="logoButton" label="WikiGraph" x="2" y="2" width="100" visible="true" click="drawSplash(graph)" />
+	
+	<mx:Button id="searchButton" y="2" width="100" label="Search" />
+	
+	<s:Group id="auto" height="100%" width="100%">
+	</s:Group>
+
+</s:Application>
