@@ -98,9 +98,12 @@ class GraphDB {
   /**
    * Returns the page links that include a certain page
    * Takes the id of the page
+   *
+   * TODO: Find a better way to limit the amount of info that gets passed
+   *       back
    */
   public function get_page_links($id) {
-    $q = "SELECT pl_from, pl_to FROM pagelinks WHERE pl_from = $id OR pl_to = $id";
+    $q = "SELECT pl_from, pl_to FROM pagelinks WHERE pl_from = $id OR pl_to = $id LIMIT 50";
     return $this->query($q);
   }
 
