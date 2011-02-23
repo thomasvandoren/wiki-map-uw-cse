@@ -11,13 +11,25 @@ package{
 		
 		public static function parseXML(myXML:XML):Array {
 			list = new Array();
+			
 			// gets all children, called source, in a xml file
 			var node:XMLList = myXML.children();
+			
 			// puts all the children's id & title in two dimention array called list
-			for (var i:Number = 0; i < node.length(); i++) {
+			for (var i:Number = 0; i < node.length(); i++) 
+			{
 				var a:Array = new Array();
-				a[0] = node[i].attribute("id");
-				a[1] = node[i].attribute("title");
+				
+				if (!node[0].hasOwnProperty("id") || !node[0].hasOwnProperty("title"))
+				{
+					throw new Error("malformed XML");
+				}
+				else
+				{
+					a[0] = node[i].attribute("id");
+					a[1] = node[i].attribute("title");
+				}
+				
 				list.push(a);
 			}
 			return list;
