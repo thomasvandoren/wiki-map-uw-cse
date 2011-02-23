@@ -84,6 +84,15 @@ package
 			}
 		}
 		
+		// crafts a single node for networking purposes
+		public static function singleNode(enviro:Group, name:String, nodeID:String):Node {
+			var mahNode:Node = new Node(enviro, 0, 0);
+			mahNode.title = name;
+			mahNode.label = name;
+			mahNode.id = nodeID;
+			return mahNode;
+		}
+		
 		// draw graph
 		private static function draw():void {
 			if(list!=null){

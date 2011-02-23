@@ -56,7 +56,7 @@ if (count($results) > 1) {
 
       <?php
 } else if (count($results) == 1) {
-  header("Location: ../graph/" . $results["page_id"] . "/");
+  header("Location: ../graph/" . $results[0]["page_id"] . "/");
 } else {
   error(404, "Query not found ($searchQuery).\n");
 }

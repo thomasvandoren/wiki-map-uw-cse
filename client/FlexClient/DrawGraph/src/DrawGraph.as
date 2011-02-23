@@ -41,15 +41,21 @@ package
 					j = (2 * Math.PI) / (a.length - 1);
 				}
 				
+				if(cNode != null) {
 				var centerNode:Node = new Node(environment,j,0); //the center node is created first, since it always belongs in the middle
-				centerNode.id = cNode.id;
-				centerNode.label = cNode.label;
+					centerNode.id = cNode.id;
+					centerNode.label = cNode.label;
+					centerNode.title = cNode.label;
+				} else {
+					centerNode.id = a[0][0];
+					centerNode.label = a[0][1];
+					centerNode.title = a[0][1];
+				}
 				centerNode.width = environment.width/6;
 				centerNode.height = environment.height/13;
 				centerNode.x = (environment.width / 2) - (centerNode.width / 2);
 				centerNode.y = (environment.height / 2) - (centerNode.height / 2);
 				centerNode.alpha = 1;
-				centerNode.title = cNode.label;
 
 				// draw lines and nodes
 				for (var i:Number = 1; i < 25 && i < a.length; i++) {
