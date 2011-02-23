@@ -15,38 +15,40 @@
     <meta http-equiv="content-type" value="text/html; charset=utf-8" />
 
     <style>
-      body
+      html,body
       {
         background-color: #FFFFFF;
         margin: 0px;
         padding: 0px;
+        height: 100%;
+        width: 100%;
       }
     </style>
 
     <script language="javascript">
-      <!--[CDATA[
-      window.onload = function ()
-      {
-          if (document.location.hash)
-	  {
-	      var id = parseInt(document.location.hash);
-	      // send this id to the swf application.
-	  }
-      }
-      ]]-->
+      <![CDATA[
+    window.onload = function ()
+    {
+        if (document.location.hash)
+        {
+            var id = parseInt(document.location.hash);
+            // send this id to the swf application.
+        }
+    }
+      ]]>
     </script>
     
     <title>WikiGraph</title>
   </head>
   
   <body>
-
-    <object id="app" classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" height="100%" width="100%">
-      <param name="movie" value="WikiGraph.swf">
-      <param name="quality" value="high">
-      <embed src="WikiGraph.swf" width="100%" height="100%" quality="high"></embed>
-    </object>
-    
+    <div>
+        <object id="app" classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" height="100%" width="100%">
+          <param name="movie" value="WikiGraph.swf">
+          <param name="quality" value="high">
+          <embed src="WikiGraph.swf" width="100%" height="100%" quality="high"></embed>
+        </object>
+    </div>
   </body>
   
 </html>
