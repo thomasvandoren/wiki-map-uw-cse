@@ -23,12 +23,20 @@ package
 		private static var list:Array;
 		
 		public static var toolTip:AbstractToolTip;
+		public static var centerNode:Node;
 		
 		//Used to get the appropriate abstract for a cooresponding toolTip
 		public static function abstractGet(arg:String, graph:Group, specificTip:AbstractToolTip):void {
 			env = graph;
 			toolTip = specificTip;
 			requestData(Config.dataPath + "abstract/" + arg + "/");
+		}
+		
+		//Used to get the appropriate graph for a cooresponding ID
+		public static function graphGet(arg:String, graph:Group, priorNode:Node):void {
+			env = graph;
+			centerNode = priorNode;
+			requestData(Config.dataPath + "graph/" + arg + "/");
 		}
 		
 		//Redirects a search request to the appropriate URL with the corresponding arguments
@@ -79,7 +87,7 @@ package
 		// draw graph
 		private static function draw():void {
 			if(list!=null){
-				DrawGraph.DrawG(list, env);
+				DrawGraph.DrawG(list, env, centerNode);
 				env.visible = true;
 			}
 		}

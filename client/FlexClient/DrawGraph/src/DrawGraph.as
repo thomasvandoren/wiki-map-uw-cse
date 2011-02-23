@@ -26,7 +26,9 @@ package
 		import Node;
 		
 		//tells the program to draw a bunch of nodes in the drawing area
-		public static function DrawG(a:Array, environment:Group):void {
+		//NOTE: DrawG now requires a center Node to be provided, as the returned
+		//list of nodes does not necessarily have the article itself come first
+		public static function DrawG(a:Array, environment:Group, cNode:Node):void {
 			ToolTipManager.enabled = false;
 			if (a.length > 0) {
 				environment.removeAllElements(); //clear the previous graph
@@ -40,19 +42,19 @@ package
 				}
 				
 				var centerNode:Node = new Node(environment,j,0); //the center node is created first, since it always belongs in the middle
-				centerNode.id = a[0][0];
-				var centerTitle:String = new String(a[0][1]);
-				centerNode.label = centerTitle.split("_").join(" ");
-				centerNode.label = a[0][1];
+				centerNode.id = cNode.id;
+				centerNode.label = cNode.label;
 				centerNode.width = environment.width/6;
 				centerNode.height = environment.height/13;
 				centerNode.x = (environment.width / 2) - (centerNode.width / 2);
 				centerNode.y = (environment.height / 2) - (centerNode.height / 2);
 				centerNode.alpha = 1;
-				centerNode.title = a[0][1];
+				centerNode.title = cNode.label;
+
 				// draw lines and nodes
-				var lineStyle:SolidColorStroke = new SolidColorStroke(0x222222, 2, 1);
 				for (var i:Number = 1; i < 25 && i < a.length; i++) {
+					var lengthCheck:String = a[i][1];
+					if (lengthCheck.length > 0) {
 					var newNode:Node = new Node(environment,j,i);
 					newNode.id = a[i][0];
 					newNode.title = a[i][1];
@@ -74,6 +76,7 @@ package
 					// add line and its button
 					environment.addElement(newLine);
 					environment.addElement(newNode);
+					}
 				}
 				// add center node button
 				environment.addElement(centerNode);

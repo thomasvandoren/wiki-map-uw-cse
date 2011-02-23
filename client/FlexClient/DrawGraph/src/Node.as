@@ -25,7 +25,7 @@ package
 		public var title:String;
 		private function ChangeLabel(event:MouseEvent):void
 		{
-			Network.search("id", id, environment);
+			Network.graphGet(id, environment, this);
 		}
 		//indicates that the user has started hovering over the node
 		private function GetArticle(event:MouseEvent):void
