@@ -42,15 +42,32 @@ package
 			if (tipCreated) { //tip already created, simply return alpha to 1 and reset the timer
 				abToolTip.abstractTimer.reset();
 				abToolTip.visible = true;
-				abToolTip.alpha = 0.6;
+				abToolTip.alpha = 0.9;
 			} else { //tip not created, do so now
 				this.abToolTip = new AbstractToolTip(environment, label, id);
-				if (index == 0) {
-					abToolTip.x = getX(0.3, abToolTip);
-					abToolTip.y = getY(0.3, abToolTip);
+				if (angleDiffer == 0) {
+					// for first quardrant
+					if (this.x > environment.width / 2 && this.y < environment.height/2) {
+						abToolTip.x = this.x-abToolTip.width + 20;
+						abToolTip.y = this.y + this.width/2;
+					}else if(this.x < environment.width / 2 && this.y < environment.height/2){ // for 2nd
+						abToolTip.x = this.x + this.width + 20;
+						abToolTip.y = this.y + this.height/2;
+					}else if (this.x < environment.width / 2 && this.y > environment.height / 2) { // for 3rd
+						abToolTip.x = this.x + this.width + 20;
+						abToolTip.y = this.y - abToolTip.height - 20;
+					}else {
+						abToolTip.x = this.x-abToolTip.width + 20;
+						abToolTip.y = this.y - abToolTip.height - 20;
+					}
 				}else{
-					abToolTip.x = getX(0.1, abToolTip);
-					abToolTip.y = getY(0.1, abToolTip);
+					if (index == 0) {
+						abToolTip.x = getX(0.3, abToolTip);
+						abToolTip.y = getY(0.3, abToolTip);
+					}else{
+						abToolTip.x = getX(0.1, abToolTip);
+						abToolTip.y = getY(0.1, abToolTip);
+					}
 				}
 				tipCreated = true;
 				abToolTip.articleTitle = label;

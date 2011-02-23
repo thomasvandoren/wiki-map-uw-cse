@@ -73,7 +73,7 @@ package
 		//constructor, on creation we'll expand it to call the server for the abstract info
 		public function AbstractToolTip(environment:Group,articleTitle:String,articleID:String) 
 		{
-			
+			alpha = 0.9;
 			//transfer the article name
 			this.articleTitle = articleTitle;
 			this.articleID = articleID;
