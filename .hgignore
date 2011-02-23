@@ -1,0 +1,16 @@
+syntax: glob
+
+# ignore local builds and configs
+output/*
+build/*
+
+services/config.php
+services/test/config.php
+
+client/FlexClient/*/bin/*
+client/FlexClient/*/obj/*
+Thumbs.db
+
+# ignore temporary files
+*~
+\#*\#

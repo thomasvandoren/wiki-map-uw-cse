@@ -1,0 +1,59 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/xhtml/1999">
+  
+  <head>
+    <!--
+       WikiGraph
+       Copyright (c) 2011
+
+       Author: Thomas Van Doren
+
+       This is a static html file that embed the SWF application.
+
+       TODO: this should be written with the swfobject.embedSWF() method.
+      -->
+    <meta http-equiv="content-type" value="text/html; charset=utf-8" />
+
+    <style>
+      html,body
+      {
+        background-color: #FFFFFF;
+        margin: 0px;
+        padding: 0px;
+        height: 100%;
+        width: 100%;
+      }
+      div#main 
+      {
+        height: 100%;
+        width: 100%;
+      }
+    </style>
+
+    <script language="javascript">
+      //<![CDATA[
+        window.onload = function ()
+        {
+            if (document.location.hash)
+            {
+                var id = parseInt(document.location.hash);
+                // send this id to the swf application.
+            }
+        }
+      //]]>
+    </script>
+    
+    <title>WikiGraph</title>
+  </head>
+  
+  <body>
+    <div id="main">
+        <object id="app" classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" height="100%" width="100%">
+          <param name="movie" value="WikiGraph.swf">
+          <param name="quality" value="high">
+          <embed src="WikiGraph.swf" width="100%" height="100%" quality="high"></embed>
+        </object>
+    </div>
+  </body>
+  
+</html>
