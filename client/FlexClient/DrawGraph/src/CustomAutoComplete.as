@@ -97,7 +97,7 @@ package
 		//Sets the autocomplete dataprovider equal to the returns titles
 		private function xmlLoaded(event:Event):void {
 			var myXML:XML = XML(myLoader.data);
-			ac.dataProvider = Parse.parseXML(myXML);
+			ac.dataProvider = Parse.parseAutoComplete(myXML);
 		}
 		
 		//If the URL request was a failure, then

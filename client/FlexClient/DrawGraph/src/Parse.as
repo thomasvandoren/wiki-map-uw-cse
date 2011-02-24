@@ -46,21 +46,21 @@ package{
 		}
 		
 		/**
-		 * Parse the autocomplete XML, only keep titles.
+		 * Parse the autocomplete results and returns an array.
+		 * 
 		 * @param	myXML
 		 * @return
 		 */
-		public static function parseAutoComplete(myXML:XML):Array {
-			var children:XMLList = myXML.children();
-			var list:Array = new Array();
-			for (var i:Number = 0; i < children.length(); i++) {
-				list[i] = children[i].attribute("title").toString();
-			}
-			return list;
+		public static function parseAutoComplete(myXML:XML) : Array 
+		{
+			return parseAutocompleteSearchItems(myXML.child("item"));
 		}
 		
 		/**
-		 * Parse the search results and returns an array
+		 * Parse the search results and returns an array.
+		 * 
+		 * @param	myXML
+		 * @return
 		 */
 		public static function parseSearch(myXML:XML) : Array  
 		{
