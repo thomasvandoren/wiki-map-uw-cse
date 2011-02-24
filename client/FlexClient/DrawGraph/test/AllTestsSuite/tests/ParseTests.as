@@ -65,25 +65,6 @@ package AllTestsSuite.tests
 			
 		}
 		
-		/**
-		 * Tests that parseXML throws an error when unrecognized XML is given to it.
-		 */
-		[Test(description="Test that Parse.parseXML throws error for malformed XML", expects="Error")]
-		public function testParseXMLError() : void
-		{
-			Parse.parseXML(simpleXML);
-		}
-		
-		/**
-		 * Tests that parseXML throws and error if any or the items in the XML object
-		 * do not have the correct attributes.
-		 */
-		[Test(description="Test that Parse.parseXML throws error for list item without id/title attributes", expects="Error")]
-		public function testParseXMLAttributeError() : void
-		{
-			Parse.parseXML(simpleListXML);
-		}
-		
 		[Test(description = "Test that Parse.parseAbs returns expected String.")]
 		public function testParseAbs() : void
 		{
