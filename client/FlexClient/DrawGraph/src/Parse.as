@@ -53,6 +53,11 @@ package{
 		 */
 		public static function parseAutoComplete(myXML:XML) : Array 
 		{
+			if (myXML.name() != "list")
+			{
+				throw new Error("invalid autocomplete xml format ");
+			}
+			
 			return parseAutocompleteSearchItems(myXML.child("item"));
 		}
 		
@@ -64,6 +69,11 @@ package{
 		 */
 		public static function parseSearch(myXML:XML) : Array  
 		{
+			if (myXML.name() != "search")
+			{
+				throw new Error("invalid search xml format");
+			}
+			
 			return parseAutocompleteSearchItems(myXML.child("item"));
 		}
 		
@@ -76,11 +86,6 @@ package{
 		{
 			
 			list = new Array();
-			
-			if (children.length() == 0)
-			{
-				throw new Error("malformed XML");
-			}
 			
 			// puts all the children's id & title in two dimention array called list
 			for (var i:Number = 0; i < children.length(); i++) 
