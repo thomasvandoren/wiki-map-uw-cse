@@ -10,11 +10,54 @@ package AllTestsSuite.tests
 	import Parse;
 	
 	/**
-	 * ...
+	 * This class tests all of the function in the Parse class.
+	 * 
 	 * @author Thomas Van Doren
 	 */
 	public class ParseTests 
 	{
+		
+		/**
+		 * Tests that Parse.parseGraph returns the expected result for
+		 * a graph like xml document.
+		 */
+		[Test(description = "Test that Parse.parseGraph returns the expected array")]
+		public function testParseGraph() : void
+		{
+			var res : Array = Parse.parseGraph(testGraphXML);
+			
+			validateResults(res, expectedGraphResult);
+		}
+		
+		/**
+		 * Test that Parse.parseGraph throws an error when receiving an invalid
+		 * graph xml document.
+		 */
+		[Test(description = "Test that Parse.parseGraph throw error with invalid xml", expects = "Error")]
+		public function testParseGraphError() : void
+		{
+			Parse.parseGraph(simpleXML);
+		}
+		
+		/**
+		 * Tests that parseAbstract returns the correct values.
+		 */
+		[Test(description = "Test that Parse.parseAbstract returns expected String.")]
+		public function testParseAbstract() : void
+		{
+			var res : String = Parse.parseAbstract(testAbstractXML);
+			
+			Assert.assertEquals(res, expectedAbstractString);
+		}
+		
+		/**
+		 * Test that parseAbstract throws an error on invalid xml entries.
+		 */
+		[Test(description = "Test that Parse.parseAbsract throws Error for invalid xml", expects = "Error")]
+		public function testParseAbstractError() : void
+		{
+			Parse.parseAbstract(simpleXML);
+		}
 		
 		/**
 		 * Makes a call to parseXML with autocomplete like results.
@@ -39,15 +82,16 @@ package AllTestsSuite.tests
 		}
 		
 		/**
-		 * Makes a call to parseXML with search like results.
-		 * Validates that parseXML returned the correct results.
+		 * Makes a call to parseSearch with search like results.
+		 * Validates that parseSearch returned the correct results.
 		 */
 		[Test(description = "Test that Parse.parseXML returns valid array for search xml")]
 		public function testParseSearchXML() : void
 		{
 			var res : Array = Parse.parseSearch(testSearchXML);
 			
-			validateResults(res);
+			Assert.failNull("null result returned", res);
+			Assert.assertTrue(res is Array);
 		}
 		
 		/**
@@ -66,49 +110,37 @@ package AllTestsSuite.tests
 		public function testParseAutocompleteSearchResults() : void
 		{
 			var aResults : Array = Parse.parseAutoComplete(testAutocompleteXML);
-			validateResults(aResults);
+			validateResults(aResults, expectedSearchAutocompleteArray);
 			
 			var bResults : Array = Parse.parseSearch(testSearchXML);
-			validateResults(bResults);
+			validateResults(bResults, expectedSearchAutocompleteArray);
 		}
 		
 		/**
-		 * Test that the results from parseSearch & parseAutoComplete match the expected values.
+		 * Test that the results from parseSearch, parseAutoComplete, and parseGraph
+		 * match the expected values.
 		 * 
-		 * @param	res
+		 * @param	expected
+		 * @param	actual
 		 */
-		private function validateResults(res:Array):void
+		private function validateResults(actual:Array, expected:Array) : void
 		{
-			Assert.failNull("null array returned", res);
-			Assert.assertEquals(res.length, expectedSearchAutocompleteArray.length);
+			Assert.failNull("null array returned", actual);
+			Assert.assertEquals(actual.length, expected.length);
 			
 			// Compare all of the value in the array to the expected array
-			for (var i : int = 0; i < expectedSearchAutocompleteArray.length; i++)
+			for (var i : int = 0; i < expected.length; i++)
 			{
-				Assert.failNull("null array returned", res[i]);
-				Assert.failNull("null array returned", res[i]);
+				Assert.failNull("null array returned", actual[i]);
+				Assert.failNull("null array returned", actual[i]);
 				
-				Assert.assertEquals(res[i].length, 2);
-				Assert.assertEquals(res[i].length, 2);
+				Assert.assertEquals(actual[i].length, 2);
+				Assert.assertEquals(actual[i].length, 2);
 				
-				Assert.assertEquals(res[i][0], expectedSearchAutocompleteArray[i][0]);
-				Assert.assertEquals(res[i][1], expectedSearchAutocompleteArray[i][1]);
+				Assert.assertEquals(actual[i][0], expected[i][0]);
+				Assert.assertEquals(actual[i][1], expected[i][1]);
 			}
 			
-		}
-		
-		[Test(description = "Test that Parse.parseAbs returns expected String.")]
-		public function testParseAbs() : void
-		{
-			var res : String = Parse.parseAbstract(testAbstractXML);
-			
-			Assert.assertEquals(res, expectedAbstractString);
-		}
-		
-		[Test(description = "Test that Parse.parseAbs throws Error for invalid xml", expects = "Error")]
-		public function testParseAbsError() : void
-		{
-			Parse.parseAbstract(simpleXML);
 		}
 		
 		//
@@ -168,6 +200,11 @@ package AllTestsSuite.tests
 					<link>http://fake/url/here</link>
 				</info>;
 				
+			expectedGraphResult = new Array(
+				new Array("42", "A title for all"),
+				new Array("17", "Seventeen"),
+				new Array("101", "Dalmations"));
+			
 			testGraphXML = 
 				<graph center="42">
 					<source id="42" title="A title for all" len="" is_disambiguation="false">
