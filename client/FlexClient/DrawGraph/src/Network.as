@@ -73,7 +73,7 @@ package
 			myXML.ignoreWhite = true;
 			trace(myXML.name());
 			if(myXML.name() == "graph") {
-				list = Parse.parseXML(myXML);
+				list = Parse.parseGraph(myXML);
 				centerNode = singleNode(env, list[0][1], list[0][0]);
 				draw();
 			} else if (myXML.name() == "info") {

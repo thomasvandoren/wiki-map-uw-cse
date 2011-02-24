@@ -9,11 +9,23 @@ package{
 		private static var myXML:XML;
 		private static var myLoader:URLLoader;
 		
-		public static function parseXML(myXML:XML):Array {
+		/**
+		 * Parses a graph XML document and returns an array of array with the relevant information.
+		 * 
+		 * @param	myXML
+		 * @return
+		 */
+		public static function parseGraph(myXML : XML) : Array
+		{
+			if (myXML.name() != "graph")
+			{
+				throw new Error("invalid graph xml format");
+			}
+			
 			list = new Array();
 			
 			// gets all children, called source, in a xml file
-			var node:XMLList = myXML.children();
+			var node:XMLList = myXML.child("source");
 			
 			// puts all the children's id & title in two dimention array called list
 			for (var i:Number = 0; i < node.length(); i++) 
@@ -25,6 +37,7 @@ package{
 				
 				list.push(a);
 			}
+			
 			return list;
 		}
 		
