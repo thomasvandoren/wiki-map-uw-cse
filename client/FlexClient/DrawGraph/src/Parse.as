@@ -34,7 +34,7 @@ package{
 		 * @param	myXML
 		 * @return
 		 */
-		public static function parseAbs(myXML:XML):String {
+		public static function parseAbstract(myXML:XML):String {
 			var node:XMLList = myXML.child("abstract");
 			
 			if (node.length() != 1)

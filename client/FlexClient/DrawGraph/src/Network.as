@@ -77,7 +77,7 @@ package
 				centerNode = singleNode(env, list[0][1], list[0][0]);
 				draw();
 			} else if (myXML.name() == "info") {
-				var abstractText:String = Parse.parseAbs(myXML);
+				var abstractText:String = Parse.parseAbstract(myXML);
 				toolTip.UpdateAbstract(abstractText);
 			} else if (myXML.name() == "search") {
 				list = Parse.parseSearch(myXML);
