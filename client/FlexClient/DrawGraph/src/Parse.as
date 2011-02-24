@@ -1,13 +1,6 @@
-package{
-	import flash.events.Event;
-	import flash.net.URLLoader;
-	import flash.net.URLRequest;
-	import flash.xml.XMLNode;
+package {
 	
 	public class Parse {
-		private static var list:Array;
-		private static var myXML:XML;
-		private static var myLoader:URLLoader;
 		
 		/**
 		 * Parses a graph XML document and returns an array of array with the relevant information.
@@ -22,7 +15,7 @@ package{
 				throw new Error("invalid graph xml format");
 			}
 			
-			list = new Array();
+			var list : Array = new Array();
 			
 			// gets all children, called source, in a xml file
 			var node:XMLList = myXML.child("source");
@@ -98,7 +91,7 @@ package{
 		private static function parseAutocompleteSearchItems(children:XMLList) : Array
 		{
 			
-			list = new Array();
+			var list : Array = new Array();
 			
 			// puts all the children's id & title in two dimention array called list
 			for (var i:Number = 0; i < children.length(); i++) 
