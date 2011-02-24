@@ -1,6 +1,6 @@
 package AllTestsSuite 
 {
-	import AllTestsSuite.tests.AllTests;
+	import AllTestsSuite.tests.*;
 	
 	/**
 	 * This class manages all of the unit test classes.
@@ -15,7 +15,9 @@ package AllTestsSuite
 		// List all test classes to include in this Suite.
 		//
 		
-		public var allTest:AllTests;
+		public var allTest : AllTests;
+		
+		public var parseTest : ParseTests;
 	}
 
 }

@@ -15,36 +15,41 @@ package{
 			// gets all children, called source, in a xml file
 			var node:XMLList = myXML.children();
 			
-			if (node.length() == 0)
-			{
-				throw new Error("malformed XML");
-			}
-			
 			// puts all the children's id & title in two dimention array called list
 			for (var i:Number = 0; i < node.length(); i++) 
 			{
 				var a:Array = new Array();
 				
-				if (node[i].@id.length() != 1 || node[i].@title.length() != 1)
-				{
-					throw new Error("malformed XML");
-				}
-				
-				a[0] = node[i].attribute("id");
-				a[1] = node[i].attribute("title");
+				a[0] = node[i].@id;
+				a[1] = node[i].@title;
 				
 				list.push(a);
 			}
 			return list;
 		}
 		
+		/**
+		 * Parse abstract XML and return the text only.
+		 * 
+		 * @param	myXML
+		 * @return
+		 */
 		public static function parseAbs(myXML:XML):String {
-			var abstract:String = new String();
 			var node:XMLList = myXML.child("abstract");
-			abstract = node[0].toString();
-			return abstract;
+			
+			if (node.length() != 1)
+			{
+				throw new Error("invalid abstract XML");
+			}
+			
+			return node[0].toString();
 		}
 		
+		/**
+		 * Parse the autocomplete XML, only keep titles.
+		 * @param	myXML
+		 * @return
+		 */
 		public static function parseAutoComplete(myXML:XML):Array {
 			var children:XMLList = myXML.children();
 			var list:Array = new Array();
@@ -59,8 +64,7 @@ package{
 		 */
 		public static function parseSearch(myXML:XML) : Array  
 		{
-			var children:XMLList = myXML.children();
-			return parseItems(children);
+			return parseAutocompleteSearchItems(myXML.child("item"));
 		}
 		
 		/**
@@ -68,21 +72,33 @@ package{
 		 * 
 		 * items = Array ( Array (id, title) ) 
 		 */
-		private static function parseItems(children:XMLList) : Array
+		private static function parseAutocompleteSearchItems(children:XMLList) : Array
 		{
-			var items:Array = new Array();
 			
-			for (var i:Number = 0; i < children.length(); i++)
+			list = new Array();
+			
+			if (children.length() == 0)
 			{
-				var item:Array = new Array();
-				
-				item[0] = children[i].attribute("id").toString();
-				item[1] = children[i].attribute("title").toString();
-				
-				items.push(item);
+				throw new Error("malformed XML");
 			}
 			
-			return items;
+			// puts all the children's id & title in two dimention array called list
+			for (var i:Number = 0; i < children.length(); i++) 
+			{
+				var a:Array = new Array();
+				
+				if (children[i].@id.length() != 1 || children[i].@title.length() != 1)
+				{
+					throw new Error("malformed XML");
+				}
+				
+				a[0] = children[i].@id;
+				a[1] = children[i].@title;
+				
+				list.push(a);
+			}
+			
+			return list;
 		}
 	}
 }
