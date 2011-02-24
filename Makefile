@@ -235,7 +235,7 @@ graph: checkoutrelease  hudsongraph
 
 hudsongraph: checkclient clientoutput
 	$(MXMLC) $(MXMLCOPTS)
-	$(Z) $(OUTPUT)/$(CLIENTNAME)/$(BUILDTAG).tar.gz -C $(SWFDIR) $(SWFNAME) -C $(SWFTMPDIR) $(SWFTMPNAME) -C $(DEF_PUT) version.php
+	$(Z) $(OUTPUT)/$(CLIENTNAME)/$(BUILDTAG).tar.gz -C $(SWFDIR) $(SWFNAME) -C $(SWFTMPDIR) $(SWFTMPNAME) -C $(DEF_OUT) version.php
 
 #
 # test does the same thing as graph, but on the dev branch.
@@ -250,7 +250,7 @@ test: checkoutdev hudsontest
 
 hudsontest: checkclient testclientoutput
 	$(MXMLC) $(MXMLCTESTOPTS)
-	$(Z) $(OUTPUT)/$(TESTCLIENTNAME)/$(BUILDTAG).tar.gz -C $(SWFDIR) $(SWFNAME) -C $(SWFTMPDIR) $(SWFTMPNAME) -C $(DEF_PUT) version.php
+	$(Z) $(OUTPUT)/$(TESTCLIENTNAME)/$(BUILDTAG).tar.gz -C $(SWFDIR) $(SWFNAME) -C $(SWFTMPDIR) $(SWFTMPNAME) -C $(DEF_OUT) version.php
 
 #
 # api checks out a new repository on the release branch, runs the
