@@ -17,6 +17,12 @@ package AllTestsSuite
 		
 		public var allTest : AllTests;
 		
+		public var abstractToolTipTest : AbstractToolTipTests;
+		public var customAutoCompleteTest : CustomAutoCompleteTests;
+		public var drawGraphTest : DrawGraphTests;
+		public var drawSplashTest : DrawSplashTests;
+		public var networkTest : NetworkTests;
+		public var nodeTest : NodeTests;
 		public var parseTest : ParseTests;
 	}
 
