@@ -20,12 +20,22 @@ package AllTestsSuite.tests
 		 * Makes a call to parseXML with autocomplete like results.
 		 * Validates that parseXML returned the correct results.
 		 */
-		[Test(description = "Test that Parse.parseXML returns valid array for autocomplete xml")]
-		public function testParseAutoXML() : void
+		[Test(description = "Test that Parse.parseAutocompleteXML returns valid array for autocomplete xml")]
+		public function testParseAutocompleteXML() : void
 		{
-			var res : Array = Parse.parseXML(testAutocompleteXML);
+			var res : Array = Parse.parseAutoComplete(testAutocompleteXML);
 			
-			validateResults(res);
+			Assert.failNull("null result returned", res);
+			Assert.assertTrue(res is Array);
+		}
+		
+		/**
+		 * Makes an invalid call to parseAutocompleteXML.
+		 */
+		[Test(description = "Test that Parse.parseAutocompleteXML throws Error on invalid xml", expects = "Error")]
+		public function testParseAutocompleteErrorXML() : void
+		{
+			Parse.parseAutoComplete(simpleXML);
 		}
 		
 		/**
@@ -35,13 +45,35 @@ package AllTestsSuite.tests
 		[Test(description = "Test that Parse.parseXML returns valid array for search xml")]
 		public function testParseSearchXML() : void
 		{
-			var res : Array = Parse.parseXML(testSearchXML);
+			var res : Array = Parse.parseSearch(testSearchXML);
 			
 			validateResults(res);
 		}
 		
 		/**
-		 * Test that the results from parseXML match the expected values.
+		 * Makes an invalid call to parseAutocompleteXML.
+		 */
+		[Test(description = "Test that Parse.parseAutocompleteXML throws Error on invalid xml", expects = "Error")]
+		public function testParseSearchErrorXML() : void
+		{
+			Parse.parseSearch(simpleXML);
+		}
+		
+		/**
+		 * Test that results from Parse.parseAutoComplete and parseSearch are correct.
+		 */
+		[Test(description = "Test that results returned from autocomplete and search are valid arrays")]
+		public function testParseAutocompleteSearchResults() : void
+		{
+			var aResults : Array = Parse.parseAutoComplete(testAutocompleteXML);
+			validateResults(aResults);
+			
+			var bResults : Array = Parse.parseSearch(testSearchXML);
+			validateResults(bResults);
+		}
+		
+		/**
+		 * Test that the results from parseSearch & parseAutoComplete match the expected values.
 		 * 
 		 * @param	res
 		 */
