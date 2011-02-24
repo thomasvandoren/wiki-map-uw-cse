@@ -68,7 +68,7 @@ package AllTestsSuite.tests
 		[Test(description = "Test that Parse.parseAbs returns expected String.")]
 		public function testParseAbs() : void
 		{
-			var res : String = Parse.parseAbs(testAbstractXML);
+			var res : String = Parse.parseAbstract(testAbstractXML);
 			
 			Assert.assertEquals(res, expectedAbstractString);
 		}
@@ -76,7 +76,7 @@ package AllTestsSuite.tests
 		[Test(description = "Test that Parse.parseAbs throws Error for invalid xml", expects = "Error")]
 		public function testParseAbsError() : void
 		{
-			Parse.parseAbs(simpleXML);
+			Parse.parseAbstract(simpleXML);
 		}
 		
 		//
