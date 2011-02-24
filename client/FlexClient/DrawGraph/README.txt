@@ -1,8 +1,30 @@
-Just a few quick notes: 
-- Calling the graph creation function is done as DrawGraph.DrawG(Array[][],Group)
-- Was developed using Flex 4, should work on Flex 3 (I hope)
-- if the project doesn't work, should be able to just copy-pasta the code or something. AS files should work on their own.
-- main is sort of a sample program, clicking the top-left corner button "lol" should produce results.
-- Clicking the nodes on the graph should change them to "lolol" (yeah I was bored).
-- DrawG will not yet limit the input length (Arrays can be as long as possible, and it'll create all those buttons, I'll fix this later).
-- I'll try to think of more stuff and fix it as time goes on.
+WikiGraph
+Copyright (c) 2011
+
+The frontend flash client is an ActionScript3 project. Opening DrawGraph.as3proj in 
+FlashDevelop is a common way to edit the source.
+
+Source Info:
+
+src - The source files for the flash client
+    org/flashcommander - Contains the source for the third party autocomplete search box 
+                         that WikiGraph uses.
+    
+    Main.mxml - the main specification for creating the application
+    AbstractToolTip.as
+    Config.as
+    CustomAutoComplete.as
+    DrawGraph.as
+    Network.as
+    Node.as
+    Parse.as
+
+test - The source files for the unit tests
+    AllTestSuite - The suite of test classes to run
+        tests - The specific classes for running unit tests.
+        
+        AllTestsSuite.as
+    
+    TestRunner.mxml - the main specification for creating and running the unit test
+                      application
+
