@@ -1,0 +1,48 @@
+WikiGraph
+Copyright (c) 2011
+
+The frontend flash client is an ActionScript3 project. Opening DrawGraph.as3proj in 
+FlashDevelop is a common way to edit the source.
+
+Testing:
+If you have ant installed, you can run the following command to execute the unit tests
+as they will be on the build server.
+
+	ant test
+
+The unit tests can also be run from FlashDevelop.
+
+  * Open DrawGraph.as3proj in FlashDevelop
+  * Right click on tests/TestRunner.mxml and select "Always Compile"
+  * Build and run the application
+  * The results will get printed to the standard console as well as
+    be displayed in the Adobe test results console.
+
+*** When you are finished testing in FlashDevelop, please right click on src/Main.mxml and
+    select "Always Compile". This makes sure that default target is the actual application.
+
+
+Source Info:
+
+src - The source files for the flash client
+    org/flashcommander - Contains the source for the third party autocomplete search box 
+                         that WikiGraph uses.
+    
+    Main.mxml - the main specification for creating the application
+    AbstractToolTip.as
+    Config.as
+    CustomAutoComplete.as
+    DrawGraph.as
+    Network.as
+    Node.as
+    Parse.as
+
+test - The source files for the unit tests
+    AllTestSuite - The suite of test classes to run
+        tests - The specific classes for running unit tests.
+        
+        AllTestsSuite.as
+    
+    TestRunner.mxml - the main specification for creating and running the unit test
+                      application
+
