@@ -117,6 +117,8 @@ package
 			trace("Selected " + item[1].toString());
 			trace("Selected " + item[0].toString());
 			Network.search("id", item[0].toString(), graph);
+			
+			//TODO: should we leave the search text in? Most search engines do...
 			ac.text = "";
 		}
 		
