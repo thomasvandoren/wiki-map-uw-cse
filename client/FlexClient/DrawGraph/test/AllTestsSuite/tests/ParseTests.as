@@ -8,6 +8,7 @@ package AllTestsSuite.tests
 	// 
 	
 	import Parse;
+	import Abstract;
 	
 	/**
 	 * This class tests all of the function in the Parse class.
@@ -45,9 +46,13 @@ package AllTestsSuite.tests
 		[Test(description = "Test that Parse.parseAbstract returns expected String.")]
 		public function testParseAbstract() : void
 		{
-			var res : String = Parse.parseAbstract(testAbstractXML);
+			var res : Abstract = Parse.parseAbstract(testAbstractXML);
 			
-			Assert.assertEquals(res, expectedAbstractString);
+			Assert.assertNotNull(res);
+			
+			Assert.assertEquals(expectedAbstractObj.title, res.title);
+			Assert.assertEquals(expectedAbstractObj.abstract, res.abstract);
+			Assert.assertEquals(expectedAbstractObj.link, res.link);
 		}
 		
 		/**
@@ -57,6 +62,45 @@ package AllTestsSuite.tests
 		public function testParseAbstractError() : void
 		{
 			Parse.parseAbstract(simpleXML);
+		}
+		
+		/**
+		 * Test that an error is thrown for missing title in abstract xml.
+		 */
+		[Test(description = "Test that Parse.parseAbstract throws Error for bad abstract xml", expects = "Error")]
+		public function testParseAbstractTitleError() : void
+		{
+			Parse.parseAbstract(
+				<info>
+					<abstract></abstract>
+					<link></link>
+				</info>);
+		}
+		
+		/**
+		 * Test that an error is thrown for missing abstract in abstract xml.
+		 */
+		[Test(description = "Test that Parse.parseAbstract throws Error for bad abstract xml", expects = "Error")]
+		public function testParseAbstractAbstractError() : void
+		{
+			Parse.parseAbstract(
+				<info>
+					<title></title>
+					<link></link>
+				</info>);
+		}
+		
+		/**
+		 * Test that an error is thrown for missing link in abstract xml.
+		 */
+		[Test(description = "Test that Parse.parseAbstract throws Error for bad abstract xml", expects = "Error")]
+		public function testParseAbstractLinkError() : void
+		{
+			Parse.parseAbstract(
+				<info>
+					<title></title>
+					<abstract></abstract>
+				</info>);
 		}
 		
 		/**
@@ -154,7 +198,7 @@ package AllTestsSuite.tests
 		private var testAbstractXML : XML;
 		private var testGraphXML : XML;
 		
-		private var expectedAbstractString : String;
+		private var expectedAbstractObj : Abstract;
 		private var expectedSearchResult : Array;
 		private var expectedAutocompleteResult : Array;
 		private var expectedGraphResult : Array;
@@ -192,7 +236,11 @@ package AllTestsSuite.tests
 					<item id="17" title="cow" />
 				</list>;
 			
-			expectedAbstractString = "More text of importance";
+			expectedAbstractObj = new Abstract(
+				"Some random title", 
+				"More text of importance", 
+				"http://fake/url/here");
+			
 			testAbstractXML = 
 				<info id="42">
 					<title>Some random title</title>
