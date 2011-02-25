@@ -218,8 +218,7 @@ checkapi: output config version
 #
 
 checkclient: output version
-#TODO: uncomment this when Xvnc is installed on cubist!!!
-#	ant -DANT_OUT=$(ANT_OUT) test
+	ant -DANT_OUT=$(ANT_OUT) test
 
 #
 # graph checks out a new repository on the release branch, runs the
