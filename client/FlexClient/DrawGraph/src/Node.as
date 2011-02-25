@@ -126,7 +126,7 @@ package
 					}
 				}
 				tipCreated = true;
-				abToolTip.articleTitle = label;
+				abToolTip.setTitle = label;
 				environment.addElement(abToolTip);
 			}
 			

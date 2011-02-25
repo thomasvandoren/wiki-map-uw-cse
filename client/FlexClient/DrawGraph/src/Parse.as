@@ -40,15 +40,33 @@ package {
 		 * @param	myXML
 		 * @return
 		 */
-		public static function parseAbstract(myXML:XML):String {
-			var node:XMLList = myXML.child("abstract");
+		public static function parseAbstract(myXML:XML) : Abstract 
+		{
 			
-			if (node.length() != 1)
+			if (myXML.name() != "info")
 			{
-				throw new Error("invalid abstract XML");
+				throw new Error("invalid abstract xml format");
 			}
 			
-			return node[0].toString();
+			if (myXML.child("title").length() != 1)
+			{
+				throw new Error("invalid abstract xml format : expects one title item");
+			}
+			
+			if (myXML.child("abstract").length() != 1)
+			{
+				throw new Error("invalid abstract xml format : expects one abstract item");
+			}
+			
+			if (myXML.child("link").length() != 1)
+			{
+				throw new Error("invalid abstract xml format : expects one link item");
+			}
+			
+			return new Abstract(
+				myXML.child("title")[0].toString(),
+				myXML.child("abstract")[0].toString(),
+				myXML.child("link")[0].toString());
 		}
 		
 		/**

@@ -1,37 +1,47 @@
 package  
 {
 	
-	import flash.net.URLRequest;
-	import spark.components.BorderContainer;
+	import spark.components.Panel;
 	
 	/**
 	 * ...
 	 * @author Austin Nakamura
 	 */
-	public class AbstractToolTip extends BorderContainer 
+	public class AbstractToolTip extends Panel 
 	{
 		
 		import flash.events.MouseEvent;
 		import flash.events.TimerEvent;
-		import flash.text.TextFormat;
 		import flash.utils.Timer;
-		import mx.controls.Button;
 		import mx.controls.Text;
-		import mx.styles.CSSStyleDeclaration;
 		import spark.components.Group;
 		import flash.net.navigateToURL;
+		import flash.net.URLRequest;
 		import mx.controls.Alert;
 		
-		import Config;
 		import Network;
 		
-		public static var fontSize:int;
-		public var abstractText:Text;
 		public var environment:Group;
 		public var abstractTimer:Timer;
-		public var abStyle:CSSStyleDeclaration;
-		public var articleTitle:String;
-		public var articleID:String;
+		
+		private var articleID : String;
+		private var articleTitle : String;
+		private var articleAbstract : String;
+		private var articleLink : String;
+		
+		private var loading : Boolean;
+		
+		private var abstractText : Text;
+		
+		/**
+		 * Public setter for article title. Since tooltips are not
+		 * redraw, it is important to allow the Node class to set
+		 * a new title.
+		 */
+		public function set setTitle(title : String) : void
+		{
+			this.articleTitle = title;
+		}
 		
 		/**
 		 * Create a new tool tip and requests abstract text from the services.
@@ -40,10 +50,13 @@ package
 		 * @param	articleTitle
 		 * @param	articleID
 		 */
-		public function AbstractToolTip(environment:Group,articleTitle:String,articleID:String) 
+		public function AbstractToolTip(environment:Group, articleTitle:String, articleID:String) 
 		{
+			
+			this.title = articleTitle;
+			
 			// Make the tooltip slightly transparent.
-			alpha = 0.9;
+			this.alpha = 0.9;
 			
 			// Set the article name and id
 			this.articleTitle = articleTitle;
@@ -56,14 +69,18 @@ package
 			// Create the abstract text and set default loading text
 			abstractText = new Text();
 			abstractText.width = this.width;
-			abstractText.htmlText = getAbstractText("loading...");;
 			abstractText.selectable = false;
 			
+			// Set loading and text in tooltip
+			this.startLoad();
+			this.updateText();
+			
 			// Add elements and events
-			addElement(abstractText);
-			addEventListener(MouseEvent.CLICK, OpenArticle);
-			addEventListener(MouseEvent.MOUSE_OVER, KeepUp);
-			addEventListener(MouseEvent.MOUSE_OUT, RestartTimer);
+			this.addElement(abstractText);
+			
+			this.addEventListener(MouseEvent.CLICK, OpenArticle);
+			this.addEventListener(MouseEvent.MOUSE_OVER, KeepUp);
+			this.addEventListener(MouseEvent.MOUSE_OUT, RestartTimer);
 			
 			// Setup the timer
 			this.abstractTimer = new Timer(400, 1);
@@ -81,7 +98,14 @@ package
 		public function setText(data : XML) : void
 		{
 			//TODO: use the *ALL* of the abstract data (link especially).
-			abstractText.htmlText = getAbstractText(Parse.parseAbstract(data));
+			var result : Abstract = Parse.parseAbstract(data);
+			
+			this.articleTitle = result.title;
+			this.articleAbstract = result.abstract;
+			this.articleLink = result.link;
+			
+			this.stopLoad();
+			this.updateText();
 		}
 		
 		/**
@@ -92,38 +116,83 @@ package
 		public function reportError(data : String) : void
 		{
 			Alert.show("Could not contact WikiGraph server");
+			
+			this.stopLoad();
+			this.updateText();
 		}
 		
 		/**
-		 * Returns an html string with the abstract title and text
-		 * to be inserted into the tooltip.
+		 * Returns true if the tooltip is currently loading an abstract.
+		 * 
+		 * @return
+		 */
+		public function isLoading() : Boolean
+		{
+			return this.loading;
+		}
+		
+		/**
+		 * Sets the Text of the tool tip to be an html string
+		 * with title and abstract.
 		 * 
 		 * @param	information
 		 * @return
 		 */
-		private function getAbstractText(text:String) : String
+		private function updateText() : void
 		{
-			var out:String = new String();
+			this.title = this.articleTitle;
 			
-			out = "<u>Title</u>: <b>" + articleTitle + "</b>";
-			out += "<br><br><font size = '12'>";
-			out += text;
-			out += "</font>";
+			var html:String = new String();
 			
-			return out;
+			html = "<font size = '12'>";
+			
+			if (this.isLoading())
+			{
+				html += "loading...";
+			}
+			else if (this.articleAbstract.length == 0)
+			{
+				html += "Abstract not available for this article.";
+			}
+			else
+			{
+				html += articleAbstract;
+			}
+			
+			html += "</font>";
+			
+			this.abstractText.htmlText = html;
+		}
+		
+		/**
+		 * Indicate that this tooltip is loading.
+		 */
+		private function startLoad() : void
+		{
+			this.loading = true;
+		}
+		
+		/**
+		 * Indicate that this tooltip is no longer loading.
+		 */
+		private function stopLoad() : void
+		{
+			this.loading = false;
 		}
 		
 		/**
 		 * Open the article in a new page when tool tip is clicked.
+		 * This can only happen when the tooltip is not loading AND
+		 * a link exists.
 		 * 
 		 * @param	event
 		 */
 		private function OpenArticle(event:MouseEvent):void
 		{
-			//TODO: use the url from the abstractGet, once parseAbstract is updated.
-			
-			var url : String = Config.wikiPath + escape(articleTitle);
-			navigateToURL(new URLRequest(url), "_blank");
+			if (!this.isLoading() && this.articleLink)
+			{
+				navigateToURL(new URLRequest(this.articleLink), "_blank");
+			}
 		}
 		
 		/**
@@ -153,6 +222,7 @@ package
 		 */
 		private function TimerDing(event:TimerEvent):void
 		{
+			this.stopLoad();
 			visible = false;
 		}
 		
