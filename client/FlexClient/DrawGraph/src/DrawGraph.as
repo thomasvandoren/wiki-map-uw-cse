@@ -28,8 +28,12 @@ package
 		//tells the program to draw a bunch of nodes in the drawing area
 		//NOTE: DrawG now requires a center Node to be provided, as the returned
 		//list of nodes does not necessarily have the article itself come first
-		public static function DrawG(a:Array, environment:Group, cNode:Node):void {
+		public static function DrawG(a:Array, graph:Graph, cNode:Node):void 
+		{
+			
 			ToolTipManager.enabled = false;
+			var environment : Group = graph.returnGraph();
+			
 			if (a.length > 0) {
 				environment.removeAllElements(); //clear the previous graph
 				
@@ -41,7 +45,7 @@ package
 					j = (2 * Math.PI) / (a.length - 1);
 				}
 				
-				var centerNode:Node = new Node(environment,j,0); //the center node is created first, since it always belongs in the middle
+				var centerNode:Node = new Node(graph,j,0); //the center node is created first, since it always belongs in the middle
 				if(cNode != null) {
 					centerNode.id = cNode.id;
 					centerNode.label = cNode.label;
@@ -61,7 +65,7 @@ package
 				for (var i:Number = 1; i < 25 && i < a.length; i++) {
 					var lengthCheck:String = a[i][1];
 					if (lengthCheck.length > 0) {
-					var newNode:Node = new Node(environment,j,i);
+					var newNode:Node = new Node(graph,j,i);
 					newNode.id = a[i][0];
 					newNode.title = a[i][1];
 					var title:String = new String(a[i][1]);
@@ -96,14 +100,17 @@ package
 		 * @param	results
 		 * @param	env
 		 */
-		public static function DrawSearch(results:Array, environment:Group) : void
+		public static function DrawSearch(results:Array, graph:Graph) : void
 		{
+			//TODO: check that this is actually a search result set, and not a graph...
 			if (results.length == 0)
 			{
 				Alert.show("Search found no results.");
 			}
 			else
 			{
+				var environment : Group = graph.returnGraph();
+				
 				clearGraph(environment);
 				
 				var max:int = (results.length > 24) ? 24 : results.length;
@@ -133,7 +140,7 @@ package
 						var x:int = ((j + 1) * offsetX) + (j * width);
 						var index:int = (i * cols) + j;
 						
-						drawSearchNode(environment, index, results[index][0], results[index][1], x, y, width, height);
+						drawSearchNode(graph, index, results[index][0], results[index][1], x, y, width, height);
 					}
 					
 				}
@@ -144,7 +151,7 @@ package
 					var lastX:int = ((lastJ + 1) * offsetX) + (lastJ * width);
 					var lastI:int = (rows * cols) + lastJ;
 					
-					drawSearchNode(environment, index, results[lastI][0], results[lastI][1], lastX, lastY, width, height);
+					drawSearchNode(graph, index, results[lastI][0], results[lastI][1], lastX, lastY, width, height);
 				}
 				
 				// draw last row
@@ -174,14 +181,16 @@ package
 		 * @param	width
 		 * @param	height
 		 */
-		private static function drawSearchNode(environment:Group, index:int, id:String, title:String, x:int, y:int, width:int, height:int) : void
+		private static function drawSearchNode(graph:Graph, index:int, id:String, title:String, x:int, y:int, width:int, height:int) : void
 		{
 			//TODO: make a more relevant node for search results...
+			
+			var environment : Group = graph.returnGraph();
 			
 			//FIXME: abstract tool tips do not work. Why not?
 			//FIXME: clicking on a node does not request the graph for that node!
 			
-			var newNode:Node = new Node(environment, 0, new Number(index));
+			var newNode:Node = new Node(graph, 0, new Number(index));
 			
 			newNode.id = id;
 			

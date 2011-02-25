@@ -20,21 +20,25 @@
 		import Network;
 		import DrawSplash;
 		import SearchButton;
+		import Graph;
 		
 		public var myAutoComplete:CustomAutoComplete;
 		private var searchBtn : SearchButton;
+		private var graphObj : Graph;
 		
 		/**
 		 * Initialize the application.
 		 */
 		public function initu():void {
 			
+			// Create a class to handle graph operations.
+			graphObj = new Graph(graph, this);
+			
 			// Create autocomplete bar object.
-			myAutoComplete = new CustomAutoComplete(auto, graph);
-			graph.visible = false;	
+			myAutoComplete = new CustomAutoComplete(auto, graphObj);
 			
 			// Create class to handle search button activity.
-			searchBtn = new SearchButton(searchButton, myAutoComplete, graph);
+			searchBtn = new SearchButton(searchButton, myAutoComplete, graphObj);
 			
 			// Set width of the text input and location of search button.
 			setTextInputSize();
@@ -49,17 +53,12 @@
 		 * @param	event
 		 */
 		private function resizeHandler(event:Event):void {
-			graph.width = this.width;
-			graph.height = this.height;
+			graphObj.resize();
 			
 			auto.width = this.width;
 			auto.height = this.height;
 			
 			setTextInputSize(); 
-			
-			if (graph.visible) {
-				Network.reDraw(graph);
-			}
 		}
 		
 		/**
@@ -76,6 +75,8 @@
 		 * @param	env
 		 */
 		public function drawSplash(env:Group):void {
+			this.graphObj.hide();
+			
 			DrawSplash.DrawS(env);
 		}
 		

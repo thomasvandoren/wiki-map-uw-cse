@@ -17,10 +17,11 @@ package
 		import Network;
 		import Parse;
 		import DrawGraph;
+		import Graph;
 		
 		private var btn : Button;
 		private var ac : CustomAutoComplete;
-		private var graph : Group;
+		private var graph : Graph;
 		
 		/**
 		 * Create a new search button.
@@ -29,7 +30,7 @@ package
 		 * @param	ac
 		 * @param	graph
 		 */
-		public function SearchButton(btn : Button, ac : CustomAutoComplete, graph : Group) 
+		public function SearchButton(btn : Button, ac : CustomAutoComplete, graph : Graph) 
 		{
 			this.btn = btn;
 			this.ac = ac;
@@ -57,7 +58,18 @@ package
 		 */
 		public function reportSearchResult(data : XML) : void
 		{
-			DrawGraph.DrawSearch(Parse.parseSearch(data), graph);
+			//
+			// If an exact match was found, a graph will be returned.
+			//
+			
+			if (data.name() == "graph")
+			{
+				graph.loadGraph(data);
+			}
+			else
+			{
+				DrawGraph.DrawSearch(Parse.parseSearch(data), graph);
+			}
 		}
 		
 		/**
@@ -72,7 +84,7 @@ package
 		
 		public function setX() : void
 		{
-			this.btn.x = this.graph.width - 103;
+			this.btn.x = this.graph.width() - 103;
 		}
 	}
 

@@ -21,17 +21,18 @@ package
 		import spark.components.Group;
 		
 		import Network;
+		import Graph;
 		
 		private var myTimer:Timer;
 		private var keyCount:int;
 		private var ac:AutoComplete;
 		private var searchText:TextInput;
 		
-		private var graph:Group;
+		private var graph:Graph;
 		private var env:Group;
 		private var list:Array;
 		
-		public function CustomAutoComplete(environment:Group, g:Group) 
+		public function CustomAutoComplete(environment:Group, g:Graph) 
 		{
 			graph = g;
 			env = environment;
@@ -63,7 +64,10 @@ package
 		
 		//After 4 characters have been pressed, query the search. Reset the timer on each character.
 		private function timerKeyHandler(event:KeyboardEvent):void {
-			if (event.keyCode != Keyboard.UP && event.keyCode != Keyboard.DOWN) {
+			if (event.keyCode != Keyboard.UP && 
+				event.keyCode != Keyboard.DOWN && 
+				event.keyCode != Keyboard.ENTER) 
+			{
 				keyCount = (keyCount + 1) % 4;
 				if (myTimer.running == false) {
 					myTimer.start();
@@ -88,12 +92,33 @@ package
 		}
 		
 		/**
+		 * Receives the xml results for a graph. Sends them to DrawGraph.
+		 * 
+		 * @param	data
+		 */
+		/*public function loadGraph(data : XML) : void
+		{
+			// Get result array
+			var a : Array = Parse.parseGraph(data);
+			
+			// Create center node
+			var n : Node = new Node(graph, 0, a[0][0]);
+			n.title = a[0][1];
+			n.label = a[0][1];
+			n.id = a[0][0];
+			
+			//TODO: update this if DrawGraph changes.
+			DrawGraph.DrawG(a, graph, n);
+			graph.visible = true;
+		}*/
+		
+		/**
 		 * Receives the xml results from an autocomplete query. Sends them to the
 		 * autocomplete data provider.
 		 * 
 		 * @param	data
 		 */
-		private function loadResults(data : XML) : void
+		public function loadResults(data : XML) : void
 		{
 			ac.dataProvider = Parse.parseAutoComplete(data);
 		}
@@ -103,7 +128,7 @@ package
 		 * 
 		 * @param	data
 		 */
-		private function reportError(data : String) : void
+		public function reportError(data : String) : void
 		{
 			Alert.show("Could not contact search service");
 		}
@@ -119,8 +144,9 @@ package
 			trace("Selected " + item[1].toString());
 			trace("Selected " + item[0].toString());
 			
-			//TODO: move this to Network.graphGet(...)
-			Network.search("id", item[0].toString(), graph);
+			this.graph.getGraph(item[0][0]);
+			
+			// Network.graphGet(item[0].toString(), loadGraph, reportError);
 			
 			//TODO: should we leave the search text in? Most search engines do...
 			ac.text = "";
