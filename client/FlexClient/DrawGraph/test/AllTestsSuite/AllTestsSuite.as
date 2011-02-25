@@ -21,9 +21,12 @@ package AllTestsSuite
 		public var customAutoCompleteTest : CustomAutoCompleteTests;
 		public var drawGraphTest : DrawGraphTests;
 		public var drawSplashTest : DrawSplashTests;
+		public var graphTest : GraphTests;
+		public var mainTest : MainTests;
 		public var networkTest : NetworkTests;
 		public var nodeTest : NodeTests;
 		public var parseTest : ParseTests;
+		public var searchButtonTest : SearchButtonTests;
 	}
 
 }

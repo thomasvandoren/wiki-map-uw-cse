@@ -20,15 +20,6 @@ package
 		
 		private static var requestLoader : URLLoader;
 		
-		private static var myXML:XML;
-		private static var myLoader:URLLoader;
-		private static var XMLOutput:XML;
-		public static var env:Group;
-		private static var list:Array;
-		
-		public static var toolTip:AbstractToolTip;
-		public static var centerNode:Node;
-		
 		/**
 		 * Make an async request for an abstract.
 		 * 
