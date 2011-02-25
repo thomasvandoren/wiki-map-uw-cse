@@ -147,6 +147,8 @@ package AllTestsSuite.tests
 		
 		private var service : HTTPServiceStub;
 		
+		//TODO: factor these values into a common class accessible by all test classes.
+		
 		private var testAbstractXML : XML = 
 			<info id="42">
 				<title>Some random title</title>
