@@ -2,7 +2,8 @@ package
 {
 	
 	/**
-	 * ...
+	 * This class makes *all* of the requests to the data services api.
+	 * 
 	 * @author Michael Rush
 	 */
 	public class Network 
@@ -14,7 +15,10 @@ package
 		import flash.net.URLRequest;
 		import flash.xml.XMLNode;
 		import spark.components.Group;
+		
 		import Config;
+		
+		private static var requestLoader : URLLoader;
 		
 		private static var myXML:XML;
 		private static var myLoader:URLLoader;
@@ -25,11 +29,71 @@ package
 		public static var toolTip:AbstractToolTip;
 		public static var centerNode:Node;
 		
-		//Used to get the appropriate abstract for a cooresponding toolTip
-		public static function abstractGet(arg:String, graph:Group, specificTip:AbstractToolTip):void {
-			env = graph;
-			toolTip = specificTip;
-			requestData(Config.dataPath + "abstract/" + arg + "/");
+		/**
+		 * Make an async request for an abstract.
+		 * 
+		 * @param	id
+		 * @param	successCb
+		 * @param	failureCb
+		 */
+		public static function abstractGet(id : String, successCb : Function, failureCb : Function) : void
+		{
+			//TODO: validate/sanitize id
+			apiRequest("abstract/" + id + "/", successCb, failureCb);
+		}
+		
+		/**
+		 * Make an async request for autocomplete results.
+		 * 
+		 * @param	phrase
+		 * @param	successCb
+		 * @param	failureCb
+		 */
+		public static function autocompleteGet(phrase : String, successCb : Function, failureCb : Function) : void
+		{
+			//TODO: validate/sanitize phrase!
+			apiRequest("autocomplete/?q=" + phrase, successCb, failureCb);
+		}
+		
+		/**
+		 * Makes a request to the specified api url. The url and api type must be set in config.
+		 * 
+		 * @param	url			The relative api url (e.g. search/?q=My+Favorite+Search)
+		 * @param	successCb
+		 * @param	failureCb
+		 */
+		private static function apiRequest(url : String, successCb : Function, failureCb : Function) : void
+		{
+			// Close any remaining requests
+			try
+			{
+				requestLoader.close()
+			}
+			catch (e : Error)
+			{
+				// Nothing was loading...
+			}
+			
+			var xmlRequest : URLRequest = new URLRequest(Config.apiUrl + url);
+			requestLoader = new URLLoader(xmlRequest);
+			
+			// Call successCb with XML result when complete.
+			requestLoader.addEventListener(Event.COMPLETE, function (event:Event) : void
+			{
+				successCb(new XML(requestLoader.data));
+			});
+			
+			// Call failureCb with string result if error occurs.
+			requestLoader.addEventListener(IOErrorEvent.IO_ERROR, function (event:Event) : void
+			{
+				failureCb(requestLoader.data.toString());
+			});
+			
+            requestLoader.load(xmlRequest);
+		}
+		
+		private static function xmlHandler(event : Event) : void {
+			
 		}
 		
 		//Used to get the appropriate graph for a cooresponding ID
@@ -48,9 +112,7 @@ package
 			else if (type == "id") {
 				requestData(Config.dataPath + "graph/" + arg + "/");
 			} 
-			else if (type == "autocomplete") {
-				requestData(Config.dataPath + "autocomplete/?q=" + arg);
-			}
+			
 		}	
 		
 		//Does a URL request to the server and attempts to recieve an XML response.
@@ -76,9 +138,6 @@ package
 				list = Parse.parseGraph(myXML);
 				centerNode = singleNode(env, list[0][1], list[0][0]);
 				draw();
-			} else if (myXML.name() == "info") {
-				var abstractText:String = Parse.parseAbstract(myXML);
-				toolTip.UpdateAbstract(abstractText);
 			} else if (myXML.name() == "search") {
 				list = Parse.parseSearch(myXML);
 				drawSearch();

@@ -1,23 +1,30 @@
 package  
 {
-	import flash.events.MouseEvent;
-	import flash.events.TimerEvent;
-	import flash.text.TextFormat;
-	import flash.utils.Timer;
-	import mx.controls.Button;
-	import mx.controls.Text;
-	import mx.styles.CSSStyleDeclaration;
-	import spark.components.Group;
-	import spark.components.BorderContainer;
+	
 	import flash.net.URLRequest;
-	import flash.net.navigateToURL;
-	import Config;
+	import spark.components.BorderContainer;
+	
 	/**
 	 * ...
 	 * @author Austin Nakamura
 	 */
 	public class AbstractToolTip extends BorderContainer 
 	{
+		
+		import flash.events.MouseEvent;
+		import flash.events.TimerEvent;
+		import flash.text.TextFormat;
+		import flash.utils.Timer;
+		import mx.controls.Button;
+		import mx.controls.Text;
+		import mx.styles.CSSStyleDeclaration;
+		import spark.components.Group;
+		import flash.net.navigateToURL;
+		import mx.controls.Alert;
+		
+		import Config;
+		import Network;
+		
 		public static var fontSize:int;
 		public var abstractText:Text;
 		public var environment:Group;
@@ -25,10 +32,66 @@ package
 		public var abStyle:CSSStyleDeclaration;
 		public var articleTitle:String;
 		public var articleID:String;
-		public var articleURL:URLRequest;
-		public function UpdateAbstract(information:String):void
+		
+		/**
+		 * Create a new tool tip and requests abstract text from the services.
+		 * 
+		 * @param	environment
+		 * @param	articleTitle
+		 * @param	articleID
+		 */
+		public function AbstractToolTip(environment:Group,articleTitle:String,articleID:String) 
 		{
-			abstractText.htmlText = getAbstractText(information);
+			// Make the tooltip slightly transparent.
+			alpha = 0.9;
+			
+			// Set the article name and id
+			this.articleTitle = articleTitle;
+			this.articleID = articleID;
+			
+			// Set the height and width of the toolTip
+			this.height = environment.height / 3;
+			this.width = environment.width / 3;
+			
+			// Create the abstract text and set default loading text
+			abstractText = new Text();
+			abstractText.width = this.width;
+			abstractText.htmlText = getAbstractText("loading...");;
+			abstractText.selectable = false;
+			
+			// Add elements and events
+			addElement(abstractText);
+			addEventListener(MouseEvent.CLICK, OpenArticle);
+			addEventListener(MouseEvent.MOUSE_OVER, KeepUp);
+			addEventListener(MouseEvent.MOUSE_OUT, RestartTimer);
+			
+			// Setup the timer
+			this.abstractTimer = new Timer(400, 1);
+			this.abstractTimer.addEventListener(TimerEvent.TIMER, TimerDing);
+			
+			// Send request for abstract.
+			Network.abstractGet(articleID, setText, reportError);
+		}
+		
+		/**
+		 * Receives XML callback for abstract. Sets the abstract text.
+		 * 
+		 * @param	data
+		 */
+		public function setText(data : XML) : void
+		{
+			//TODO: use the *ALL* of the abstract data (link especially).
+			abstractText.htmlText = getAbstractText(Parse.parseAbstract(data));
+		}
+		
+		/**
+		 * Report server error on request failure.
+		 * 
+		 * @param	data
+		 */
+		public function reportError(data : String) : void
+		{
+			Alert.show("Could not contact WikiGraph server");
 		}
 		
 		/**
@@ -50,65 +113,45 @@ package
 			return out;
 		}
 		
+		/**
+		 * Open the article in a new page when tool tip is clicked.
+		 * 
+		 * @param	event
+		 */
 		private function OpenArticle(event:MouseEvent):void
 		{
-			articleURL = new URLRequest(Config.wikiPath + articleTitle);
-			navigateToURL(articleURL, "_blank");
-			//abstractText.text = "grumble";
-			
+			//TODO: use the url from the abstractGet, once parseAbstract is updated.
+			navigateToURL(new URLRequest(Config.wikiPath + articleTitle), "_blank");
 		}
+		
+		/**
+		 * Restart the timer to keep the tooltip open on mouse over.
+		 * 
+		 * @param	event
+		 */
 		private function KeepUp(event:MouseEvent):void
 		{
 			abstractTimer.reset();
 		}
+		
+		/**
+		 * Restart the timer for displaying tooltip.
+		 * @param	event
+		 */
 		private function RestartTimer(event:MouseEvent):void
 		{
 			
 			abstractTimer.start();
 		}
+		
+		/**
+		 * Hide element after a certain period.
+		 * 
+		 * @param	event
+		 */
 		private function TimerDing(event:TimerEvent):void
 		{
 			visible = false;
-		}
-		//constructor, on creation we'll expand it to call the server for the abstract info
-		public function AbstractToolTip(environment:Group,articleTitle:String,articleID:String) 
-		{
-			alpha = 0.9;
-			//transfer the article name
-			this.articleTitle = articleTitle;
-			this.articleID = articleID;
-			
-			var defaultText:String = new String();
-			
-			//can set the font style with this
-			//testing (I'll change it later) will recieve the abstract
-			//where it will be formatted
-			defaultText = getAbstractText("loading...");
-			
-			//sets the height and width of the toolTip
-			this.height = environment.height/3;
-			this.width = environment.width / 3;
-			
-			//creates the abstract text
-			abstractText = new Text();
-			abstractText.width = this.width;
-			abstractText.htmlText = defaultText;
-			abstractText.selectable = false;
-			
-			//add elements and events
-			addElement(abstractText);
-			addEventListener(MouseEvent.CLICK, OpenArticle);
-			addEventListener(MouseEvent.MOUSE_OVER, KeepUp);
-			addEventListener(MouseEvent.MOUSE_OUT, RestartTimer);
-			
-			//setup the timer
-			this.abstractTimer = new Timer(400, 1);
-			this.abstractTimer.addEventListener(TimerEvent.TIMER, TimerDing);
-			
-			//at this point, start a search for the abstract text
-			//once we get it, it will probably return to some function
-			//which will update the abstractText object to have the article text in it.
-			Network.abstractGet(articleID, environment, this);
 		}
 		
 	}

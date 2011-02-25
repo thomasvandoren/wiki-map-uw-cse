@@ -1,11 +1,10 @@
 package  
 {
 	/**
-	 * ...
+	 * This class creates and handles the autocomplete enabled search bar.
+	 * 
 	 * @author Michael Rush
 	 */
-	
-	
 	public class CustomAutoComplete 
 	{		
 		import flash.events.Event;
@@ -21,13 +20,13 @@ package
 		import flash.events.IOErrorEvent;
 		import spark.components.Group;
 		
+		import Network;
+		
 		private var myTimer:Timer;
 		private var keyCount:int;
 		private var ac:AutoComplete;
 		private var searchText:TextInput;
-		private var myLoader:URLLoader;
-		private var myXMLURL:URLRequest;
-		private var URL:String;
+		
 		private var graph:Group;
 		private var env:Group;
 		private var list:Array;
@@ -53,12 +52,6 @@ package
             myTimer.addEventListener("timer", timerTickHandler);
 			searchText = new TextInput();
 			
-			//Initialize network components. TODO: Move to Network.as
-			URL = Config.dataPath + "autocomplete/";
-			myXMLURL = new URLRequest(URL);
-			myLoader = new URLLoader();
-			myLoader.addEventListener(Event.COMPLETE, xmlLoaded);
-			myLoader.addEventListener(IOErrorEvent.IO_ERROR, errorHandler);
 		}
 		
 		//After .5 seconds (if no characters were typed), reset the timer and query the search
@@ -90,19 +83,28 @@ package
 		private function timerHandler():void {
 			searchText.text = ac.text;
 			keyCount = 0;
-			myXMLURL.url = (URL + "?q=" + searchText.text)
-			myLoader.load(myXMLURL);
+			
+			Network.autocompleteGet(searchText.text, this.loadResults, this.reportError);
 		}
 		
-		//Sets the autocomplete dataprovider equal to the returns titles
-		private function xmlLoaded(event:Event):void {
-			var myXML:XML = XML(myLoader.data);
-			ac.dataProvider = Parse.parseAutoComplete(myXML);
+		/**
+		 * Receives the xml results from an autocomplete query. Sends them to the
+		 * autocomplete data provider.
+		 * 
+		 * @param	data
+		 */
+		private function loadResults(data : XML) : void
+		{
+			ac.dataProvider = Parse.parseAutoComplete(data);
 		}
 		
-		//If the URL request was a failure, then
-		//Alerts the user if the page could not be found
-		private static function errorHandler(event:Event):void {
+		/**
+		 * Report error to user if unable to complete request.
+		 * 
+		 * @param	data
+		 */
+		private function reportError(data : String) : void
+		{
 			Alert.show("Could not contact search service");
 		}
 		
@@ -116,6 +118,7 @@ package
 			var item:Object = event.data;
 			trace("Selected " + item[1].toString());
 			trace("Selected " + item[0].toString());
+			
 			Network.search("id", item[0].toString(), graph);
 			
 			//TODO: should we leave the search text in? Most search engines do...
