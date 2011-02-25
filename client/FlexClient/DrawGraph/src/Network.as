@@ -8,7 +8,7 @@ package
 	 */
 	public class Network 
 	{
-		import mx.controls.Alert;
+		
 		import flash.events.Event;
 		import flash.events.IOErrorEvent;
 		import flash.net.URLLoader;
