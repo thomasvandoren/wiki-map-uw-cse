@@ -17,7 +17,12 @@ package
 		
 		import Config;
 		
-		private static var service : HTTPService = new HTTPService();
+		private static var service : HTTPService;
+		
+		public static function set serviceProvider(service : HTTPService) : void
+		{
+			Network.service = service;
+		}
 		
 		/**
 		 * Make an async request for an abstract.
@@ -81,6 +86,11 @@ package
 		private static function apiRequest(url : String, successCb : Function, failureCb : Function) : void
 		{
 			trace("apiRequest(" + url + ")");
+			
+			if (service == null)
+			{
+				service = new HTTPService();
+			}
 			
 			// Cancel any remaining requests
 			service.cancel();
