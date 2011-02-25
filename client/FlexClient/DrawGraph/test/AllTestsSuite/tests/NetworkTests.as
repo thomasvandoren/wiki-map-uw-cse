@@ -88,6 +88,9 @@ package AllTestsSuite.tests
 			
 		}
 		
+		/**
+		 * Test that searchGet accesses the services.
+		 */
 		[Test(async, description = "Test searchGet function")]
 		public function testSearchGet() : void
 		{
