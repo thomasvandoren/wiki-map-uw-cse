@@ -121,7 +121,9 @@ package
 		private function OpenArticle(event:MouseEvent):void
 		{
 			//TODO: use the url from the abstractGet, once parseAbstract is updated.
-			navigateToURL(new URLRequest(Config.wikiPath + articleTitle), "_blank");
+			
+			var url : String = Config.wikiPath + escape(articleTitle);
+			navigateToURL(new URLRequest(url), "_blank");
 		}
 		
 		/**
