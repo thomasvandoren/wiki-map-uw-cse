@@ -55,6 +55,12 @@ package
 			apiRequest("autocomplete/?q=" + phrase, successCb, failureCb);
 		}
 		
+		public static function searchGet(phrase : String, successCb : Function, failureCb : Function) : void
+		{
+			//TODO: validate/sanitize phrase!
+			apiRequest("search/?q=" + phrase, successCb, failureCb);
+		}
+		
 		/**
 		 * Makes a request to the specified api url. The url and api type must be set in config.
 		 * 

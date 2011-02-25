@@ -11,91 +11,74 @@
 		
 	<fx:Script>
 		<![CDATA[
-		import Config;
-		import mx.collections.ArrayCollection;
-		import org.flashcommander.event.CustomEvent;
-		import flash.display.Loader;
-		import flash.display.MovieClip;
+		
 		import flash.events.Event;
-		import flash.events.MouseEvent;
-		import flash.net.URLRequest;
-		import flash.text.TextField;
-		import flash.text.TextFormat;
-		import mx.controls.Image;
 		import mx.controls.Text;
-		import Parse;
-		import Node;
+		import spark.components.Group;
+		
 		import DrawGraph;
 		import Network;
 		import DrawSplash;
-		import spark.components.Group;
-		import flash.ui.Keyboard;
-		import flash.events.KeyboardEvent;
-		import flash.utils.Timer;
-		public var myAutoComplete:CustomAutoComplete;
+		import SearchButton;
 		
-		// handles the Enter on the keyboard pressed
-		public function enterHandler(event:KeyboardEvent):void{
-			if(event.keyCode == Keyboard.ENTER){
-				handleSearch(event);
-			}
+		public var myAutoComplete:CustomAutoComplete;
+		private var searchBtn : SearchButton;
+		
+		/**
+		 * Initialize the application.
+		 */
+		public function initu():void {
+			
+			// Create autocomplete bar object.
+			myAutoComplete = new CustomAutoComplete(auto, graph);
+			graph.visible = false;	
+			
+			// Create class to handle search button activity.
+			searchBtn = new SearchButton(searchButton, myAutoComplete, graph);
+			
+			// Set width of the text input and location of search button.
+			setTextInputSize();
+			
+			// Set resizable behavior for window.
+			this.addEventListener(Event.RESIZE, resizeHandler);
+			
 		}
 		
-		// resizes graph
+		/**
+		 * Resize the graph and navigation controls.
+		 * @param	event
+		 */
 		private function resizeHandler(event:Event):void {
 			graph.width = this.width;
 			graph.height = this.height;
+			
 			auto.width = this.width;
 			auto.height = this.height;
-			setTextInput();
+			
+			setTextInputSize(); 
+			
 			if (graph.visible) {
 				Network.reDraw(graph);
 			}
 		}
 		
-		// sets width of the text input
-		private function setTextInput():void {
+		/**
+		 * Set width of the text input and search button location.
+		 */
+		private function setTextInputSize():void {
 			myAutoComplete.reSize();
-			searchButton.x = graph.width-103;
+			searchBtn.setX();
 		}
 		
-		public function initu():void {
-			myAutoComplete = new CustomAutoComplete(auto, graph);
-			graph.visible = false;	
-			
-			searchButton.addEventListener(MouseEvent.CLICK, handleSearch);
-			// sets width of the text input
-			setTextInput();
-			// adds resizable
-			this.addEventListener(Event.RESIZE, resizeHandler);
-			
-		}
-		
-		//Handles mouse click events on the search button to search by the given searchText
-		private function handleSearch(event:Event):void {
-			search("search", myAutoComplete.getText());
-		}
-		
-		//Sends a search request of given type, with given arguments over the network to the backend.
-		//Type may currently be
-		//-"name" to search by article name, 
-		//-"id" to search by article id (not yet working on backend),
-		//-"autocomplete" to get a list of relevant search requests (May change once backend gets graph and search request in one query)
-		private function search(type:String, arg:String):void {
-			Network.search(type, arg, graph);		
-		}
-		
-		// draw splace 
+		/**
+		 * Draw splash
+		 * 
+		 * @param	env
+		 */
 		public function drawSplash(env:Group):void {
 			DrawSplash.DrawS(env);
 		}
 		
-		// draw logo
-		//public function drawLogo():void{
-		//	logoButton.htmlText = "<font size='16'><b>  WikiGraph</b></font>";
-		//	logoButton.selectable = false;
-		//}
-
 		]]> 
 	</fx:Script>
 	
@@ -108,5 +91,5 @@
 	
 	<s:Group id="auto" height="100%" width="100%">
 	</s:Group>
-
+	
 </s:Application>
