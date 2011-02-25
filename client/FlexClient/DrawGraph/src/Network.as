@@ -13,7 +13,6 @@ package
 		import flash.events.IOErrorEvent;
 		import flash.net.URLLoader;
 		import flash.net.URLRequest;
-		import flash.xml.XMLNode;
 		import spark.components.Group;
 		
 		import Config;
