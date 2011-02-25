@@ -54,6 +54,7 @@
     <element path="lib\flexunit-cilistener-4.0.0.swc" />
     <element path="lib\flexunit-flexcoverlistener-4.0.0.swc" />
     <element path="lib\flexunit-uilistener-4.0.0.swc" />
+    <element path="lib\flexRpcStubs-0.3.swc" />
   </libraryPaths>
   <!-- External Libraries -->
   <externalLibraryPaths>

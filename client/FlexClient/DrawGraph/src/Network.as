@@ -9,14 +9,15 @@ package
 	public class Network 
 	{
 		
-		import flash.events.Event;
-		import flash.events.IOErrorEvent;
-		import flash.net.URLLoader;
-		import flash.net.URLRequest;
+		import mx.rpc.AsyncToken;
+		import mx.rpc.Responder;
+		import mx.rpc.events.FaultEvent;
+		import mx.rpc.events.ResultEvent;
+		import mx.rpc.http.HTTPService;
 		
 		import Config;
 		
-		private static var requestLoader : URLLoader;
+		private static var service : HTTPService = new HTTPService();
 		
 		/**
 		 * Make an async request for an abstract.
@@ -81,36 +82,32 @@ package
 		{
 			trace("apiRequest(" + url + ")");
 			
-			// Close any remaining requests
-			try
-			{
-				requestLoader.close()
-			}
-			catch (e : Error)
-			{
-				// Nothing was loading...
-			}
+			// Cancel any remaining requests
+			service.cancel();
 			
-			var xmlRequest : URLRequest = new URLRequest(Config.apiUrl + url);
-			requestLoader = new URLLoader(xmlRequest);
+			// Set the request url and response type
+			service.url = Config.apiUrl + url;
+			service.resultFormat = "xml";
 			
-			// Call successCb with XML result when complete.
-			requestLoader.addEventListener(Event.COMPLETE, function (event:Event) : void
-			{
-				trace("apiRequest -> COMPLETE");
-				
-				successCb(new XML(requestLoader.data));
-			});
+			// Readonly api only recognizes GET requests
+			service.method = "GET";
 			
-			// Call failureCb with string result if error occurs.
-			requestLoader.addEventListener(IOErrorEvent.IO_ERROR, function (event:Event) : void
-			{
-				trace("apiRequest -> IO_ERROR");
-				
-				failureCb(requestLoader.data.toString());
-			});
+			var token : AsyncToken = service.send();
+			token.addResponder(new Responder(function (event : ResultEvent) : void
+				{
+					
+					trace("apiRequest -> COMPLETE");
+					
+					var x : Object = event.result;
+					successCb(new XML(event.result));
+				}
+				, function (event:FaultEvent) : void
+				{
+					trace("apiRequest -> IO_ERROR");
+					
+					failureCb(event.fault.faultString);
+				}));
 			
-            requestLoader.load(xmlRequest);
 		}
 		
 	}
