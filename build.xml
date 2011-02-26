@@ -116,7 +116,8 @@
                     haltonFailure="false"
                     verbose="true"
                     localTrusted="true"
-		    headless="true"/>
+		    headless="true" 
+		    xcommand="xvnc"/>
         
         <!--
            Generate the jUnit-like reports.
