@@ -130,7 +130,7 @@ class GraphDB {
    * Takes the page id
    */
   public function get_abstract($id) {
-    $q = "SELECT abstract_text FROM abstract WHERE abstract_id = $id";
+    $q = "SELECT abstract_id, abstract_text FROM abstract WHERE abstract_id = $id";
     return $this->query($q);
   }
 
