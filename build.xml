@@ -115,7 +115,8 @@
                     toDir="${report.loc}"
                     haltonFailure="false"
                     verbose="true"
-                    localTrusted="true" />
+                    localTrusted="true"
+		    xcommand="xvnc"/>
         
         <!--
            Generate the jUnit-like reports.

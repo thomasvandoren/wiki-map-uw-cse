@@ -1,66 +1,104 @@
-package{
-	import flash.events.Event;
-	import flash.net.URLLoader;
-	import flash.net.URLRequest;
-	import flash.xml.XMLNode;
+package {
 	
 	public class Parse {
-		private static var list:Array;
-		private static var myXML:XML;
-		private static var myLoader:URLLoader;
 		
-		public static function parseXML(myXML:XML):Array {
-			list = new Array();
+		/**
+		 * Parses a graph XML document and returns an array of array with the relevant information.
+		 * 
+		 * @param	myXML
+		 * @return
+		 */
+		public static function parseGraph(myXML : XML) : Array
+		{
+			if (myXML.name() != "graph")
+			{
+				throw new Error("invalid graph xml format");
+			}
+			
+			var list : Array = new Array();
 			
 			// gets all children, called source, in a xml file
-			var node:XMLList = myXML.children();
-			
-			if (node.length() == 0)
-			{
-				throw new Error("malformed XML");
-			}
+			var node:XMLList = myXML.child("source");
 			
 			// puts all the children's id & title in two dimention array called list
 			for (var i:Number = 0; i < node.length(); i++) 
 			{
 				var a:Array = new Array();
 				
-				if (node[i].@id.length() != 1 || node[i].@title.length() != 1)
-				{
-					throw new Error("malformed XML");
-				}
-				
-				a[0] = node[i].attribute("id");
-				a[1] = node[i].attribute("title");
+				a[0] = node[i].@id;
+				a[1] = node[i].@title;
 				
 				list.push(a);
 			}
-			return list;
-		}
-		
-		public static function parseAbs(myXML:XML):String {
-			var abstract:String = new String();
-			var node:XMLList = myXML.child("abstract");
-			abstract = node[0].toString();
-			return abstract;
-		}
-		
-		public static function parseAutoComplete(myXML:XML):Array {
-			var children:XMLList = myXML.children();
-			var list:Array = new Array();
-			for (var i:Number = 0; i < children.length(); i++) {
-				list[i] = children[i].attribute("title").toString();
-			}
+			
 			return list;
 		}
 		
 		/**
-		 * Parse the search results and returns an array
+		 * Parse abstract XML and return the text only.
+		 * 
+		 * @param	myXML
+		 * @return
+		 */
+		public static function parseAbstract(myXML:XML) : Abstract 
+		{
+			
+			if (myXML.name() != "info")
+			{
+				throw new Error("invalid abstract xml format");
+			}
+			
+			if (myXML.child("title").length() != 1)
+			{
+				throw new Error("invalid abstract xml format : expects one title item");
+			}
+			
+			if (myXML.child("abstract").length() != 1)
+			{
+				throw new Error("invalid abstract xml format : expects one abstract item");
+			}
+			
+			if (myXML.child("link").length() != 1)
+			{
+				throw new Error("invalid abstract xml format : expects one link item");
+			}
+			
+			return new Abstract(
+				myXML.child("title")[0].toString(),
+				myXML.child("abstract")[0].toString(),
+				myXML.child("link")[0].toString());
+		}
+		
+		/**
+		 * Parse the autocomplete results and returns an array.
+		 * 
+		 * @param	myXML
+		 * @return
+		 */
+		public static function parseAutoComplete(myXML:XML) : Array 
+		{
+			if (myXML.name() != "list")
+			{
+				throw new Error("invalid autocomplete xml format ");
+			}
+			
+			return parseAutocompleteSearchItems(myXML.child("item"));
+		}
+		
+		/**
+		 * Parse the search results and returns an array.
+		 * 
+		 * @param	myXML
+		 * @return
 		 */
 		public static function parseSearch(myXML:XML) : Array  
 		{
-			var children:XMLList = myXML.children();
-			return parseItems(children);
+			if (myXML.name() != "search")
+			{
+				throw new Error("invalid search xml format");
+			}
+			
+			return parseAutocompleteSearchItems(myXML.child("item"));
 		}
 		
 		/**
@@ -68,21 +106,28 @@ package{
 		 * 
 		 * items = Array ( Array (id, title) ) 
 		 */
-		private static function parseItems(children:XMLList) : Array
+		private static function parseAutocompleteSearchItems(children:XMLList) : Array
 		{
-			var items:Array = new Array();
 			
-			for (var i:Number = 0; i < children.length(); i++)
+			var list : Array = new Array();
+			
+			// puts all the children's id & title in two dimention array called list
+			for (var i:Number = 0; i < children.length(); i++) 
 			{
-				var item:Array = new Array();
+				var a:Array = new Array();
 				
-				item[0] = children[i].attribute("id").toString();
-				item[1] = children[i].attribute("title").toString();
+				if (children[i].@id.length() != 1 || children[i].@title.length() != 1)
+				{
+					throw new Error("malformed XML");
+				}
 				
-				items.push(item);
+				a[0] = children[i].@id;
+				a[1] = children[i].@title;
+				
+				list.push(a);
 			}
 			
-			return items;
+			return list;
 		}
 	}
 }

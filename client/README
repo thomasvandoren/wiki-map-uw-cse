@@ -3,3 +3,12 @@ Copyright (c) 2011
 
 The WikiGraph frontend client ui source.
 
+The flash client source code is located in the FlexClient/DrawGraph directory. It 
+is often developed in FlashDevelop, though this is not a necessity.
+
+It can be built locally using FlashDevelop, the ant build script located at 
+FlexClient/DrawGraph/build.xml, or through make at the repo root. See the WikiGraph
+wiki for more details about developing, testing, building, and deploying the flash
+client.
+
+    http://code.google.com/p/wiki-map-uw-cse/w/list

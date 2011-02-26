@@ -1,6 +1,6 @@
 package AllTestsSuite 
 {
-	import AllTestsSuite.tests.AllTests;
+	import AllTestsSuite.tests.*;
 	
 	/**
 	 * This class manages all of the unit test classes.
@@ -15,7 +15,18 @@ package AllTestsSuite
 		// List all test classes to include in this Suite.
 		//
 		
-		public var allTest:AllTests;
+		public var allTest : AllTests;
+		
+		public var abstractToolTipTest : AbstractToolTipTests;
+		public var customAutoCompleteTest : CustomAutoCompleteTests;
+		public var drawGraphTest : DrawGraphTests;
+		public var drawSplashTest : DrawSplashTests;
+		public var graphTest : GraphTests;
+		public var mainTest : MainTests;
+		public var networkTest : NetworkTests;
+		public var nodeTest : NodeTests;
+		public var parseTest : ParseTests;
+		public var searchButtonTest : SearchButtonTests;
 	}
 
 }

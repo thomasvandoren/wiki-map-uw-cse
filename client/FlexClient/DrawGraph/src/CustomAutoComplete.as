@@ -1,11 +1,10 @@
 package  
 {
 	/**
-	 * ...
+	 * This class creates and handles the autocomplete enabled search bar.
+	 * 
 	 * @author Michael Rush
 	 */
-	
-	
 	public class CustomAutoComplete 
 	{		
 		import flash.events.Event;
@@ -21,18 +20,19 @@ package
 		import flash.events.IOErrorEvent;
 		import spark.components.Group;
 		
+		import Network;
+		import Graph;
+		
 		private var myTimer:Timer;
 		private var keyCount:int;
 		private var ac:AutoComplete;
 		private var searchText:TextInput;
-		private var myLoader:URLLoader;
-		private var myXMLURL:URLRequest;
-		private var URL:String;
-		private var graph:Group;
+		
+		private var graph:Graph;
 		private var env:Group;
 		private var list:Array;
 		
-		public function CustomAutoComplete(environment:Group, g:Group) 
+		public function CustomAutoComplete(environment:Group, g:Graph) 
 		{
 			graph = g;
 			env = environment;
@@ -53,12 +53,6 @@ package
             myTimer.addEventListener("timer", timerTickHandler);
 			searchText = new TextInput();
 			
-			//Initialize network components. TODO: Move to Network.as
-			URL = Config.dataPath + "autocomplete/";
-			myXMLURL = new URLRequest(URL);
-			myLoader = new URLLoader();
-			myLoader.addEventListener(Event.COMPLETE, xmlLoaded);
-			myLoader.addEventListener(IOErrorEvent.IO_ERROR, errorHandler);
 		}
 		
 		//After .5 seconds (if no characters were typed), reset the timer and query the search
@@ -70,7 +64,10 @@ package
 		
 		//After 4 characters have been pressed, query the search. Reset the timer on each character.
 		private function timerKeyHandler(event:KeyboardEvent):void {
-			if (event.keyCode != Keyboard.UP && event.keyCode != Keyboard.DOWN) {
+			if (event.keyCode != Keyboard.UP && 
+				event.keyCode != Keyboard.DOWN && 
+				event.keyCode != Keyboard.ENTER) 
+			{
 				keyCount = (keyCount + 1) % 4;
 				if (myTimer.running == false) {
 					myTimer.start();
@@ -90,19 +87,49 @@ package
 		private function timerHandler():void {
 			searchText.text = ac.text;
 			keyCount = 0;
-			myXMLURL.url = (URL + "?q=" + searchText.text)
-			myLoader.load(myXMLURL);
+			
+			Network.autocompleteGet(searchText.text, this.loadResults, this.reportError);
 		}
 		
-		//Sets the autocomplete dataprovider equal to the returns titles
-		private function xmlLoaded(event:Event):void {
-			var myXML:XML = XML(myLoader.data);
-			ac.dataProvider = Parse.parseXML(myXML);
+		/**
+		 * Receives the xml results for a graph. Sends them to DrawGraph.
+		 * 
+		 * @param	data
+		 */
+		/*public function loadGraph(data : XML) : void
+		{
+			// Get result array
+			var a : Array = Parse.parseGraph(data);
+			
+			// Create center node
+			var n : Node = new Node(graph, 0, a[0][0]);
+			n.title = a[0][1];
+			n.label = a[0][1];
+			n.id = a[0][0];
+			
+			//TODO: update this if DrawGraph changes.
+			DrawGraph.DrawG(a, graph, n);
+			graph.visible = true;
+		}*/
+		
+		/**
+		 * Receives the xml results from an autocomplete query. Sends them to the
+		 * autocomplete data provider.
+		 * 
+		 * @param	data
+		 */
+		public function loadResults(data : XML) : void
+		{
+			ac.dataProvider = Parse.parseAutoComplete(data);
 		}
 		
-		//If the URL request was a failure, then
-		//Alerts the user if the page could not be found
-		private static function errorHandler(event:Event):void {
+		/**
+		 * Report error to user if unable to complete request.
+		 * 
+		 * @param	data
+		 */
+		public function reportError(data : String) : void
+		{
 			Alert.show("Could not contact search service");
 		}
 		
@@ -116,7 +143,12 @@ package
 			var item:Object = event.data;
 			trace("Selected " + item[1].toString());
 			trace("Selected " + item[0].toString());
-			Network.search("id", item[0].toString(), graph);
+			
+			this.graph.getGraph(item[0][0]);
+			
+			// Network.graphGet(item[0].toString(), loadGraph, reportError);
+			
+			//TODO: should we leave the search text in? Most search engines do...
 			ac.text = "";
 		}
 		

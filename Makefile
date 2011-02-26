@@ -119,13 +119,13 @@ BRANCH = release
 # Where the config.php is generated (or copied) to.
 #
 
-CONFIGLOC = $(OUTPUT)/config.php
+CONFIGLOC = $(DEF_OUT)/config.php
 
 #
 # Where the version.php is generated (or copied) to.
 #
 
-VERSIONLOC = $(OUTPUT)/version.php
+VERSIONLOC = $(DEF_OUT)/version.php
 
 #
 # The SWF output dir, $OUTPUT/$FLEXOUT
@@ -218,8 +218,7 @@ checkapi: output config version
 #
 
 checkclient: output version
-#TODO: uncomment this when Xvnc is installed on cubist!!!
-#	ant -DANT_OUT=$(ANT_OUT) test
+	ant -DANT_OUT=$(ANT_OUT) test
 
 #
 # graph checks out a new repository on the release branch, runs the
@@ -235,7 +234,7 @@ graph: checkoutrelease  hudsongraph
 
 hudsongraph: checkclient clientoutput
 	$(MXMLC) $(MXMLCOPTS)
-	$(Z) $(OUTPUT)/$(CLIENTNAME)/$(BUILDTAG).tar.gz -C $(SWFDIR) $(SWFNAME) -C $(SWFTMPDIR) $(SWFTMPNAME) -C $(OUTPUT) version.php
+	$(Z) $(OUTPUT)/$(CLIENTNAME)/$(BUILDTAG).tar.gz -C $(SWFDIR) $(SWFNAME) -C $(SWFTMPDIR) $(SWFTMPNAME) -C $(DEF_OUT) version.php
 
 #
 # test does the same thing as graph, but on the dev branch.
@@ -250,7 +249,7 @@ test: checkoutdev hudsontest
 
 hudsontest: checkclient testclientoutput
 	$(MXMLC) $(MXMLCTESTOPTS)
-	$(Z) $(OUTPUT)/$(TESTCLIENTNAME)/$(BUILDTAG).tar.gz -C $(SWFDIR) $(SWFNAME) -C $(SWFTMPDIR) $(SWFTMPNAME) -C $(OUTPUT) version.php
+	$(Z) $(OUTPUT)/$(TESTCLIENTNAME)/$(BUILDTAG).tar.gz -C $(SWFDIR) $(SWFNAME) -C $(SWFTMPDIR) $(SWFTMPNAME) -C $(DEF_OUT) version.php
 
 #
 # api checks out a new repository on the release branch, runs the
@@ -265,7 +264,7 @@ api: checkoutrelease hudsonapi
 #
 
 hudsonapi: checkapi apioutput
-	$(Z) $(OUTPUT)/$(APINAME)/$(BUILDTAG).tar.gz -C services $(FINDPHPSERVICES) -C $(OUTPUT) version.php
+	$(Z) $(OUTPUT)/$(APINAME)/$(BUILDTAG).tar.gz -C services $(FINDPHPSERVICES) -C $(DEF_OUT) version.php
 
 #
 # testapi does the same thing as api, just on the dev branch.
@@ -279,7 +278,7 @@ testapi: checkoutdev hudsontestapi
 #
 
 hudsontestapi: checkapi testapioutput
-	$(Z) $(OUTPUT)/$(TESTAPINAME)/$(BUILDTAG).tar.gz -C services $(FINDPHPSERVICES) -C $(OUTPUT) version.php
+	$(Z) $(OUTPUT)/$(TESTAPINAME)/$(BUILDTAG).tar.gz -C services $(FINDPHPSERVICES) -C $(DEF_OUT) version.php
 
 #
 # These output targets create the necessary directories for
