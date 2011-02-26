@@ -13,7 +13,7 @@ as they will be on the build server.
 The unit tests can also be run from FlashDevelop.
 
   * Open DrawGraph.as3proj in FlashDevelop
-  * Right click on tests/TestRunner.mxml and select "Always Compile"
+  * Right click on tests/DeveloperTest.mxml and select "Always Compile"
   * Build and run the application
   * The results will get printed to the standard console as well as
     be displayed in the Adobe test results console.
@@ -29,13 +29,6 @@ src - The source files for the flash client
                          that WikiGraph uses.
     
     Main.mxml - the main specification for creating the application
-    AbstractToolTip.as
-    Config.as
-    CustomAutoComplete.as
-    DrawGraph.as
-    Network.as
-    Node.as
-    Parse.as
 
 test - The source files for the unit tests
     AllTestSuite - The suite of test classes to run
@@ -43,6 +36,7 @@ test - The source files for the unit tests
         
         AllTestsSuite.as
     
+    DeveloperTest.mxml - the developer class for creating and running unit tests
     TestRunner.mxml - the main specification for creating and running the unit test
                       application
 
