@@ -15,8 +15,8 @@
 		
 		import AllTestsSuite.AllTestsSuite;
 		import org.flexunit.internals.TraceListener;
-		// import org.flexunit.listeners.CIListener;
-		// import org.flexunit.listeners.UIListener;
+		import org.flexunit.listeners.CIListener;
+		import org.flexunit.listeners.UIListener;
 		import org.flexunit.runner.FlexUnitCore;
 		
 		private var core:FlexUnitCore;
@@ -28,7 +28,7 @@
 			// core.addListener( new UIListener( uiListener ) );
 			
 			// Send output to flexunit ant build.
-			// core.addListener( new CIListener() );
+			core.addListener( new CIListener() );
 			
 			// Write output to stdout
 			core.addListener( new TraceListener() );
