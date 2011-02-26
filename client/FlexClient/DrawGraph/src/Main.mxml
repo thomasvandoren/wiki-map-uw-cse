@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
+               xmlns:s="library://ns.adobe.com/flex/spark"
+               xmlns:mx="library://ns.adobe.com/flex/mx"
+			   xmlns:flashcommander="org.flashcommander.*"
+			   xmlns:components="org.flashcommander.components.*"
+			   creationComplete="initu()"
+			   height="100%"
+			   width="100%"
+			   >
+		
+	<fx:Script>
+		<![CDATA[
+		
+		import flash.events.Event;
+		import mx.controls.Text;
+		import spark.components.Group;
+		
+		import DrawGraph;
+		import Network;
+		import DrawSplash;
+		import SearchButton;
+		import Graph;
+		
+		public var myAutoComplete:CustomAutoComplete;
+		private var searchBtn : SearchButton;
+		private var graphObj : Graph;
+		
+		/**
+		 * Initialize the application.
+		 */
+		public function initu():void {
+			
+			// Create a class to handle graph operations.
+			graphObj = new Graph(graph, this);
+			
+			// Create autocomplete bar object.
+			myAutoComplete = new CustomAutoComplete(auto, graphObj);
+			
+			// Create class to handle search button activity.
+			searchBtn = new SearchButton(searchButton, myAutoComplete, graphObj);
+			
+			// Set width of the text input and location of search button.
+			setTextInputSize();
+			
+			// Set resizable behavior for window.
+			this.addEventListener(Event.RESIZE, resizeHandler);
+			
+		}
+		
+		/**
+		 * Resize the graph and navigation controls.
+		 * @param	event
+		 */
+		private function resizeHandler(event:Event):void {
+			graphObj.resize();
+			
+			auto.width = this.width;
+			auto.height = this.height;
+			
+			setTextInputSize(); 
+		}
+		
+		/**
+		 * Set width of the text input and search button location.
+		 */
+		private function setTextInputSize():void {
+			myAutoComplete.reSize();
+			searchBtn.setX();
+		}
+		
+		/**
+		 * Draw splash
+		 * 
+		 * @param	env
+		 */
+		public function drawSplash(env:Group):void {
+			this.graphObj.hide();
+			
+			DrawSplash.DrawS(env);
+		}
+		
+		]]> 
+	</fx:Script>
+	
+	<s:Group id="graph" height="100%" width="100%" addedToStage="drawSplash(graph)">
+	</s:Group>
+	
+	<mx:Button id="logoButton" label="WikiGraph" x="2" y="2" width="100" visible="true" click="drawSplash(graph)" />
+	
+	<mx:Button id="searchButton" y="2" width="100" label="Search" />
+	
+	<s:Group id="auto" height="100%" width="100%">
+	</s:Group>
+	
+</s:Application>
