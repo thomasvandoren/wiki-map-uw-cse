@@ -13,7 +13,7 @@ Returns the title, abstract, and link
 
 include 'config.php';
 include 'util.php';
-
+$_REQUEST["id"] = 844;
 // Die if no ID provided
 if (!isset($_REQUEST["id"])) {
   error(400, "No id provided\n");
@@ -31,29 +31,33 @@ if ($page_id == 0) {
 $abstract_results = $db->get_abstract($page_id);
 $page_results = $db->get_page_info($page_id);
 
+$abstract_text = "";
+if (count($abstract_results) == 1) {
+  // Filter out wiki markup
+  $filters = array( // [[link|text]]
+		   "/\[\[([^\]\|]*)\|([^\]]*)(\]\]|$)/" => "$2",
+		   // [[link]]
+		   "/\[\[([^\]]*)(\]\]|$)/" => "$1",
+		   // [link]
+		   "/\[([^\]]*)(\]|$)/" => "$1",
+		   // |var= 
+		   "/\|[^=]*= ?/" => "");
+  $abstract_text = $abstract_results[0]["abstract_text"];
+  foreach ($filters as $regex => $rep) {
+    $abstract_text = preg_replace($regex, $rep, $abstract_text);
+  }
+} else {
+  $abstract_text = "No abstract found.";
+}
 if (count($page_results) == 1) {
-
-  //TODO: miscellaneous wiki styles need to be removed. The most common is [] 
-  //      that are supposed to indicate a link.
-
   header('Content-Type:text/xml');
   print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 ?>
 <info id="<?= $page_id ?>"
  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
  xsi:noNamespaceSchemaLocation="abstract.xsd">
-   <title><?= htmlspecialchars($page_results[0]["page_title"], ENT_QUOTES) ?></title>
-<?php
-   if (count($abstract_results) == 1) {
-?>
-<abstract><?= htmlspecialchars($abstract_results[0]["abstract_text"], ENT_QUOTES) ?></abstract>
-<?php
-   } else {
-?>
-  <abstract>No abstract found.</abstract>
-<?php
-   }
-?>
+  <title><?= htmlspecialchars($page_results[0]["page_title"], ENT_QUOTES) ?></title>
+  <abstract><?= htmlspecialchars($abstract_text, ENT_QUOTES) ?></abstract>
   <link><?= $LINK_URL . urlencode(str_replace(" ", "_", $page_results[0]["page_title"])) ?></link>
 </info>
 

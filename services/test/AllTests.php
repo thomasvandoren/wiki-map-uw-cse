@@ -20,6 +20,20 @@ $TESTING = true;
 class AllTests extends PHPUnit_Framework_TestCase
 {
   
+  /**
+   * @expectedException Exception
+   *
+   * Tests the error function
+   * which should throw an exception
+   */
+  public function testError() {
+    error(123, "456\n");
+  }
+
+  /**
+   * Helper function for testing improper
+   * creation of GraphDB objects
+   */
   private function helper_testCreation($host, $user, $pass, $dbname) {
     try {
       $db = new GraphDB($host, $user, $pass, $dbname);
@@ -29,6 +43,13 @@ class AllTests extends PHPUnit_Framework_TestCase
     $this->assertTrue($error);
   }
 
+  /**
+   * Test for the creation of
+   * GraphDB objects.
+   *
+   * Produces a valid GraphDB object
+   * for use in other unit tests
+   */
   public function testCreation() {
     global $DB_HOST, $DB_USER, $DB_PASS, $DB_NAME;
 
@@ -44,6 +65,7 @@ class AllTests extends PHPUnit_Framework_TestCase
 
   /**
    * @depends testCreation
+   *
    * Tests getting page info from the database
    * for certain ids
    * The tested pages are known to exist/not exist
@@ -89,8 +111,45 @@ class AllTests extends PHPUnit_Framework_TestCase
 
   /**
    * @depends testCreation
+   *
+   * Tests the functionality of link queries
+   */
+  public function testLinks($db) {
+
+    // Test query for a couple of different IDs
+    $ids = array(0, 10, 12, 150);
+    foreach ($ids as $id) {
+      $results = $db->get_page_links($id);
+      foreach ($results as $row) {
+	// Test that the rows have the correct fields
+	$this->assertArrayHasKey('pl_from', $row);
+	$this->assertArrayHasKey('pl_to', $row);
+
+	// Test that results are valid numbers
+	$src = (int)($row['pl_from']);
+	$this->assertNotEquals($src, 0);
+	$dst = (int)($row['pl_to']);
+	$this->assertNotEquals($dst, 0);
+
+	// Test that the initial ID is either
+	// the source or destination
+	$this->assertTrue($id === $src || $id === $dst);
+      }
+    }
+  }
+
+  /**
+   * @depends testCreation
+   *
+   * Tests the functionality of autocomplete
+   * queries
+   *
+   * The searches used are known to exist/not exist
+   * for the current Wikipedia table dump
    */
   public function testAutocomplete($db) {
+
+    // Test some good autocomplete terms
     $strs = array("Cat", "Ruby", "Wiki");
     foreach ($strs as $str) {
       $arr = $db->get_autocomplete($str);
@@ -101,6 +160,7 @@ class AllTests extends PHPUnit_Framework_TestCase
       }
     }
 
+    // Test some bad autocomplete terms
     $badstrs = array("Cat'; SELECT COUNT(*) FROM page;", "adkjfalkdjflakdf", "012345678910");
     foreach ($badstrs as $str) {
       $str = $db->escape($str);
@@ -111,6 +171,91 @@ class AllTests extends PHPUnit_Framework_TestCase
 
   /**
    * @depends testCreation
+   *
+   * Tests the functionality of search queries
+   *
+   * Currently, this is exactly the same as autocorrect
+   */
+  public function testSearch($db) {
+    // Test some good autocomplete terms
+    $strs = array("Cat", "Ruby", "Wiki");
+    foreach ($strs as $str) {
+      $arr = $db->get_search_results($str);
+      $this->assertLessThanOrEqual(count($arr), 10);
+      foreach ($arr as $row) {
+	$this->assertArrayHasKey('page_title', $row);
+	$this->assertRegExp("/^$str/", $row['page_title']);
+      }
+    }
+
+    // Test some bad autocomplete terms
+    $badstrs = array("Cat'; SELECT COUNT(*) FROM page;", "adkjfalkdjflakdf", "012345678910");
+    foreach ($badstrs as $str) {
+      $str = $db->escape($str);
+      $arr = $db->get_search_results($str);
+      $this->assertEquals(count($arr), 0);
+    } 
+  }
+
+  /**
+   * @depends testCreation
+   *
+   * Tests the functionality of abstract queries
+   *
+   * The searches used are known to exist/not exist
+   * for the current Wikipedia table dump
+   */
+  public function testAbstract($db) {
+    // Test query for pages with abstracts
+    $ids = array(12, 25, 2411, 2428, 20023, 20024);
+    foreach ($ids as $id) {
+      $results = $db->get_abstract($id);
+      
+      // Make sure we only get one result
+      $this->assertEquals(count($results), 1);
+      $row = $results[0];
+
+      // Check that the fields are correct
+      $this->assertArrayHasKey('abstract_id', $row);
+      $this->assertArrayHasKey('abstract_text', $row);
+
+      // Check that the page is correct
+      $src = (int)($row['abstract_id']);
+      $this->assertEquals($id, $src);
+    }
+
+    // Test query for pages without abstracts
+    $badids = array(0, 11, 2426, 20026);
+    foreach ($badids as $id) {
+      $results = $db->get_abstract($id);
+      
+      // Make sure we get zero results
+      $this->assertEquals(count($results), 0);
+    }
+  }
+
+  /**
+   * @depends testEscape
+   *
+   * Tests the functionality of escaping queries
+   */
+  public function testEscape($db) {
+    $goodstrs = array('Cat', 'aksdjlf912j1lj31l2k3', 'test', '"');
+    foreach ($goodstrs as $str) {
+      $escaped = $db->escape($str);
+      assertEquals($str, $escaped);
+    }
+
+    $badstrs = array("Cat'; DROP TABLE page;", "'''''''");
+    foreach ($badstrs as $str) {
+      $escaped = $db->escape($str);
+      assertNotEquals($str, $escaped);
+    }
+  }
+
+  /**
+   * @depends testCreation
+   *
    * Tests closing the database, which shouldn't
    * throw an exception
    */
