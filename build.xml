@@ -116,7 +116,6 @@
                     haltonFailure="false"
                     verbose="true"
                     localTrusted="true"
-		    headless="true" 
 		    xcommand="xvnc"/>
         
         <!--
