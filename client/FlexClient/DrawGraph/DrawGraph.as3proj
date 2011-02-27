@@ -56,6 +56,7 @@
     <element path="lib\flexunit-uilistener-4.0.0.swc" />
     <element path="lib\flexRpcStubs-0.3.swc" />
     <element path="lib\GIFPlayer-0.6.swc" />
+    <element path="lib\FlashCommander.swc" />
   </libraryPaths>
   <!-- External Libraries -->
   <externalLibraryPaths>
