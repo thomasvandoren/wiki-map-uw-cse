@@ -70,12 +70,13 @@
 		}
 		
 		/**
-		 * Draw splash
+		 * Draw splash, clear search bar.
 		 * 
 		 * @param	env
 		 */
 		public function drawSplash(env:Group):void {
 			this.graphObj.hide();
+			this.myAutoComplete.clearText();
 			
 			DrawSplash.DrawS(env);
 		}
