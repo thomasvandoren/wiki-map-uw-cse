@@ -37,14 +37,141 @@ package
 		}
 		
 		/**
+		 * Clear the current graph environment.
+		 */
+		public function clearGraph() : void
+		{
+			trace("Graph.clearGraph()");
+			
+			ToolTipManager.enabled = false;
+			this.graph.removeAllElements(); //clear the previous graph
+		}
+		
+		/**
 		 * Draw the graph in the current environment.
 		 */
 		public function draw() : void
 		{
 			trace("draw");
+			
+			this.visible = true;
+			this.isSearch = false;
+			
 			DrawGraph.DrawG(this.data, this, this.center);
 			
 			show();
+		}
+		
+		/**
+		 * Draws a single node on the graph at the given location.
+		 * 
+		 * @param	id
+		 * @param	title
+		 * @param	x
+		 * @param	y
+		 * @param	width
+		 * @param	height
+		 */
+		public function drawNode(index:int, id:String, title:String, x:int, y:int, width:int, height:int) : void
+		{
+			trace("Graph.drawNode()");
+			
+			//TODO: make a more relevant node for search results...
+			
+			var newNode:Node = new Node(this, 0, new Number(index));
+			
+			newNode.id = id;
+			
+			newNode.title = "string";
+			newNode.label = title;
+			
+			newNode.x = x;
+			newNode.y = y;
+			
+			newNode.width = width;
+			newNode.height = height;
+			
+			newNode.alpha = 1;
+			
+			this.graph.addElement(newNode);
+		}
+		
+		/**
+		 * Draws the search results in a table format.
+		 */
+		public function drawSearch() : void
+		{
+			this.clearGraph();
+			
+			var displayMax:int = 48;
+			
+			var searchChrome:int = 25;
+			var topOffset:int = searchChrome;
+			
+			var cols:int = 6;
+			
+			var offsetX:int = 10;
+			var offsetY:int = 10;
+			var maxOffsetY:int = 25;
+			
+			// Height is same as graph node height.
+			var height:int = this.graph.height / 24;
+			var width:int = ((this.graph.width - offsetX) / cols) - offsetX;
+			
+			var rows:int = (this.graph.height - offsetY - topOffset) / (height + offsetY);
+			
+			var max:int = rows * cols;
+			
+			max = this.data.length > max ? max : this.data.length;
+			max = max > displayMax ? displayMax : max;
+			
+			rows = max / cols;
+			
+			if (max % cols > 0)
+			{
+				rows += 1;
+			}
+			
+			var clusterHeight:int = rows * (height + offsetY) + offsetY;
+			
+			// If the window is large enough, make the results a bit farther apart.
+			if (clusterHeight < (this.graph.height - topOffset))
+			{
+				offsetY = (this.graph.height - topOffset - (rows * height)) / (rows + 1);
+				offsetY = offsetY > maxOffsetY ? maxOffsetY : offsetY;
+			}
+			
+			clusterHeight = rows * (height + offsetY) + offsetY;
+			
+			// If the window still has room, move the search results down a third.
+			if (clusterHeight < (this.graph.height - topOffset))
+			{
+				topOffset = (this.graph.height - topOffset - clusterHeight) / 3 + searchChrome;
+			}
+			
+			// Loop through by rows
+			for (var i:int = 0; i < rows; i++)
+			{
+				
+				var y:int = i * (height + offsetY) + topOffset + offsetY;
+					
+				// Loop through by each cell in a row.
+				for (var j:int = 0; j < cols; j++)
+				{
+					var index:int = (i * cols) + j;
+					
+					if (this.data[index] == null || index >= max)
+					{
+						break;
+					}
+					
+					var x:int = j * (width + offsetX) + offsetX;
+					
+					drawNode(index, this.data[index][0], this.data[index][1], x, y, width, height);
+				}
+				
+			}
+			
 		}
 		
 		/**
@@ -58,6 +185,16 @@ package
 			trace("getGraph(" + id + ")");
 			
 			Network.graphGet(id, this.loadGraph, this.reportError);
+		}
+		
+		/**
+		 * Return the height of the graph.
+		 * 
+		 * @return
+		 */
+		public function height() : Number
+		{
+			return this.graph.height;
 		}
 		
 		/**
@@ -97,6 +234,29 @@ package
 			this.center.label = this.data[0][1];
 			
 			this.draw();
+		}
+		
+		/**
+		 * Loads the results of a search into data,
+		 * 
+		 * @param	results
+		 */
+		public function loadSearch(results:Array) : void
+		{
+			trace("Graph.drawSearch()");
+			
+			if (results.length == 0)
+			{
+				Alert.show("Search found no results.");
+			}
+			else
+			{
+				this.visible = true;
+				this.isSearch = true;
+				this.data = results;
+				
+				this.drawSearch();
+			}
 		}
 		
 		/**
@@ -151,16 +311,6 @@ package
 		}
 		
 		/**
-		 * Return the height of the graph.
-		 * 
-		 * @return
-		 */
-		public function height() : Number
-		{
-			return this.graph.height;
-		}
-		
-		/**
 		 * Return the width of the graph.
 		 * 
 		 * @return
@@ -170,124 +320,6 @@ package
 			return this.graph.width;
 		}
 		
-		/*****************************************************************************************/
-		
-		/**
-		 * Draws the results of a search in a table format. It will draw six wide and four tall.
-		 * 
-		 * @param	results
-		 */
-		public function loadSearch(results:Array) : void
-		{
-			trace("Graph.drawSearch()");
-			
-			if (results.length == 0)
-			{
-				Alert.show("Search found no results.");
-			}
-			else
-			{
-				this.visible = true;
-				this.isSearch = true;
-				this.data = results;
-				
-				this.drawSearch();
-			}
-		}
-		public function drawSearch() : void
-		{
-			this.clearGraph();
-			
-			var max:int = (this.data.length > 24) ? 24 : this.data.length;
-			
-			var searchChrome:int = 25;
-			
-			var cols:int = 6;
-			
-			var rows:int = max / cols;
-			var lastRow:int = max % cols;
-			
-			var offsetX:int = 10;
-			var offsetY:int = 10;
-			
-			var width:int = (this.graph.width - ((cols + 1) * offsetX)) / (cols);
-			var height:int = (this.graph.height - searchChrome - ((rows + 1) * offsetY)) / (rows);
-			
-			// Loop through by rows
-			for (var i:int = 0; i < rows; i++)
-			{
-				
-				var y:int = ((i + 1) * offsetY) + (i * height) + searchChrome;
-					
-				// Loop through by each cell in a row.
-				for (var j:int = 0; j < cols; j++)
-				{
-					var x:int = ((j + 1) * offsetX) + (j * width);
-					var index:int = (i * cols) + j;
-					
-					drawNode(index, this.data[index][0], this.data[index][1], x, y, width, height);
-				}
-				
-			}
-			
-			// draw last row
-			
-			var lastY:int = ((rows + 1) * offsetY) + (rows * height) + searchChrome;
-			for (var lastJ:int = 0; lastJ < lastRow; lastJ++)
-			{
-				var lastX:int = ((lastJ + 1) * offsetX) + (lastJ * width);
-				var lastI:int = (rows * cols) + lastJ;
-				
-				drawNode(index, this.data[lastI][0], this.data[lastI][1], lastX, lastY, width, height);
-			}
-		}
-		
-		/**
-		 * Clear the current graph environment.
-		 */
-		public function clearGraph() : void
-		{
-			trace("Graph.clearGraph()");
-			
-			ToolTipManager.enabled = false;
-			this.graph.removeAllElements(); //clear the previous graph
-		}
-		
-		/**
-		 * Draws a single node on the graph at the given location.
-		 * 
-		 * @param	id
-		 * @param	title
-		 * @param	x
-		 * @param	y
-		 * @param	width
-		 * @param	height
-		 */
-		public function drawNode(index:int, id:String, title:String, x:int, y:int, width:int, height:int) : void
-		{
-			trace("Graph.drawNode()");
-			
-			//TODO: make a more relevant node for search results...
-			
-			var newNode:Node = new Node(this, 0, new Number(index));
-			
-			newNode.id = id;
-			
-			newNode.title = "string";
-			newNode.label = title;
-			
-			newNode.x = x;
-			newNode.y = y;
-			
-			newNode.width = width;
-			newNode.height = height;
-			
-			newNode.alpha = 1;
-			
-			this.graph.addElement(newNode);
-		}
-		
-		/*************************************************************************************************/
 	}
 
 }
