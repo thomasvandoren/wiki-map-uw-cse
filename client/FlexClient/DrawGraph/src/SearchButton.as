@@ -68,7 +68,7 @@ package
 			}
 			else
 			{
-				DrawGraph.DrawSearch(Parse.parseSearch(data), graph);
+				graph.loadSearch(Parse.parseSearch(data));
 			}
 		}
 		
