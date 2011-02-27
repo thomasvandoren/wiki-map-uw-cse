@@ -1,0 +1,15 @@
+WikiGraph
+Copyright (c) 2011
+
+The external tools and libraries that are used to develop and execute
+WikiGraph. Please add notes about each tool and library in this file or in the 
+individual sub directories.
+
+adobe-flash-player-10.1-ax-debug 
+================================
+Developers need this plugin in order to debug Flash files.
+
+FlashDevelop
+============
+A useful IDE for developing Flex projects. This package includes
+the flex library.
