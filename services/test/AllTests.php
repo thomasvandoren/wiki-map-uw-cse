@@ -19,7 +19,102 @@ $TESTING = true;
 
 class AllTests extends PHPUnit_Framework_TestCase
 {
-  
+  // Pages to insert into the test database
+  private static $pages = array(
+		      array(1, '"Title"', 0, 0, 100),
+		      array(2, '"Another title"', 0, 0, 200),
+		      array(3, '"Redirect to title"', 1, 0, 10),
+		      array(5, '"WikiGraph"', 0, 0, 300),
+		      array(6, '"WikiGraph Developers"', 0, 0, 100),
+		      array(8, '"WikiGraph (disambiguation)"', 0, 1, 10),
+		      array(9, '"Title 2"', 0, 0, 100)
+		      );
+  // Links to insert into the test database
+  private static $links = array(
+		   array(1, 2),
+		   array(1, 5),
+		   array(2, 1),
+		   array(3, 1),
+		   array(5, 6),
+		   array(6, 5),
+		   array(8, 5)
+		   );
+  // Abstracts to insert into the test database
+  private static $abstracts = array(
+		       array(1, '"A page about something"'),
+		       array(5, '"The coolest project ever"'),
+		       array(6, '"People working on the coolest project ever"')
+		       );
+
+  /**
+   * Called before tests are run
+   *
+   * Initializes the database that is used
+   * during testing
+   */
+  public static function setUpBeforeClass() {
+    global $DB_HOST, $DB_USER, $DB_PASS, $DB_NAME;
+    $db = mysql_connect($DB_HOST, $DB_USER, $DB_PASS);
+    mysql_select_db($DB_NAME);
+
+    // Init page table
+    $q = "CREATE TABLE page ("
+      .  "  page_id INT(8),"
+      .  "  page_title VARCHAR(255),"
+      .  "  page_is_redirect TINYINT(1),"
+      .  "  page_is_ambiguous TINYINT(1),"
+      .  "  page_len INT(8),"
+      .  "  PRIMARY KEY (page_id),"
+      .  "  UNIQUE KEY page_title (page_title))";
+    mysql_query($q);
+
+    foreach (AllTests::$pages as $page) {
+      $q = "INSERT INTO page VALUES(" . implode(",", $page) . ")";
+      mysql_query($q);
+    }
+
+    // Init pagelinks table
+    $q = "CREATE TABLE pagelinks ("
+      .  "  pl_from INT(8),"
+      .  "  pl_to INT(8),"
+      .  "  FOREIGN KEY (pl_from) REFERENCES page (page_id),"
+      .  "  FOREIGN KEY (pl_to) REFERENCES page (page_id))";
+    mysql_query($q);
+
+    foreach (AllTests::$links as $link) {
+      $q = "INSERT INTO pagelinks VALUES(" . implode(",", $link) . ")";
+      mysql_query($q);
+    }
+
+    // Init abstract table
+    $q = "CREATE TABLE abstract ("
+      .  "  abstract_id INT(8),"
+      .  "  abstract_text TEXT,"
+      .  "  FOREIGN KEY (abstract_id) REFERENCES page (page_id))";
+    mysql_query($q);
+
+    foreach (AllTests::$abstracts as $abstract) {
+      $q = "INSERT INTO abstract VALUES(" . implode(",", $abstract) . ")";
+      mysql_query($q);
+    }
+
+    mysql_close($db);
+  }
+
+  /**
+   * Called after tests are run
+   *
+   * Tears down the database used for testing
+   */
+  public static function tearDownAfterClass() {
+    global $DB_HOST, $DB_USER, $DB_PASS, $DB_NAME;
+    $db = mysql_connect($DB_HOST, $DB_USER, $DB_PASS);
+    mysql_select_db($DB_NAME);
+
+    mysql_query("DROP TABLE page, pagelinks, abstract");
+    mysql_close($db);
+  }
+
   /**
    * @expectedException Exception
    *
@@ -29,6 +124,7 @@ class AllTests extends PHPUnit_Framework_TestCase
   public function testError() {
     error(123, "456\n");
   }
+
 
   /**
    * Helper function for testing improper
@@ -68,59 +164,73 @@ class AllTests extends PHPUnit_Framework_TestCase
    *
    * Tests getting page info from the database
    * for certain ids
-   * The tested pages are known to exist/not exist
-   * for the current Wikipedia table dump
    */
-/*
-Temporarily commented out to unbreak build
-while test db is set up
   public function testPageInfo($db) {
-    // Get page info for invalid id
-    $arr = $db->get_page_info(0);
-    $this->assertEquals(count($arr), 0);
 
-    // Get page info for valid id
-    $arr = $db->get_page_info(10);
-    $this->assertEquals(count($arr), 1);
-    $row = $arr[0];
-    // Check presence of fields
-    $this->assertArrayHasKey('page_id', $row);
-    $this->assertEquals($row['page_id'], "10");
-    $this->assertArrayHasKey('page_title', $row);
-    $this->assertArrayHasKey('page_len', $row);
-    $this->assertArrayHasKey('page_is_redirect', $row);
-    $this->assertArrayHasKey('page_is_ambiguous', $row);
+    $ids = array();
+    // Check page info for individual pages
+    foreach (AllTests::$pages as $page) {
+      $id = $page[0];
+      array_push($ids, $id);
+      $title = str_replace('"', "", $page[1]);
+      $redirect = $page[2];
+      $ambig = $page[3];
+      $len = $page[4];
 
-    // Should be equivalent to above
-    $arr2 = $db->get_page_info(array(10));
-    $this->assertEquals(count($arr2), 1);
-    $this->assertEquals($arr, $arr2);
+      $arr = $db->get_page_info($id);
+      $this->assertEquals(count($arr), 1);
+      
+      $row = $arr[0];
+      $this->assertArrayHasKey('page_id', $row);
+      $this->assertArrayHasKey('page_title', $row);
+      $this->assertArrayHasKey('page_len', $row);
+      $this->assertArrayHasKey('page_is_redirect', $row);
+      $this->assertArrayHasKey('page_is_ambiguous', $row);
 
-    // Check page info for multiple ids
-    $ids = array(10, 12, 13, 14, 15);
+      $this->assertEquals((int)($row['page_id']), $id);
+      $this->assertEquals($row['page_title'], $title);
+      $this->assertEquals((int)($row['page_is_redirect']), $redirect);
+      $this->assertEquals((int)($row['page_is_ambiguous']), $ambig);
+      $this->assertEquals((int)($row['page_len']), $len);
+    }
+
+    // Check page info for all pages
     $arr = $db->get_page_info($ids);
-    $this->assertEquals(count($arr), 5);
+    $this->assertEquals(count($arr), count($ids));
 
     // Check presence of fields
     foreach ($arr as $row) {
       $this->assertArrayHasKey('page_id', $row);
-      $this->assertContains($row['page_id'], $ids);
+      $this->assertContains((int)($row['page_id']), $ids);
       $this->assertArrayHasKey('page_title', $row);
       $this->assertArrayHasKey('page_len', $row);
       $this->assertArrayHasKey('page_is_redirect', $row);
       $this->assertArrayHasKey('page_is_ambiguous', $row);
     }
+
+    // Check page info for bad pages
+    $ids = array(-1, 0, 999);
+    foreach ($ids as $id) {
+      $arr = $db->get_page_info($id);
+      $this->assertEquals(count($arr), 0);
+    }
+
+    $arr = $db->get_page_info($id);
+    $this->assertEquals(count($arr), 0);
   }
-*/
+
   /**
    * @depends testCreation
    *
    * Tests the functionality of link queries
    */
   public function testLinks($db) {
+    $ids = array();
+    foreach (AllTests::$pages as $page) {
+      array_push($ids, $page[0]);
+    }
 
-    // Test query for a couple of different IDs
-    $ids = array(0, 10, 12, 150);
+    // Test link requests for all pages
     foreach ($ids as $id) {
       $results = $db->get_page_links($id);
       foreach ($results as $row) {
@@ -137,6 +247,9 @@ while test db is set up
 	// Test that the initial ID is either
 	// the source or destination
 	$this->assertTrue($id === $src || $id === $dst);
+	
+	// Make sure this link actually exists
+	$this->assertContains(array($src, $dst), AllTests::$links);
       }
     }
   }
@@ -147,21 +260,41 @@ while test db is set up
    * Tests the functionality of autocomplete
    * queries
    *
-   * The searches used are known to exist/not exist
-   * for the current Wikipedia table dump
    */
   public function testAutocomplete($db) {
 
-    // Test some good autocomplete terms
-    $strs = array("Cat", "Ruby", "Wiki");
-    foreach ($strs as $str) {
-      $arr = $db->get_autocomplete($str);
-      $this->assertLessThanOrEqual(count($arr), 10);
-      foreach ($arr as $row) {
-	$this->assertArrayHasKey('page_title', $row);
-	$this->assertRegExp("/^$str/", $row['page_title']);
+    $titles = array();
+    foreach (AllTests::$pages as $page) {
+      array_push($titles, str_replace('"', "", $page[1]));
+    }
+
+    // Test autocomplete with all partial titles
+    // from the pages
+    foreach ($titles as $title) {
+      $len = strlen($title);
+      for ($i = 1; $i < $len; $i++) {
+	$search = substr($title, 0, $i);
+	
+	// Calculate the correct answers
+	$ans = array();
+	foreach ($titles as $title2) {
+	  $tmp1 = strtolower($search);
+	  $tmp2 = strtolower($title2);
+	  if (strpos($tmp2, $tmp1) === 0) {
+	    array_push($ans, $title2);
+	  }
+	}
+
+	$arr = $db->get_autocomplete($search);
+	$this->assertEquals(count($arr), count($ans));
+	foreach ($arr as $row) {
+	  $this->assertArrayHasKey('page_title', $row);
+	  $this->assertContains($row['page_title'], $ans);
+	  $this->assertStringStartsWith(strtolower($search), strtolower($row['page_title']));
+	}
       }
     }
+
 
     // Test some bad autocomplete terms
     $badstrs = array("Cat'; SELECT COUNT(*) FROM page;", "adkjfalkdjflakdf", "012345678910");
@@ -169,7 +302,7 @@ while test db is set up
       $str = $db->escape($str);
       $arr = $db->get_autocomplete($str);
       $this->assertEquals(count($arr), 0);
-    } 
+    }
   }
 
   /**
@@ -180,18 +313,40 @@ while test db is set up
    * Currently, this is exactly the same as autocorrect
    */
   public function testSearch($db) {
-    // Test some good autocomplete terms
-    $strs = array("Cat", "Ruby", "Wiki");
-    foreach ($strs as $str) {
-      $arr = $db->get_search_results($str);
-      $this->assertLessThanOrEqual(count($arr), 10);
-      foreach ($arr as $row) {
-	$this->assertArrayHasKey('page_title', $row);
-	$this->assertRegExp("/^$str/", $row['page_title']);
+    $titles = array();
+    foreach (AllTests::$pages as $page) {
+      array_push($titles, str_replace('"', "", $page[1]));
+    }
+
+    // Test search with all partial titles
+    // from the pages
+    foreach ($titles as $title) {
+      $len = strlen($title);
+      for ($i = 1; $i < $len; $i++) {
+	$search = substr($title, 0, $i);
+	
+	// Calculate the correct answers
+	$ans = array();
+	foreach ($titles as $title2) {
+	  $tmp1 = strtolower($search);
+	  $tmp2 = strtolower($title2);
+	  if (strpos($tmp2, $tmp1) === 0) {
+	    array_push($ans, $title2);
+	  }
+	}
+
+	$arr = $db->get_search_results($search);
+	$this->assertEquals(count($arr), count($ans));
+	foreach ($arr as $row) {
+	  $this->assertArrayHasKey('page_title', $row);
+	  $this->assertContains($row['page_title'], $ans);
+	  $this->assertStringStartsWith(strtolower($search), strtolower($row['page_title']));
+	}
       }
     }
 
-    // Test some bad autocomplete terms
+
+    // Test some bad search terms
     $badstrs = array("Cat'; SELECT COUNT(*) FROM page;", "adkjfalkdjflakdf", "012345678910");
     foreach ($badstrs as $str) {
       $str = $db->escape($str);
@@ -208,38 +363,37 @@ while test db is set up
    * The searches used are known to exist/not exist
    * for the current Wikipedia table dump
    */
-/*
-Temporarily commented out to unbreak build
-while test db is set up
   public function testAbstract($db) {
     // Test query for pages with abstracts
-    $ids = array(12, 25, 2411, 2428, 20023, 20024);
-    foreach ($ids as $id) {
-      $results = $db->get_abstract($id);
-      
+    foreach (AllTests::$abstracts as $abstract) {
+      $id = $abstract[0];
+      $abstract = str_replace('"', "", $abstract[1]);
+
+      $arr = $db->get_abstract($id);
+
       // Make sure we only get one result
-      $this->assertEquals(count($results), 1);
-      $row = $results[0];
+      $this->assertEquals(count($arr), 1);
+      $row = $arr[0];
 
       // Check that the fields are correct
       $this->assertArrayHasKey('abstract_id', $row);
       $this->assertArrayHasKey('abstract_text', $row);
 
-      // Check that the page is correct
       $src = (int)($row['abstract_id']);
       $this->assertEquals($id, $src);
+      $this->assertEquals($abstract, $row['abstract_text']);
     }
 
     // Test query for pages without abstracts
-    $badids = array(0, 11, 2426, 20026);
+    $badids = array(-1, 0, 999);
     foreach ($badids as $id) {
-      $results = $db->get_abstract($id);
+      $arr = $db->get_abstract($id);
       
       // Make sure we get zero results
-      $this->assertEquals(count($results), 0);
+      $this->assertEquals(count($arr), 0);
     }
   }
-*/
+
   /**
    * @depends testCreation
    *
