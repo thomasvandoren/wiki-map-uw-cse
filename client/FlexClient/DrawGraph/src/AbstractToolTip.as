@@ -80,10 +80,6 @@ package
 			this.addElement(this.abstractText);
 			this.createLoaderImg();
 			
-			// Set loading and text in tooltip
-			this.startLoad();
-			this.updateText();
-			
 			this.addEventListener(MouseEvent.CLICK, OpenArticle);
 			this.addEventListener(MouseEvent.MOUSE_OVER, KeepUp);
 			this.addEventListener(MouseEvent.MOUSE_OUT, RestartTimer);
@@ -91,6 +87,18 @@ package
 			// Setup the timer
 			this.abstractTimer = new Timer(400, 1);
 			this.abstractTimer.addEventListener(TimerEvent.TIMER, TimerDing);
+			
+			this.getAbstract();
+		}
+		
+		/**
+		 * Gets the abstract from the services, if they are not locked.
+		 */
+		public function getAbstract() : void
+		{
+			// Set loading and text in tooltip
+			this.startLoad();
+			this.updateText();
 			
 			// Send request for abstract.
 			if (Network.isLocked)
