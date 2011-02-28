@@ -9,9 +9,11 @@
 
 #
 # CONFIG is an optional config file to copy into the tarball 
+# TESTCONFIG is an optional config file to use when running the php unit tests.
 #
 
 CONFIG = 
+TESTCONFIG = 
 
 #
 # If a config is not available, the individual parameter may be provided
@@ -147,7 +149,7 @@ TESTCLIENTNAME = WikiGraph-Test-FlashClient
 # The configuration for outputting the SWF and HTML template
 #
 
-SWFDIR = $(OUTPUT)/$(FLEXOUT)
+SWFDIR = $(DEF_OUT)/$(FLEXOUT)
 SWFNAME = WikiGraph.swf
 SWFTMPDIR = $(CURDIR)/client/FlexClient/DrawGraph/template
 SWFTMPNAME = index.html
@@ -207,7 +209,7 @@ check: checkapi checkclient
 # checkapi runs the services unit tests
 #
 
-checkapi: output config version
+checkapi: output testconfig version
 	cd $(REPO)/services/test ; \
 	$(PHPUNIT) $(PHPUNITPRE)/$(ALLTESTS).xml $(ALLTESTS) ; \
 	cd ../.. ;
@@ -263,7 +265,7 @@ api: checkoutrelease hudsonapi
 # and packages the services api with the config.
 #
 
-hudsonapi: checkapi apioutput
+hudsonapi: checkapi config apioutput
 	$(Z) $(OUTPUT)/$(APINAME)/$(BUILDTAG).tar.gz -C services $(FINDPHPSERVICES) -C $(DEF_OUT) version.php
 
 #
@@ -277,7 +279,7 @@ testapi: checkoutdev hudsontestapi
 # directory for the package.
 #
 
-hudsontestapi: checkapi testapioutput
+hudsontestapi: checkapi config testapioutput
 	$(Z) $(OUTPUT)/$(TESTAPINAME)/$(BUILDTAG).tar.gz -C services $(FINDPHPSERVICES) -C $(DEF_OUT) version.php
 
 #
@@ -307,10 +309,26 @@ flexoutput: output
 	test -d $(OUTPUT)/$(FLEX) || mkdir $(OUTPUT)/$(FLEX)
 
 # 
-# config puts a config.php in the services/test directory for running unit test
-# and then places it in the tar ball during packaging. If a config file was 
-# provided, it will be copied. Otherwise the mysql connection parameters are
-# used to generate a config.php.
+# testconfig puts a config.php in the services/test directory for running unit
+# tests. If a config file was provided, it will be copied. Otherwise the mysql 
+# connection parameters are used to generate a config.php.
+#
+
+testconfig: createtestconfig
+	cp $(CONFIGLOC) services/test/config.php
+
+createtestconfig: output
+ifeq ($(strip $(TESTCONFIG)),)
+	make -C database config.php CONFIGLOC=$(CONFIGLOC) DBHOST=$(DBHOST) DBPORT=$(DBPORT) DBUSER=$(DBUSER) DBPASS=$(DBPASS) DBNAME=$(DBNAME) LINKURL=$(LINKURL)
+else
+	cp $(TESTCONFIG) $(CONFIGLOC)
+endif
+
+# 
+# config puts a config.php in the services/test directory and then places it 
+# in the tar ball during packaging. If a config file was provided, it will be 
+# copied. Otherwise the mysql connection parameters are used to generate a 
+# config.php.
 #
 
 config: createconfig
