@@ -4,6 +4,7 @@ package
 	import flash.events.MouseEvent;
 	import mx.controls.Alert;
 	import mx.controls.Button;
+	import spark.components.BorderContainer;
 	import spark.components.Group;
 	
 	/**
@@ -19,7 +20,7 @@ package
 		import DrawGraph;
 		import Graph;
 		
-		private var btn : Button;
+		private var btn : BorderContainer;
 		private var ac : CustomAutoComplete;
 		private var graph : Graph;
 		
@@ -30,7 +31,7 @@ package
 		 * @param	ac
 		 * @param	graph
 		 */
-		public function SearchButton(btn : Button, ac : CustomAutoComplete, graph : Graph) 
+		public function SearchButton(btn : BorderContainer, ac : CustomAutoComplete, graph : Graph) 
 		{
 			this.btn = btn;
 			this.ac = ac;
@@ -84,7 +85,7 @@ package
 		
 		public function setX() : void
 		{
-			this.btn.x = this.graph.width() - 103;
+			this.btn.x = this.graph.width() - 102;
 		}
 	}
 
