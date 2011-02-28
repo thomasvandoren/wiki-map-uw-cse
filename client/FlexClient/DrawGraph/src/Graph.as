@@ -86,13 +86,18 @@ package
 			newNode.id = id;
 			
 			newNode.title = "string";
-			newNode.label = title;
+			newNode.label.text = title;
 			
 			newNode.x = x;
 			newNode.y = y;
 			
 			newNode.width = width;
 			newNode.height = height;
+			newNode.setStyle("cornerRadius", newNode.height/2); //used to style the node correctly
+			newNode.label.width = newNode.width;
+			newNode.label.height = newNode.height;
+			newNode.label.y = newNode.height / 6;
+			newNode.label.setStyle("fontSize", newNode.height / 3);
 			
 			newNode.alpha = 1;
 			
@@ -242,7 +247,7 @@ package
 			
 			this.center.id = this.data[0][0];
 			this.center.title = this.data[0][1];
-			this.center.label = this.data[0][1];
+			this.center.label.text = this.data[0][1];
 			
 			//TODO: does this need to be in a different place?
 			this.wrapper.setGraph(this.data[0][0]);

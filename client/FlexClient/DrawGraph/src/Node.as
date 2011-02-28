@@ -4,13 +4,16 @@ package
 	import flash.events.TimerEvent;
 	import flash.utils.Timer;
 	import mx.controls.Button;
+	import mx.controls.Label;
+	import spark.components.BorderContainer;
 	import spark.components.Group;
+	import mx.states.SetStyle;
 	
 	/**
 	 * ...
 	 * @author Austin Nakamura
 	 */
-	public class Node extends Button 
+	public class Node extends BorderContainer 
 	{	
 		import Network;
 		import AbstractToolTip;
@@ -26,6 +29,7 @@ package
 		// index of this graph's node
 		private var index:Number;
 		public var title:String;
+		public var label:Label;
 		
 		/**
 		 * Construct a new node. The environment it's created in must be specified
@@ -53,6 +57,16 @@ package
 			this.tipCreated = false;
 			this.angleDiffer = angleDiffer;
 			this.index = index;
+			
+			//create the text
+			label = new Label();
+			this.addElement(label);
+			
+			//style the node
+			this.label.setStyle("textAlign", "center")
+			this.setStyle("backgroundColor", 0xEEEEEE);
+			this.setStyle("borderWeight", 2);
+			this.setStyle("borderColor", 0xBBBBBB);
 		}
 		
 		/**
@@ -72,6 +86,7 @@ package
 		 */
 		private function GetArticle(event:MouseEvent):void
 		{
+			this.setStyle("backgroundColor", 0xE0E0FF); //change the color to indicate hover
 			abstractTimer.start(); //starts the timer
 			if (tipCreated) {
 				abToolTip.abstractTimer.reset(); //resets the toolTip timer
@@ -96,7 +111,7 @@ package
 			else 
 			{ 
 				//tip not created, do so now
-				this.abToolTip = new AbstractToolTip(environment, label, id);
+				this.abToolTip = new AbstractToolTip(environment, label.text, id);
 				
 				if (angleDiffer == 0) 
 				{
@@ -126,7 +141,7 @@ package
 					}
 				}
 				tipCreated = true;
-				abToolTip.setTitle = label;
+				abToolTip.setTitle = label.text;
 				environment.addElement(abToolTip);
 			}
 			
@@ -140,6 +155,7 @@ package
 		 */
 		private function StopTimer(event:MouseEvent):void
 		{
+			this.setStyle("backgroundColor", 0xEEEEEE); //change the color to indicate no_hover
 			abstractTimer.reset(); //sets the timer back to zero
 			if (tipCreated) {
 				abToolTip.abstractTimer.start(); //sets the toolTip timer to on
