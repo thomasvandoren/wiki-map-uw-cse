@@ -26,6 +26,12 @@ DBPASS =
 DBNAME = 
 LINKURL = 
 
+TESTDBHOST = 
+TESTDBUSER = 
+TESTDBPASS = 
+TESTDBNAME = 
+TESTLINKURL = 
+
 #
 # if there is neither a CONFIG or a DBHOST, set fake values
 #
@@ -41,6 +47,23 @@ DBNAME = wikigraph
 endif
 ifeq ($(strip $(LINKURL)),)
 LINKURL = http://en.wikipedia.org/wiki/
+endif
+
+#
+# if there is neither a TESTCONFIG or a TESTDBHOST, set fake values
+#
+
+ifeq ($(strip $(TESTDBHOST)),)
+TESTDBHOST = localhost
+endif
+ifeq ($(strip $(TESTDBUSER)),)
+TESTDBUSER = root
+endif
+ifeq ($(strip $(TESTDBNAME)),)
+TESTDBNAME = wikigraph
+endif
+ifeq ($(strip $(TESTLINKURL)),)
+TESTLINKURL = http://en.wikipedia.org/wiki/
 endif
 
 #
@@ -319,7 +342,7 @@ testconfig: createtestconfig
 
 createtestconfig: output
 ifeq ($(strip $(TESTCONFIG)),)
-	make -C database config.php CONFIGLOC=$(CONFIGLOC) DBHOST=$(DBHOST) DBPORT=$(DBPORT) DBUSER=$(DBUSER) DBPASS=$(DBPASS) DBNAME=$(DBNAME) LINKURL=$(LINKURL)
+	make -C database config.php CONFIGLOC=$(CONFIGLOC) DBHOST=$(TESTDBHOST) DBPORT=$(TESTDBPORT) DBUSER=$(TESTDBUSER) DBPASS=$(TESTDBPASS) DBNAME=$(TESTDBNAME) LINKURL=$(TESTLINKURL)
 else
 	cp $(TESTCONFIG) $(CONFIGLOC)
 endif
@@ -333,7 +356,6 @@ endif
 
 config: createconfig
 	cp $(CONFIGLOC) services/config.php
-	cp $(CONFIGLOC) services/test/config.php
 
 createconfig: output
 ifeq ($(strip $(CONFIG)),)
