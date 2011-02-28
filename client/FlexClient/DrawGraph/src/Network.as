@@ -47,7 +47,7 @@ package
 		public static function autocompleteGet(phrase : String, successCb : Function, failureCb : Function) : void
 		{
 			//TODO: validate/sanitize phrase!
-			apiRequest("autocomplete/?q=" + phrase, successCb, failureCb);
+			apiRequest("autocomplete/?q=" + escape(phrase), successCb, failureCb);
 		}
 		
 		/**
@@ -73,7 +73,7 @@ package
 		public static function searchGet(phrase : String, successCb : Function, failureCb : Function) : void
 		{
 			//TODO: validate/sanitize phrase!
-			apiRequest("search/?q=" + phrase, successCb, failureCb);
+			apiRequest("search/?q=" + escape(phrase), successCb, failureCb);
 		}
 		
 		/**
