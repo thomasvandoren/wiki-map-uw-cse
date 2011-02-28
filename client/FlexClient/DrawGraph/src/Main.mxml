@@ -46,6 +46,7 @@
 			// Set resizable behavior for window.
 			this.addEventListener(Event.RESIZE, resizeHandler);
 			
+			this.graphObj.load();
 		}
 		
 		/**

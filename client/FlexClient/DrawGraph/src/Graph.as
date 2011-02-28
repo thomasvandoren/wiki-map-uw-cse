@@ -18,6 +18,7 @@ package
 		private var center : Node;
 		private var visible : Boolean;
 		private var isSearch : Boolean;
+		private var wrapper : Wrapper;
 		
 		/**
 		 * Construct a new graph that knows about it environment.
@@ -32,6 +33,8 @@ package
 			this.environment = environment;
 			
 			this.hide();
+			
+			this.wrapper = new Wrapper(this.loadGraphById);
 			
 			trace("Graph created");
 		}
@@ -218,6 +221,14 @@ package
 		}
 		
 		/**
+		 * Load the graph from hash tag, if available.
+		 */
+		public function load() : void
+		{
+			this.wrapper.getGraph();
+		}
+		
+		/**
 		 * Receive the callback data from graph xml request.
 		 * 
 		 * @param	data
@@ -233,7 +244,24 @@ package
 			this.center.title = this.data[0][1];
 			this.center.label = this.data[0][1];
 			
+			//TODO: does this need to be in a different place?
+			this.wrapper.setGraph(this.data[0][0]);
+			
 			this.draw();
+		}
+		
+		/**
+		 * Loads the graph with the given id. This function is callable from
+		 * the HTML/JS wrapper.
+		 * 
+		 * @param	id
+		 */
+		public function loadGraphById(id : String) : void
+		{
+			trace("Main.loadGraph(" + id + ")");
+			
+			//TODO: actually load the graph!
+			Alert.show(id);
 		}
 		
 		/**
