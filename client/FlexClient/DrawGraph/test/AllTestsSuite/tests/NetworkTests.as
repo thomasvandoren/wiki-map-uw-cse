@@ -48,6 +48,30 @@ package AllTestsSuite.tests
 		}
 		
 		/**
+		 * Test that abstractGet does not happen when Network is locked.
+		 */
+		[Test(async, description = "Test abstractGet fails when Network locked")]
+		public function testAbstractLockFail() : void
+		{
+			testRequestSetup(testAbstractXML, function (passThroughData : Object) : void
+			{
+				Assert.assertTrue(true, "This succeeded.");
+			});
+			
+			// Emulate graph call.
+			Network.isLocked = true;
+			
+			Network.abstractGet("42", function (data : XML) : void
+			{
+				Assert.assertEquals(0, 1, "The Network succeeded in retrieving an abstract when it should have been locked");
+			}
+			, function (data : String) : void
+			{
+				Assert.assertFalse(true, "The Network succeeded in retrieving an abstract when it should have been locked");
+			});
+		}
+		
+		/**
 		 * Test that autocompleteGet accesses the services.
 		 */
 		[Test(async, description = "Test autocompleteGet function")]
@@ -101,7 +125,9 @@ package AllTestsSuite.tests
 					Assert.assertFalse(Network.isLocked);
 				}
 				, function (data : String) : void
-				{}
+				{
+					Assert.assertFalse(true, "unexpected fault occurred");
+				}
 				, true);
 			
 			// This should execute after graphGet is called, but before the
@@ -153,13 +179,18 @@ package AllTestsSuite.tests
 		 * 
 		 * @param	expected
 		 */
-		private function testRequestSetup(expected : XML) : void
+		private function testRequestSetup(expected : XML, failFn : Function = null) : void
 		{
+			if (failFn == null)
+			{
+				failFn = failureCb;
+			}
+			
 			service.result(null, null, "GET", expected);
 			
 			service.addEventListener(
 				ResultEvent.RESULT,
-				Async.asyncHandler(this, successCb, 1000, expected, failureCb), 
+				Async.asyncHandler(this, successCb, 1000, expected, failFn), 
 				false, 
 				0, 
 				true);
