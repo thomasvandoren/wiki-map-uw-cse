@@ -260,8 +260,8 @@ package
 		{
 			trace("Main.loadGraph(" + id + ")");
 			
-			//TODO: actually load the graph!
-			Alert.show(id);
+			//TODO: validate/sanitize the id
+			this.getGraph(id);
 		}
 		
 		/**
