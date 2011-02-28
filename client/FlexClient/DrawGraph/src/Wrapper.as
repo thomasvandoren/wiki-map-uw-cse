@@ -13,8 +13,11 @@ package
 		
 		public function Wrapper(graphLoad : Function)
 		{
-			// Allow javascript wrapper to call loadGraph function.
-			ExternalInterface.addCallback("loadGraph", graphLoad);
+			if (ExternalInterface.available)
+			{
+				// Allow javascript wrapper to call loadGraph function.
+				ExternalInterface.addCallback("loadGraph", graphLoad);
+			}
 		}
 		
 		/**
