@@ -89,6 +89,27 @@ package AllTestsSuite.tests
 		}
 		
 		/**
+		 * Test that graphGet can set the Network lock.
+		 */
+		[Test(async, description = "Test that lock can be set by a graph call")]
+		public function testGraphLock() : void
+		{
+			testRequestSetup(testGraphXML);
+			
+			Network.graphGet("42", function (data : XML) : void
+				{
+					Assert.assertFalse(Network.isLocked);
+				}
+				, function (data : String) : void
+				{}
+				, true);
+			
+			// This should execute after graphGet is called, but before the
+			// successCb lambda (above) is called.
+			Assert.assertTrue(Network.isLocked);
+		}
+		
+		/**
 		 * Test that searchGet accesses the services.
 		 */
 		[Test(async, description = "Test searchGet function")]

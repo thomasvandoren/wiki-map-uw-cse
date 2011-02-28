@@ -25,9 +25,20 @@ package
 			Network.service = service;
 		}
 		
+		/**
+		 * Get the lock abstract status.
+		 */
 		public static function get isLocked() : Boolean
 		{
 			return Network.lockAbstracts;
+		}
+		
+		/**
+		 * Set the lock abstract status.
+		 */
+		public static function set isLocked(lockValue : Boolean) : void
+		{
+			Network.lockAbstracts = lockValue;
 		}
 		
 		/**
