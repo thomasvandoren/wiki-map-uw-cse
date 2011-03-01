@@ -1,5 +1,6 @@
 package  
 {
+	import mx.managers.HistoryManager;
 	import spark.components.Group;
 	import mx.controls.Alert;
 	import mx.managers.ToolTipManager;
@@ -19,6 +20,7 @@ package
 		private var visible : Boolean;
 		private var isSearch : Boolean;
 		private var wrapper : Wrapper;
+		private var history: History;
 		
 		/**
 		 * Construct a new graph that knows about it environment.
@@ -31,6 +33,7 @@ package
 		{
 			this.graph = graph;
 			this.environment = environment;
+			this.history = new History(this, environment.history);
 			
 			this.hide();
 			
@@ -253,6 +256,9 @@ package
 			this.wrapper.setGraph(this.data[0][0]);
 			
 			this.draw();
+			
+			//Add search term and id to search history
+			this.history.addRecord(this.center.title, this.center.id);
 		}
 		
 		/**

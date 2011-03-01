@@ -42,7 +42,7 @@ package
 			ac.id = "ac";
 			ac.requireSelection = true;
 			ac.labelFunction = customLabelFunction;
-			ac.x = 105;
+			ac.x = 260;
 			ac.y = 8;
 			ac.addEventListener("select", handleSelect);
 			ac.addEventListener(KeyboardEvent.KEY_DOWN, timerKeyHandler);
@@ -128,7 +128,7 @@ package
 		
 		//Resizes the search bar to extend across the application width
 		public function reSize():void {
-			ac.width = env.width - 208;
+			ac.width = env.width - 160 - 208; //subtract search history and search button widths
 		}
 		
 		//Returns the current text in the autocomplete bar
