@@ -35,9 +35,9 @@ package
 			this.environment = environment;
 			this.history = new History(this, environment.history);
 			
-			this.hide();
-			
 			this.wrapper = new Wrapper(this.loadGraphById);
+			
+			this.hide();
 			
 			trace("Graph created");
 		}
