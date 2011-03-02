@@ -44,8 +44,8 @@ foreach ($link_data as $link) {
   $links[$id_from][$id_to] = true;
 
   // Update pages to get info for
-  $pages[$id_from] = true;
-  $pages[$id_to] = true;
+  $pages[$id_from] = null;
+  $pages[$id_to] = null;
 }
 
 // Collect all ids to find info for
@@ -69,6 +69,53 @@ if ($pages[$page_id] === null) {
   error(404, "ID not found ($page_id).\n");
 }
 
+/**
+ * Function to compare two nodes
+ * in order to sort them by
+ * strength
+ *
+ * Strength is determined by:
+ * +1 if this node links to the center
+ * +1 if the center links to this node
+ *
+ * Ties in strength are resolved based
+ * on page length
+ */
+function cmp($a, $b) {
+  global $page_id, $pages, $links;
+
+  // The page we are searching for
+  // should always come first
+  if ($a == $page_id)
+    return -1;
+  elseif ($b == $page_id)
+    return 1;
+
+  // Calculate strengths of links
+  $str_a = 0;
+  if (isset($links[$page_id][$a]))
+    $str_a++;
+  if (isset($links[$a]) && isset($links[$a][$page_id]))
+    $str_a++;
+
+  $str_b = 0;
+  if (isset($links[$page_id][$b]))
+    $str_b++;
+  if (isset($links[$b]) && isset($links[$b][$page_id]))
+    $str_b++;
+
+  // Compare by link strength, then by page size
+  if ($str_a == $str_b)
+    return ((int)($pages[$a]['len']) > (int)($pages[$b]['len'])) ?
+      -1 : 1;
+  else
+    return ($str_a > $str_b) ? -1 : 1;
+}
+
+usort($ids, 'cmp');
+// Get the top 24 (+ center) nodes to return
+$ids = array_splice($ids, 0, 25);
+
 // Now generate XML
 header('Content-Type:text/xml');
 print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
@@ -77,21 +124,24 @@ print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
  xsi:noNamespaceSchemaLocation="graph.xsd">
 <?php
-  foreach ($pages as $id => $i) {
+  foreach ($ids as $id) {
+  $page = $pages[$id];
 ?>
-  <source id="<?= $id ?>" title="<?= htmlspecialchars($i["title"], ENT_QUOTES) ?>" len="<?= $i["len"] ?>" is_disambiguation="<?= $i["is_ambig"] ?>">
+  <source id="<?= $id ?>" title="<?= htmlspecialchars($page["title"], ENT_QUOTES) ?>" len="<?= $page["len"] ?>" is_disambiguation="<?= $page["is_ambig"] ?>">
 <?php
   if (isset($links[$id]))
       foreach ($links[$id] as $dst => $_) {
-	// Strength of a link is 1 if unidirectional
-	// 2 if bidirectional
-        $str = 1;
-	if (isset($links[$dst]) && isset($links[$dst][$id]))
-	  $str = 2;
+	if (in_array($dst, $ids)) {
+	  // Strength of a link is 1 if unidirectional
+	  // 2 if bidirectional
+	  $str = 1;
+	  if (isset($links[$dst]) && isset($links[$dst][$id]))
+	    $str = 2;
 ?>
     <dest id="<?= $dst ?>" str="<?= $str  ?>"/>
 <?php
-    }
+	}
+      }
 ?>
   </source>
 <?php

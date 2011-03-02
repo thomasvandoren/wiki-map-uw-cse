@@ -18,6 +18,9 @@ Classes in this file:
     close()
     get_page_info($ids)
     get_page_links($id)
+    get_abstract($id)
+    get_search_results($like)
+    get_autocomplete($like)
 
 */
 
@@ -98,12 +101,9 @@ class GraphDB {
   /**
    * Returns the page links that include a certain page
    * Takes the id of the page
-   *
-   * TODO: Find a better way to limit the amount of info that gets passed
-   *       back
    */
   public function get_page_links($id) {
-    $q = "SELECT pl_from, pl_to FROM pagelinks WHERE pl_from = $id OR pl_to = $id LIMIT 50";
+    $q = "SELECT pl_from, pl_to FROM pagelinks WHERE pl_from = $id OR pl_to = $id";
     return $this->query($q);
   }
 
