@@ -22,6 +22,7 @@ package AllTestsSuite
 		public var drawGraphTest : DrawGraphTests;
 		public var drawSplashTest : DrawSplashTests;
 		public var graphTest : GraphTests;
+		public var historyTest : HistoryTests;
 		public var mainTest : MainTests;
 		public var networkTest : NetworkTests;
 		public var nodeTest : NodeTests;

@@ -173,26 +173,22 @@ package
 		{
 			this.title = this.articleTitle;
 			
-			var html:String = new String();
-			
-			html = "<font size = '12'>";
+			var abText:String = new String();
 			
 			if (this.isLoading())
 			{
-				html += "        loading...";
+				abText += "        loading...";
 			}
 			else if (this.articleAbstract.length == 0)
 			{
-				html += "Abstract not available for this article.";
+				abText += "Abstract not available for this article.";
 			}
 			else
 			{
-				html += articleAbstract;
+				abText += articleAbstract;
 			}
 			
-			html += "</font>";
-			
-			this.abstractText.htmlText = html;
+			this.abstractText.text = abText;
 		}
 		
 		/**
@@ -202,6 +198,11 @@ package
 		{
 			this.loaderImg.visible = true;
 			this.loading = true;
+			
+			this.buttonMode = false;
+			this.abstractText.useHandCursor = false;
+			this.abstractText.buttonMode = false;
+			this.abstractText.mouseChildren = false;
 		}
 		
 		/**
@@ -211,6 +212,11 @@ package
 		{
 			this.loaderImg.visible = false;
 			this.loading = false;
+			
+			this.buttonMode = true;
+			this.abstractText.useHandCursor = true;
+			this.abstractText.buttonMode = true;
+			this.abstractText.mouseChildren = false;
 		}
 		
 		/**

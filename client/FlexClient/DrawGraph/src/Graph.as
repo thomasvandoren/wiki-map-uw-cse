@@ -35,9 +35,9 @@ package
 			this.environment = environment;
 			this.history = new History(this, environment.history);
 			
-			this.hide();
-			
 			this.wrapper = new Wrapper(this.loadGraphById);
+			
+			this.hide(false);
 			
 			trace("Graph created");
 		}
@@ -51,6 +51,7 @@ package
 			
 			ToolTipManager.enabled = false;
 			this.graph.removeAllElements(); //clear the previous graph
+			this.wrapper.clearGraph();
 		}
 		
 		/**
@@ -211,13 +212,18 @@ package
 		/**
 		 * Hide the graph.
 		 */
-		public function hide() : void
+		public function hide(clearHash : Boolean = true) : void
 		{
 			trace("Graph.hide()");
 			
 			this.visible = false;
 			this.graph.visible = false;
 			this.isSearch = false;
+			
+			if (clearHash)
+			{
+				this.wrapper.clearGraph();
+			}
 		}
 		
 		/**
@@ -243,9 +249,9 @@ package
 		 */
 		public function loadGraph(data : XML) : void 
 		{
-			trace("Graph.loadGraph");
 			
 			this.data = Parse.parseGraph(data);
+			
 			this.center = new Node(this, 0, 0);
 			
 			this.center.id = this.data[0][0];
@@ -255,10 +261,16 @@ package
 			//TODO: does this need to be in a different place?
 			this.wrapper.setGraph(this.data[0][0]);
 			
-			this.draw();
-			
-			//Add search term and id to search history
-			this.history.addRecord(this.center.title, this.center.id);
+			// 
+			if (history.getCurrentTitle() != this.data[0][1]) {
+				trace("Graph.loadGraph");
+				this.draw();
+				
+				//Add search term and id to search history
+				this.history.addRecord(this.center.title, this.center.id);
+			}else {
+				trace("Graph doesn't load because click at the center node");
+			}
 		}
 		
 		/**

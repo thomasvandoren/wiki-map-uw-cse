@@ -49,6 +49,7 @@ package
 		 */
 		public function handleSearch(event : Event) : void
 		{
+			this.ac.lock();
 			Network.searchGet(ac.getText(), reportSearchResult, reportError);
 		}
 		
@@ -62,6 +63,8 @@ package
 			//
 			// If an exact match was found, a graph will be returned.
 			//
+			
+			this.ac.unlock();
 			
 			if (data.name() == "graph")
 			{
@@ -80,6 +83,8 @@ package
 		 */
 		public function reportError(data : String) : void
 		{
+			this.ac.unlock();
+			
 			Alert.show("Could not access WikiGraph server.");
 		}
 		

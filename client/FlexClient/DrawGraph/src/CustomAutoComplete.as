@@ -31,11 +31,13 @@ package
 		private var graph:Graph;
 		private var env:Group;
 		private var list:Array;
+		private var isLocked : Boolean;
 		
 		public function CustomAutoComplete(environment:Group, g:Graph) 
 		{
 			graph = g;
 			env = environment;
+			this.unlock();
 			
 			//Initialize an inner AutoComplete component
 			ac = new AutoComplete();
@@ -85,10 +87,13 @@ package
 		
 		//Query the search given in the autocomplete bar
 		private function timerHandler():void {
-			searchText.text = ac.text;
-			keyCount = 0;
-			
-			Network.autocompleteGet(searchText.text, this.loadResults, this.reportError);
+			if (!this.isLocked)
+			{
+				searchText.text = ac.text;
+				keyCount = 0;
+				
+				Network.autocompleteGet(searchText.text, this.loadResults, this.reportError);
+			}
 		}
 		
 		/**
@@ -117,7 +122,7 @@ package
 			return item[1].toString();
 		}
 		
-		//Search for the suggestion if the user pressed enter, and clears the autocomplete bar
+		//Search for the suggestion if the user pressed enter
 		private function handleSelect(event:CustomEvent):void {
 			var item:Object = event.data;
 			trace("Selected " + item[1].toString());
@@ -143,6 +148,34 @@ package
 		{
 			ac.text = "";
 			searchText.text = "";
+		}
+		
+		/**
+		 * Set the autocomplete text to the search text.
+		 */
+		private function setText() : void
+		{
+			ac.text = searchText.text;
+		}
+		
+		/**
+		 * Lock the autocomplete so that cannot send service requests.
+		 * SearchButton calls this while it is loading search results.
+		 * This has the side effect of storing the search text as the autocomplete
+		 * text.
+		 */
+		public function lock() : void
+		{
+			this.isLocked = true;
+			this.setText();
+		}
+		
+		/**
+		 * Unlock the autocomplete so that it can make requests.
+		 */
+		public function unlock() : void
+		{
+			this.isLocked = false;
 		}
 	}
 

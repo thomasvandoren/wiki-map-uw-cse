@@ -21,6 +21,18 @@ package
 		}
 		
 		/**
+		 * Set the browser hash tag to a falsy value by calling the js
+		 * function with a space string.
+		 */
+		public function clearGraph() : void
+		{
+			if (ExternalInterface.available)
+			{
+				ExternalInterface.call("setHashTag", " ");
+			}
+		}
+		
+		/**
 		 * Call the wrapper function getGraphId to retrieve the
 		 * graph id from the hash tag. this does not actually return
 		 * anything, but it tells the browser to call loadGraph.
