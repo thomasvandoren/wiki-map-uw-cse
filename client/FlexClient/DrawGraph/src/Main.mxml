@@ -72,10 +72,14 @@
 		 * 
 		 * @param	env
 		 */
-		public function drawSplash(env:Group):void {
-			this.graphObj.hide();
-			this.myAutoComplete.clearText();
+		public function drawSplash(env : Group, clearHash : Boolean = true) : void 
+		{
+			if (clearHash)
+			{
+				this.graphObj.hide();
+			}
 			
+			this.myAutoComplete.clearText();
 			DrawSplash.DrawS(env);
 		}
 		
@@ -93,7 +97,7 @@
 		#history {background-color: #FF00FF}
 	</fx:Style>
 
-	<s:Group id="graph" height="100%" width="100%" addedToStage="drawSplash(graph)">
+	<s:Group id="graph" height="100%" width="100%" addedToStage="drawSplash(graph, false)">
 	</s:Group>
 	
 	<s:BorderContainer id="toolBar" height="38" width="100%" backgroundColor="0xCCCCDD">
