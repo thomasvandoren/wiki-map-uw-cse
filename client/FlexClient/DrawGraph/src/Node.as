@@ -46,7 +46,7 @@ package
 			
 			//set up timer
 			this.abstractTimer = new Timer(500, 1);
-			this.abstractTimer.addEventListener(TimerEvent.TIMER, TimerDing);
+			this.abstractTimer.addEventListener(TimerEvent.TIMER, timerDing);
 			
 			//set up mouse events
 			addEventListener(MouseEvent.CLICK, getGraph);
@@ -99,53 +99,55 @@ package
 		 * 
 		 * @param	event
 		 */
-		private function TimerDing(event:TimerEvent):void
+		private function timerDing(event:TimerEvent):void
 		{
 			if (tipCreated) 
 			{ 
-				// Tip already created, simply return alpha to 1 and reset the timer
+				// Tip already created, simply return alpha and reset the timer
 				abToolTip.abstractTimer.reset();
 				abToolTip.visible = true;
 				abToolTip.alpha = 0.9;
 			} 
 			else 
-			{ 
-				//tip not created, do so now
+			{
 				this.abToolTip = new AbstractToolTip(environment, label.text, id);
 				
-				if (angleDiffer == 0) 
+				this.tipCreated = true;
+				this.abToolTip.setTitle = label.text;
+				this.environment.addElement(abToolTip);
+				this.setStyle(currentCSSState, 2);
+				
+				var xOffset : int = this.width / 3;
+				var yOffset : int = 3;
+				
+				var meridian : int = environment.width / 2;
+				var equator : int = environment.height / 2;
+				
+				// First quad: tt is below left
+				if (this.x >= meridian && this.y < equator) 
 				{
-					// for first quardrant
-					if (this.x > environment.width / 2 && this.y < environment.height/2) {
-						abToolTip.x = this.x-abToolTip.width + 20;
-						abToolTip.y = this.y + this.width/2;
-					}else if(this.x < environment.width / 2 && this.y < environment.height/2){ // for 2nd
-						abToolTip.x = this.x + this.width + 20;
-						abToolTip.y = this.y + this.height/2;
-					}else if (this.x < environment.width / 2 && this.y > environment.height / 2) { // for 3rd
-						abToolTip.x = this.x + this.width + 20;
-						abToolTip.y = this.y - abToolTip.height - 20;
-					}else {
-						abToolTip.x = this.x-abToolTip.width + 20;
-						abToolTip.y = this.y - abToolTip.height - 20;
-					}
+					abToolTip.x = this.x - abToolTip.width + xOffset;
+					abToolTip.y = this.y + this.height + yOffset;
 				}
-				else
+				// Fourth quad: tt is below right
+				else if (this.x < meridian && this.y < equator)
 				{
-					if (index == 0) {
-						abToolTip.x = getX(0.3, abToolTip);
-						abToolTip.y = getY(0.3, abToolTip);
-					}else{
-						abToolTip.x = getX(0.1, abToolTip);
-						abToolTip.y = getY(0.1, abToolTip);
-					}
+					abToolTip.x = this.x + this.width - xOffset;
+					abToolTip.y = this.y + this.height + yOffset;
 				}
-				tipCreated = true;
-				abToolTip.setTitle = label.text;
-				environment.addElement(abToolTip);
+				// Third quad: tt is above right
+				else if (this.x < meridian && this.y >= equator) 
+				{
+					abToolTip.x = this.x + this.width - xOffset;
+					abToolTip.y = this.y - abToolTip.height - yOffset;
+				}
+				// Second quad: tt is above left
+				else 
+				{
+					abToolTip.x = this.x - abToolTip.width + xOffset;
+					abToolTip.y = this.y - abToolTip.height - yOffset;
+				}
 			}
-			
-			this.setStyle(currentCSSState, 2);
 		}
 		
 		/**
