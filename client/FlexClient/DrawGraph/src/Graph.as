@@ -37,7 +37,7 @@ package
 			
 			this.wrapper = new Wrapper(this.loadGraphById);
 			
-			this.hide();
+			this.hide(false);
 			
 			trace("Graph created");
 		}
@@ -212,14 +212,18 @@ package
 		/**
 		 * Hide the graph.
 		 */
-		public function hide() : void
+		public function hide(clearHash : Boolean = true) : void
 		{
 			trace("Graph.hide()");
 			
 			this.visible = false;
 			this.graph.visible = false;
 			this.isSearch = false;
-			this.wrapper.clearGraph();
+			
+			if (clearHash)
+			{
+				this.wrapper.clearGraph();
+			}
 		}
 		
 		/**
