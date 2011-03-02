@@ -51,6 +51,7 @@ package
 			
 			ToolTipManager.enabled = false;
 			this.graph.removeAllElements(); //clear the previous graph
+			this.wrapper.clearGraph();
 		}
 		
 		/**
@@ -218,6 +219,7 @@ package
 			this.visible = false;
 			this.graph.visible = false;
 			this.isSearch = false;
+			this.wrapper.clearGraph();
 		}
 		
 		/**
