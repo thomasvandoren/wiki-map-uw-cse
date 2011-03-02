@@ -1,0 +1,12 @@
+WikiGraph
+Copyright (c) 2011
+
+The PHPUnit unit tests for the services reside in this directory.
+
+To execute all the unit tests:
+   phpunit AllTests
+
+NOTE: a config.php needs to exist in this directory in order for the
+      unit tests to complete (and pass). The build script has options
+      for creating/copying config.php files at build. You are welcome
+      to just leave a local copy in here, but do not commit it.
