@@ -91,14 +91,23 @@ package
 			
 			this.getAbstract();
 			
+			// adds drag & drop for the tool tips
 			this.addEventListener(MouseEvent.MOUSE_DOWN, mousePress);
 			this.addEventListener(MouseEvent.MOUSE_UP, mouseRelease);
 		}
 		
+		/**
+		 * 
+		 * @param	event
+		 */
 		public function mousePress(event:MouseEvent):void {
 			this.startDrag();
 		}
 		
+		/**
+		 * 
+		 * @param	event
+		 */
 		public function mouseRelease(event:MouseEvent):void {
 			this.stopDrag();
 		}
