@@ -123,25 +123,25 @@ package
 				var meridian : int = environment.width / 2;
 				var equator : int = environment.height / 2;
 				
-				// First quad: tt is below left
+				// First quad: tt is above right
 				if (this.x >= meridian && this.y < equator) 
 				{
 					abToolTip.x = this.x - abToolTip.width + xOffset;
 					abToolTip.y = this.y + this.height + yOffset;
 				}
-				// Fourth quad: tt is below right
+				// Second quad: tt is above left
 				else if (this.x < meridian && this.y < equator)
 				{
-					abToolTip.x = this.x + this.width - xOffset;
+					abToolTip.x = this.x + 2*xOffset;
 					abToolTip.y = this.y + this.height + yOffset;
 				}
-				// Third quad: tt is above right
+				// Third quad: tt is below left
 				else if (this.x < meridian && this.y >= equator) 
 				{
-					abToolTip.x = this.x + this.width - xOffset;
+					abToolTip.x = this.x + 2*xOffset;
 					abToolTip.y = this.y - abToolTip.height - yOffset;
 				}
-				// Second quad: tt is above left
+				// Fourth quad: tt is below right
 				else 
 				{
 					abToolTip.x = this.x - abToolTip.width + xOffset;

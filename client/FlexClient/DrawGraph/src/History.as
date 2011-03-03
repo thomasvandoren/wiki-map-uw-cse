@@ -94,11 +94,11 @@ package
 		 */
 		private function doSearch(event : Event) : void {
 			var search : String = searchIDs[list.selectedIndex] as String;
-			// Runs removeRecord if the selected title is not the current
+			// Runs removeRecord & draw graph if the selected title is not the current
 			if(list.selectedIndex!=0){
 				removeRecord(int(list.selectedIndex));
+				graph.getGraph(search);
 			}
-			graph.getGraph(search);
 			list.text = "Search History...";
 			list.selectedItem = null;
 		}
