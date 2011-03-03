@@ -98,6 +98,14 @@ class AllTests extends PHPUnit_Framework_TestCase
       mysql_query($q);
     }
 
+    $q = "CREATE TABLE pagelinks_cache ("
+      .  "  plc_from INT(8),"
+      .  "  plc_to INT(8),"
+      .  "  plc_out TINYINT(1),"
+      .  "  plc_in TINYINT(1),"
+      .  "  INDEX (plc_from)"
+      .  ")";
+    mysql_query($q);
     mysql_close($db);
   }
 
@@ -111,7 +119,7 @@ class AllTests extends PHPUnit_Framework_TestCase
     $db = mysql_connect($DB_HOST, $DB_USER, $DB_PASS);
     mysql_select_db($DB_NAME);
 
-    mysql_query("DROP TABLE page, pagelinks, abstract");
+    mysql_query("DROP TABLE page, pagelinks, pagelinks_cache, abstract");
     mysql_close($db);
   }
 
@@ -235,13 +243,15 @@ class AllTests extends PHPUnit_Framework_TestCase
       $results = $db->get_page_links($id);
       foreach ($results as $row) {
 	// Test that the rows have the correct fields
-	$this->assertArrayHasKey('pl_from', $row);
-	$this->assertArrayHasKey('pl_to', $row);
+	$this->assertArrayHasKey('plc_from', $row);
+	$this->assertArrayHasKey('plc_to', $row);
+	$this->assertArrayHasKey('plc_out', $row);
+	$this->assertArrayHasKey('plc_in', $row);
 
 	// Test that results are valid numbers
-	$src = (int)($row['pl_from']);
+	$src = (int)($row['plc_from']);
 	$this->assertNotEquals($src, 0);
-	$dst = (int)($row['pl_to']);
+	$dst = (int)($row['plc_to']);
 	$this->assertNotEquals($dst, 0);
 
 	// Test that the initial ID is either
