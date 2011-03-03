@@ -1,6 +1,7 @@
 package  
 {
 	
+	import flash.display.MovieClip;
 	import mx.core.ByteArrayAsset;
 	import spark.components.Panel;
 	
@@ -80,7 +81,7 @@ package
 			this.addElement(this.abstractText);
 			this.createLoaderImg();
 			
-			this.addEventListener(MouseEvent.CLICK, OpenArticle);
+			abstractText.addEventListener(MouseEvent.CLICK, OpenArticle);
 			this.addEventListener(MouseEvent.MOUSE_OVER, KeepUp);
 			this.addEventListener(MouseEvent.MOUSE_OUT, RestartTimer);
 			
@@ -89,6 +90,17 @@ package
 			this.abstractTimer.addEventListener(TimerEvent.TIMER, TimerDing);
 			
 			this.getAbstract();
+			
+			this.addEventListener(MouseEvent.MOUSE_DOWN, mousePress);
+			this.addEventListener(MouseEvent.MOUSE_UP, mouseRelease);
+		}
+		
+		public function mousePress(event:MouseEvent):void {
+			this.startDrag();
+		}
+		
+		public function mouseRelease(event:MouseEvent):void {
+			this.stopDrag();
 		}
 		
 		/**
