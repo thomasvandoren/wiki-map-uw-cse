@@ -7,7 +7,9 @@ Author: Rob McClure <mgracecubs@gmail.com>
 
 Graph service
 Currently only implements one level of link depth
-Currently takes the title of the node
+
+TODO: This could probably be cleaned up a bit
+      since the format of returned links is much nicer
 */
 	
 include 'config.php';
@@ -31,90 +33,32 @@ if ($page_id === 0)
 // Fetch all links with our target page as a source or destination
 // including page info (title, length)
 $link_data = $db->get_page_links($page_id);
-$links = array();
-$pages = array();
-$pages[$page_id] = null;
+$ids = array($page_id);
+$graph = array();
+$graph[$page_id] = array();
 foreach ($link_data as $link) {
-  $id_from = (int)($link["pl_from"]);
-  $id_to = (int)($link["pl_to"]);
+  $dst = (int)($link['plc_to']);
+  array_push($ids, $dst);
+  if ((int)($link['plc_out']) == 1) {
+    $graph[$page_id][$dst] = true;
+  }
 
-  // Set link data
-  if (!isset($links[$id_from]))
-    $links[$id_from] = array();
-  $links[$id_from][$id_to] = true;
-
-  // Update pages to get info for
-  $pages[$id_from] = null;
-  $pages[$id_to] = null;
+  if ((int)($link['plc_in']) == 1) {
+    if (!isset($graph[$dst]))
+      $graph[$dst] = array();
+    $graph[$dst][$page_id] = true;
+  }
 }
 
-// Collect all ids to find info for
-$ids = array();
-foreach ($pages as $id => $_) {
-  array_push($ids, $id);
-}
-
-// Put page data in array
-$page_data =  $db->get_page_info($ids);
+$pages = array();
+$page_data = $db->get_page_info($ids);
 foreach ($page_data as $page) {
-  $id = (int)($page["page_id"]);
-  $pages[$id] = array("title" => $page["page_title"],
-		      "len" => $page["page_len"],
-		      "is_ambig" => ($page["page_is_ambiguous"] == "1") ? "true" : "false");
+  $id = (int)($page['page_id']);
+  $pages[$id] = array("title" => $page['page_title'],
+		      "len" => $page['page_len'],
+		      "is_ambig" => $page['page_is_ambiguous']
+		      );
 }
-
-// If page info for center node isn't set
-// then it doesn't exist
-if ($pages[$page_id] === null) {
-  error(404, "ID not found ($page_id).\n");
-}
-
-/**
- * Function to compare two nodes
- * in order to sort them by
- * strength
- *
- * Strength is determined by:
- * +1 if this node links to the center
- * +1 if the center links to this node
- *
- * Ties in strength are resolved based
- * on page length
- */
-function cmp($a, $b) {
-  global $page_id, $pages, $links;
-
-  // The page we are searching for
-  // should always come first
-  if ($a == $page_id)
-    return -1;
-  elseif ($b == $page_id)
-    return 1;
-
-  // Calculate strengths of links
-  $str_a = 0;
-  if (isset($links[$page_id][$a]))
-    $str_a++;
-  if (isset($links[$a]) && isset($links[$a][$page_id]))
-    $str_a++;
-
-  $str_b = 0;
-  if (isset($links[$page_id][$b]))
-    $str_b++;
-  if (isset($links[$b]) && isset($links[$b][$page_id]))
-    $str_b++;
-
-  // Compare by link strength, then by page size
-  if ($str_a == $str_b)
-    return ((int)($pages[$a]['len']) > (int)($pages[$b]['len'])) ?
-      -1 : 1;
-  else
-    return ($str_a > $str_b) ? -1 : 1;
-}
-
-usort($ids, 'cmp');
-// Get the top 24 (+ center) nodes to return
-$ids = array_splice($ids, 0, 25);
 
 // Now generate XML
 header('Content-Type:text/xml');
@@ -129,13 +73,13 @@ print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 ?>
   <source id="<?= $id ?>" title="<?= htmlspecialchars($page["title"], ENT_QUOTES) ?>" len="<?= $page["len"] ?>" is_disambiguation="<?= $page["is_ambig"] ?>">
 <?php
-  if (isset($links[$id]))
-      foreach ($links[$id] as $dst => $_) {
+  if (isset($graph[$id]))
+      foreach ($graph[$id] as $dst => $_) {
 	if (in_array($dst, $ids)) {
 	  // Strength of a link is 1 if unidirectional
 	  // 2 if bidirectional
 	  $str = 1;
-	  if (isset($links[$dst]) && isset($links[$dst][$id]))
+	  if (isset($graph[$dst]) && isset($graph[$dst][$id]))
 	    $str = 2;
 ?>
     <dest id="<?= $dst ?>" str="<?= $str  ?>"/>

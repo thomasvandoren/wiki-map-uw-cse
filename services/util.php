@@ -103,6 +103,32 @@ class GraphDB {
    * Takes the id of the page
    */
   public function get_page_links($id) {
+    $q = "SELECT * FROM pagelinks_cache WHERE plc_from = $id";
+    $results = $this->query($q);
+    
+    if (count($results) == 0) {
+      $q = "SELECT pl_from, pl_to FROM pagelinks WHERE pl_from = $id LIMIT 24";
+      $tmp = $this->query($q);
+
+      // If any links exist, start the caching
+      if (count($tmp) > 0)
+	exec("php cache_link.php $id > /dev/null 2>&1 &");
+
+      $results = array();
+      foreach ($tmp as $row) {
+	$to_push = array('plc_from' => $id,
+			 'plc_to' => (int)($row['pl_to']),
+			 'plc_out' => 1,
+			 'plc_in' => 0
+			 );
+	array_push($results, $to_push);
+      }
+    }
+
+    return $results;
+  }
+
+  public function get_page_links_full($id) {
     $q = "SELECT pl_from, pl_to FROM pagelinks WHERE pl_from = $id OR pl_to = $id";
     return $this->query($q);
   }
