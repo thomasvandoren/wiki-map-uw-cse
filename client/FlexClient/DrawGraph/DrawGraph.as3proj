@@ -1,0 +1,95 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<project>
+  <!-- Output SWF options -->
+  <output>
+    <movie disabled="False" />
+    <movie input="" />
+    <movie path="bin\WikiGraph.swf" />
+    <movie fps="30" />
+    <movie width="1024" />
+    <movie height="768" />
+    <movie version="10" />
+    <movie background="#FFFFFF" />
+  </output>
+  <!-- Other classes to be compiled into your SWF -->
+  <classpaths>
+    <class path="src" />
+    <class path="lib" />
+    <class path="test" />
+  </classpaths>
+  <!-- Build options -->
+  <build>
+    <option accessible="False" />
+    <option allowSourcePathOverlap="False" />
+    <option benchmark="False" />
+    <option es="False" />
+    <option locale="" />
+    <option loadConfig="" />
+    <option optimize="True" />
+    <option showActionScriptWarnings="True" />
+    <option showBindingWarnings="True" />
+    <option showInvalidCSS="True" />
+    <option showDeprecationWarnings="True" />
+    <option showUnusedTypeSelectorWarnings="True" />
+    <option strict="True" />
+    <option useNetwork="True" />
+    <option useResourceBundleMetadata="True" />
+    <option warnings="True" />
+    <option verboseStackTraces="False" />
+    <option linkReport="" />
+    <option loadExterns="" />
+    <option staticLinkRSL="True" />
+    <option additional="" />
+    <option compilerConstants="" />
+    <option customSDK="" />
+  </build>
+  <!-- SWC Include Libraries -->
+  <includeLibraries>
+    <!-- example: <element path="..." /> -->
+  </includeLibraries>
+  <!-- SWC Libraries -->
+  <libraryPaths>
+    <element path="lib\flexunit-4.0.0.swc" />
+    <element path="lib\flexunit-aircilistener-4.0.0.swc" />
+    <element path="lib\flexunit-cilistener-4.0.0.swc" />
+    <element path="lib\flexunit-flexcoverlistener-4.0.0.swc" />
+    <element path="lib\flexunit-uilistener-4.0.0.swc" />
+    <element path="lib\flexRpcStubs-0.3.swc" />
+    <element path="lib\GIFPlayer-0.6.swc" />
+    <element path="lib\FlashCommander.swc" />
+    <element path="lib\TweenLib.swc" />
+  </libraryPaths>
+  <!-- External Libraries -->
+  <externalLibraryPaths>
+    <!-- example: <element path="..." /> -->
+  </externalLibraryPaths>
+  <!-- Runtime Shared Libraries -->
+  <rslPaths>
+    <!-- example: <element path="..." /> -->
+  </rslPaths>
+  <!-- Intrinsic Libraries -->
+  <intrinsics>
+    <element path="Library\AS3\frameworks\Flex4" />
+  </intrinsics>
+  <!-- Assets to embed into the output SWF -->
+  <library>
+    <asset path="lib\flexUnitTasks-4.0.0.jar" />
+  </library>
+  <!-- Class files to compile (other referenced classes will automatically be included) -->
+  <compileTargets>
+    <compile path="src\Main.mxml" />
+  </compileTargets>
+  <!-- Paths to exclude from the Project Explorer tree -->
+  <hiddenPaths>
+    <!-- example: <hidden path="..." /> -->
+  </hiddenPaths>
+  <!-- Executed before build -->
+  <preBuildCommand />
+  <!-- Executed after build -->
+  <postBuildCommand alwaysRun="False" />
+  <!-- Other project options -->
+  <options>
+    <option showHiddenPaths="False" />
+    <option testMovie="Default" />
+  </options>
+</project>
