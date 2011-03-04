@@ -54,7 +54,6 @@ package
 			myTimer = new Timer(500, 0);
             myTimer.addEventListener("timer", timerTickHandler);
 			searchText = new TextInput();
-			
 		}
 		
 		//After .5 seconds (if no characters were typed), reset the timer and query the search
@@ -133,7 +132,7 @@ package
 		
 		//Resizes the search bar to extend across the application width
 		public function reSize():void {
-			ac.width = env.width - 160 - 208; //subtract search history and search button widths
+			ac.width = env.width - 160 - 206; //subtract search history and search button widths
 		}
 		
 		//Returns the current text in the autocomplete bar

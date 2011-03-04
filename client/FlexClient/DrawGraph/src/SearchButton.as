@@ -90,7 +90,7 @@ package
 		
 		public function setX() : void
 		{
-			this.btn.x = this.graph.width() - 102;
+			this.btn.x = this.graph.width() - 104;
 		}
 	}
 

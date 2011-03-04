@@ -6,13 +6,18 @@ package
 		import mx.controls.TextArea;
 		import mx.core.Application;
 		import mx.core.UIComponent;
+		import mx.effects.Tween;
 		import mx.graphics.SolidColorStroke;
 		import mx.graphics.Stroke;
 		import spark.components.Group;
 		import spark.primitives.Line;
 		import mx.controls.Alert;
 		import mx.managers.ToolTipManager;
-	/**
+		
+		
+		import com.greensock.TweenLite;
+		import com.greensock.easing.*;
+	/** 
 	 * ...
 	 * @author Austin Nakamura
 	 */
@@ -25,12 +30,13 @@ package
 		import mx.states.AddChild;
 		import Node;
 		
+		private static var j:Number;
+		
 		//tells the program to draw a bunch of nodes in the drawing area
 		//NOTE: DrawG now requires a center Node to be provided, as the returned
 		//list of nodes does not necessarily have the article itself come first
 		public static function DrawG(a:Array, graph:Graph, cNode:Node):void 
 		{
-			
 			ToolTipManager.enabled = false;
 			var environment : Group = graph.returnGraph();
 			
@@ -38,7 +44,7 @@ package
 				environment.removeAllElements(); //clear the previous graph
 				
 				//presently this is how we're calculating the node's postion
-				var j:Number;
+				
 				if (a.length > 25 || a.length==1) {
 					j = (2 * Math.PI) / 24;
 				}else{
@@ -65,126 +71,268 @@ package
 				centerNode.x = (environment.width / 2) - (centerNode.width / 2);
 				centerNode.y = (environment.height / 2) - (centerNode.height / 2);
 				centerNode.alpha = 1;
-
+				
+				var nodes:Array = new Array();
+				
 				// draw lines and nodes
 				for (var i:Number = 1; i < 25 && i < a.length; i++) {
 					var lengthCheck:String = a[i][1];
 					if (lengthCheck.length > 0) {
-					var newNode:Node = new Node(graph,j,i);
-					newNode.id = a[i][0];
-					newNode.title = a[i][1];
-					var title:String = new String(a[i][1]);
-					newNode.label.text = title.split("_").join(" ");
-					newNode.width = environment.width/8;
-					newNode.height = environment.height / 24;
-					newNode.label.width = newNode.width;
-					newNode.label.height = newNode.height;
-					newNode.label.y = newNode.height / 6;
-					newNode.setStyle("cornerRadius", newNode.height / 2);
-					newNode.label.setStyle("fontSize", newNode.height / 3);
-					newNode.x = newNode.getX(0.40, newNode);
-					newNode.y = newNode.getY(0.40, newNode);
-					newNode.alpha = 1;
-					
-					var newLine:UIComponent = new UIComponent();
-					//some variables to make line drawing a bit easier
-					var envX:Number = (environment.width / 2); //x center of the environment
-					var envY:Number = (environment.height / 2); //y center of the environment
-					var nodeX:Number = (newNode.x + newNode.width / 2); //x center of the node
-					var nodeY:Number = (newNode.y + newNode.height / 2); //y center of the node
-					
-					//Draw the line, since we have 3 types there's a lot of code for it
-					newLine.name = a[i][0] + "_line";
-					if (false) {
-						//draw outgoing line
-						//Do some computation
-						var outEndX:Number = ((nodeX - envX) * 0.8) + envX;
-						var outEndY:Number = ((nodeY - envY) * 0.9) + envY;
-						var arrowX:Number = ((Math.cos((i - 1) * j + Math.PI/90)) * environment.width * 0.40) + (environment.width / 2) - (newNode.width / 2);
-						var arrowY:Number = ((Math.sin((i - 1) * j + Math.PI/90)) * environment.height * 0.40) + (environment.height / 2) - (newNode.height / 2);
-						arrowX = (((arrowX + newNode.width / 2) - envX) * 0.77) + envX;
-						arrowY = (((arrowY + newNode.height / 2) - envY) * 0.87) + envY;
-						var arrowA:Number = ((Math.cos((i - 1) * j - Math.PI/90)) * environment.width * 0.40) + (environment.width / 2) - (newNode.width / 2);
-						var arrowB:Number = ((Math.sin((i - 1) * j - Math.PI/90)) * environment.height * 0.40) + (environment.height / 2) - (newNode.height / 2);
-						arrowA = (((arrowA + newNode.width / 2) - envX) * 0.77) + envX;
-						arrowB = (((arrowB + newNode.height / 2) - envY) * 0.87) + envY;
-						//line color defined here
-						newLine.graphics.lineStyle(3, 0x666666, 1);		
-						newLine.graphics.moveTo(envX,envY);
-						newLine.graphics.lineTo(outEndX, outEndY);
-						newLine.graphics.lineStyle(3, 0x667766, 1);
-						newLine.graphics.lineTo(arrowX, arrowY);
-						newLine.graphics.moveTo(outEndX, outEndY);
-						newLine.graphics.lineTo(arrowA, arrowB);
-					} else if (false) {
-						//draw incoming line
-						//Do some computation
-						var inEndX:Number = ((nodeX - envX) * 0.3) + envX;
-						var inEndY:Number = ((nodeY - envY) * 0.2) + envY;
-						var arrowX:Number = ((Math.cos((i - 1) * j + Math.PI/30)) * environment.width * 0.40) + (environment.width / 2) - (newNode.width / 2);
-						var arrowY:Number = ((Math.sin((i - 1) * j + Math.PI/30)) * environment.height * 0.40) + (environment.height / 2) - (newNode.height / 2);
-						arrowX = (((arrowX + newNode.width / 2) - envX) * 0.33) + envX;
-						arrowY = (((arrowY + newNode.height / 2) - envY) * 0.23) + envY;
-						var arrowA:Number = ((Math.cos((i - 1) * j - Math.PI/30)) * environment.width * 0.40) + (environment.width / 2) - (newNode.width / 2);
-						var arrowB:Number = ((Math.sin((i - 1) * j - Math.PI/30)) * environment.height * 0.40) + (environment.height / 2) - (newNode.height / 2);
-						arrowA = (((arrowA + newNode.width / 2) - envX) * 0.33) + envX;
-						arrowB = (((arrowB + newNode.height / 2) - envY) * 0.23) + envY;
-						//line color defined here
-						newLine.graphics.lineStyle(3, 0x666666, 1);
-						newLine.graphics.moveTo(nodeX, nodeY);
-						newLine.graphics.lineTo(inEndX, inEndY);
-						newLine.graphics.lineStyle(3, 0x776666, 1);
-						newLine.graphics.lineTo(arrowX, arrowY);
-						newLine.graphics.moveTo(inEndX, inEndY);
-						newLine.graphics.lineTo(arrowA, arrowB);
-					} else {
-						//draw mutual line
-						//Do some computation
-						var outEndX:Number = ((nodeX - envX) * 0.8) + envX;
-						var outEndY:Number = ((nodeY - envY) * 0.9) + envY;
-						var inEndX:Number = ((nodeX - envX) * 0.3) + envX;
-						var inEndY:Number = ((nodeY - envY) * 0.2) + envY;
-						var arrowX:Number = ((Math.cos((i - 1) * j + Math.PI/90)) * environment.width * 0.40) + (environment.width / 2) - (newNode.width / 2);
-						var arrowY:Number = ((Math.sin((i - 1) * j + Math.PI/90)) * environment.height * 0.40) + (environment.height / 2) - (newNode.height / 2);
-						arrowX = (((arrowX + newNode.width / 2) - envX) * 0.77) + envX;
-						arrowY = (((arrowY + newNode.height / 2) - envY) * 0.87) + envY;
-						var arrowA:Number = ((Math.cos((i - 1) * j - Math.PI/90)) * environment.width * 0.40) + (environment.width / 2) - (newNode.width / 2);
-						var arrowB:Number = ((Math.sin((i - 1) * j - Math.PI/90)) * environment.height * 0.40) + (environment.height / 2) - (newNode.height / 2);
-						arrowA = (((arrowA + newNode.width / 2) - envX) * 0.77) + envX;
-						arrowB = (((arrowB + newNode.height / 2) - envY) * 0.87) + envY;
-						var arrowX2:Number = ((Math.cos((i - 1) * j + Math.PI/30)) * environment.width * 0.40) + (environment.width / 2) - (newNode.width / 2);
-						var arrowY2:Number = ((Math.sin((i - 1) * j + Math.PI/30)) * environment.height * 0.40) + (environment.height / 2) - (newNode.height / 2);
-						arrowX2 = (((arrowX2 + newNode.width / 2) - envX) * 0.33) + envX;
-						arrowY2 = (((arrowY2 + newNode.height / 2) - envY) * 0.23) + envY;
-						var arrowA2:Number = ((Math.cos((i - 1) * j - Math.PI/30)) * environment.width * 0.40) + (environment.width / 2) - (newNode.width / 2);
-						var arrowB2:Number = ((Math.sin((i - 1) * j - Math.PI/30)) * environment.height * 0.40) + (environment.height / 2) - (newNode.height / 2);
-						arrowA2 = (((arrowA2 + newNode.width / 2) - envX) * 0.33) + envX;
-						arrowB2 = (((arrowB2 + newNode.height / 2) - envY) * 0.23) + envY;
-						//line color defined here
-						newLine.graphics.lineStyle(3, 0x666666, 1);
-						newLine.graphics.moveTo(outEndX, outEndY);
-						newLine.graphics.lineTo(inEndX, inEndY);
-						newLine.graphics.lineStyle(3, 0x666677, 1);
-						//draw inner arrow first
-						newLine.graphics.lineTo(arrowX2, arrowY2);
-						newLine.graphics.moveTo(inEndX, inEndY);
-						newLine.graphics.lineTo(arrowA2, arrowB2);
-						//draw outer arrow second
-						newLine.graphics.moveTo(outEndX, outEndY);
-						newLine.graphics.lineTo(arrowX, arrowY);
-						newLine.graphics.moveTo(outEndX, outEndY);
-						newLine.graphics.lineTo(arrowA, arrowB);		
+						var newNode:Node = new Node(graph,j,i);
+						newNode.id = a[i][0];
+						newNode.title = a[i][1];
+						var title:String = new String(a[i][1]);
+						newNode.label.text = title.split("_").join(" ");
+						newNode.width = environment.width/8;
+						newNode.height = environment.height / 24;
+						newNode.label.width = newNode.width;
+						newNode.label.height = newNode.height;
+						newNode.label.y = newNode.height / 6;
+						newNode.setStyle("cornerRadius", newNode.height / 2);
+						newNode.label.setStyle("fontSize", newNode.height / 3);
+						//newNode.x = newNode.getX(0.40, newNode);
+						//newNode.y = newNode.getY(0.40, newNode);
+						// location of all nodes are at center node from beginning
+						newNode.x = environment.width / 2 - newNode.width / 2;
+						newNode.y = environment.height / 2 - newNode.height / 2;
+						//trace(newNode.x + "," + newNode.y);
+						newNode.alpha = 1;
+						
+						environment.addElement(newNode);
 					}
-					// add line and its button
-					environment.addElement(newLine);
-					environment.addElement(newNode);
-					}
+					nodes.push(newNode);
 				}
+				// set graph environment is visible
+				environment.visible = true;
+				// do animation to stretch out graph nodes
+				openGraph(nodes, environment);
+				// draw 24 arrows
+				drawLines(nodes, environment);
 				// add center node button
 				environment.addElement(centerNode);
 			}
-			environment.visible = true;
+			
+			
 		}
 		
+		/**
+		 * draws 24 arrows from center node to others
+		 * 
+		 * @param	nodes
+		 * @param	environment
+		 * @param	j
+		 */
+		private static function drawLines(nodes:Array, environment:Group):void {
+			trace("DrawGraph.drawLines");
+			//calls arrow function here
+			if (true) { //this will eventuall be a parameter check for in/out
+				//draw an outgoing arrow
+				DrawOutArrow(nodes, environment);
+			} else if (true) {
+				//draw an incoming arrow
+				DrawInArrow(environment, newNode, i+1);
+			} else {
+				//draw a mutual arrow
+				DrawMutualArrow(environment, newNode, i+1);
+			}
+		}
+		
+		/**
+		 * stretchs out graph nodes or more left to right
+		 * 
+		 * @param	nodes
+		 * @param	environment
+		 */
+		private static function openGraph(nodes:Array, environment:Group):void {
+			trace("DrawGraph.openGraph");
+			
+			var isFancy:Boolean = (Math.round(Math.random() * 1) == 0);
+			for (var i:Number = 0; i < nodes.length; i++) {
+				var node:Node = nodes[i];
+				if(isFancy) // stretch out
+					TweenLite.to(node, 2, { x:node.getX(0.40, node), y:node.getY(0.40, node) , ease: Back.easeInOut } );
+				else // move left to right
+					TweenLite.to(node, 2, { x:node.getX(0.40, node), y:node.getY(0.40, node), ease: Back.easeInOut,onComplete:moveG(nodes)} );
+			}
+		}
+		
+		/**
+		 * moves nodes from left to right for animation
+		 * 
+		 * @param	nodes
+		 */
+		private static function moveG(nodes:Array):void {
+				trace("DrawGraph.moveG");
+				for (var i:Number = 0; i < nodes.length; i++) {
+					var node:Node = nodes[i];
+					// make animation start from the left side of graph and more to center
+					node.x -= node.width / 2;
+					node.y -= node.height / 2;
+				}
+		}
+		
+		/**
+		 * draws out arrow start from center node to others with arrows
+		 * 
+		 * @param	nodes
+		 * @param	environment
+		 */
+		private static function DrawOutArrow(nodes:Array, environment:Group):void {
+			var newLine:UIComponent = new UIComponent();
+			newLine.graphics.lineStyle(3, 0x666666, 1);	
+			var envX:Number = (environment.width / 2); 
+			var envY:Number = (environment.height / 2); 
+			for (var i:Number = 0; i < nodes.length; i++) {
+				var node:Node = nodes[i];
+				
+				var endX:Number = node.getX(0.32, node)+node.width/2;
+				var endY:Number = node.getY(0.32, node)+node.height/2;
+				// draws line from center node to others
+				newLine.graphics.moveTo(envX, envY);
+				newLine.graphics.lineTo(endX, endY);
+				// draws arrow for each line
+				// (will do later :D) 
+				// I tried to use DrawOutArrow from what Austin had but didn't work for my animation.
+				// The arrows are become a line start from center node. That's why I changed to my 
+				// code to make it works with animation move nodes from left to right, however I 
+				// don't know how to draw arrows now :D
+				
+				// Austin: Can you take a look and help me to add codes for this or change your code to make
+				// my animation works? I will try to do it tomorrow but since you did this one so you will
+				// figure it out faster than me :) Thanks.
+				
+				environment.addElement(newLine);
+			}
+		}
+		
+		/**
+		 * 
+		 * 
+		 * @param	environment
+		 * @param	newNode
+		 * @param	i
+		 * @param	j
+		 */
+		private static function DrawOutArrow2(environment:Group, newNode:Node, i:Number):void {
+			var newLine:UIComponent = new UIComponent();
+			//some variables to make line drawing a bit easier
+			var envX:Number = (environment.width / 2); //x center of the environment
+			var envY:Number = (environment.height / 2); //y center of the environment
+			var nodeX:Number = (newNode.x + newNode.width / 2); //x center of the node
+			var nodeY:Number = (newNode.y + newNode.height / 2); //y center of the node
+			//draw outgoing line
+			//Do some computation
+			var outEndX:Number = ((nodeX - envX) * 0.8) + envX;
+			var outEndY:Number = ((nodeY - envY) * 0.9) + envY;
+			var arrowX:Number = ((Math.cos((i - 1) * j + Math.PI/90)) * environment.width * 0.40) + (environment.width / 2) - (newNode.width / 2);
+			var arrowY:Number = ((Math.sin((i - 1) * j + Math.PI/90)) * environment.height * 0.40) + (environment.height / 2) - (newNode.height / 2);
+			arrowX = (((arrowX + newNode.width / 2) - envX) * 0.77) + envX;
+			arrowY = (((arrowY + newNode.height / 2) - envY) * 0.87) + envY;
+			var arrowA:Number = ((Math.cos((i - 1) * j - Math.PI/90)) * environment.width * 0.40) + (environment.width / 2) - (newNode.width / 2);
+			var arrowB:Number = ((Math.sin((i - 1) * j - Math.PI/90)) * environment.height * 0.40) + (environment.height / 2) - (newNode.height / 2);
+			arrowA = (((arrowA + newNode.width / 2) - envX) * 0.77) + envX;
+			arrowB = (((arrowB + newNode.height / 2) - envY) * 0.87) + envY;
+			//line color defined here
+			newLine.graphics.lineStyle(3, 0x666666, 1);		
+			newLine.graphics.moveTo(envX,envY);
+			newLine.graphics.lineTo(outEndX, outEndY);
+			newLine.graphics.lineStyle(3, 0x667766, 1);
+			newLine.graphics.lineTo(arrowX, arrowY);
+			newLine.graphics.moveTo(outEndX, outEndY);
+			newLine.graphics.lineTo(arrowA, arrowB);
+			environment.addElement(newLine);
+		}
+		
+		/**
+		 * 
+		 * 
+		 * @param	environment
+		 * @param	newNode
+		 * @param	i
+		 * @param	j
+		 */
+		private static function DrawInArrow(environment:Group, newNode:Node, i:Number):void {
+			var newLine:UIComponent = new UIComponent();
+			//some variables to make line drawing a bit easier
+			var envX:Number = (environment.width / 2); //x center of the environment
+			var envY:Number = (environment.height / 2); //y center of the environment
+			var nodeX:Number = (newNode.x + newNode.width / 2); //x center of the node
+			var nodeY:Number = (newNode.y + newNode.height / 2); //y center of the node
+			//draw incoming line
+			//Do some computation
+			var inEndX:Number = ((nodeX - envX) * 0.3) + envX;
+			var inEndY:Number = ((nodeY - envY) * 0.2) + envY;
+			var arrowX:Number = ((Math.cos((i - 1) * j + Math.PI/30)) * environment.width * 0.40) + (environment.width / 2) - (newNode.width / 2);
+			var arrowY:Number = ((Math.sin((i - 1) * j + Math.PI/30)) * environment.height * 0.40) + (environment.height / 2) - (newNode.height / 2);
+			arrowX = (((arrowX + newNode.width / 2) - envX) * 0.33) + envX;
+			arrowY = (((arrowY + newNode.height / 2) - envY) * 0.23) + envY;
+			var arrowA:Number = ((Math.cos((i - 1) * j - Math.PI/30)) * environment.width * 0.40) + (environment.width / 2) - (newNode.width / 2);
+			var arrowB:Number = ((Math.sin((i - 1) * j - Math.PI/30)) * environment.height * 0.40) + (environment.height / 2) - (newNode.height / 2);
+			arrowA = (((arrowA + newNode.width / 2) - envX) * 0.33) + envX;
+			arrowB = (((arrowB + newNode.height / 2) - envY) * 0.23) + envY;
+			//line color defined here
+			newLine.graphics.lineStyle(3, 0x666666, 1);
+			newLine.graphics.moveTo(nodeX, nodeY);
+			newLine.graphics.lineTo(inEndX, inEndY);
+			newLine.graphics.lineStyle(3, 0x776666, 1);
+			newLine.graphics.lineTo(arrowX, arrowY);
+			newLine.graphics.moveTo(inEndX, inEndY);
+			newLine.graphics.lineTo(arrowA, arrowB);
+			environment.addElement(newLine);
+		}
+		
+		/**
+		 * 
+		 * 
+		 * @param	environment
+		 * @param	newNode
+		 * @param	i
+		 * @param	j
+		 */
+		private static function DrawMutualArrow(environment:Group, newNode:Node, i:Number):void {
+			var newLine:UIComponent = new UIComponent();
+			//some variables to make line drawing a bit easier
+			var envX:Number = (environment.width / 2); //x center of the environment
+			var envY:Number = (environment.height / 2); //y center of the environment
+			var nodeX:Number = (newNode.x + newNode.width / 2); //x center of the node
+			var nodeY:Number = (newNode.y + newNode.height / 2); //y center of the node
+			//draw mutual line
+			//Do some computation
+			var outEndX:Number = ((nodeX - envX) * 0.8) + envX;
+			var outEndY:Number = ((nodeY - envY) * 0.9) + envY;
+			var inEndX:Number = ((nodeX - envX) * 0.3) + envX;
+			var inEndY:Number = ((nodeY - envY) * 0.2) + envY;
+			var arrowX:Number = ((Math.cos((i - 1) * j + Math.PI/90)) * environment.width * 0.40) + (environment.width / 2) - (newNode.width / 2);
+			var arrowY:Number = ((Math.sin((i - 1) * j + Math.PI/90)) * environment.height * 0.40) + (environment.height / 2) - (newNode.height / 2);
+			arrowX = (((arrowX + newNode.width / 2) - envX) * 0.77) + envX;
+			arrowY = (((arrowY + newNode.height / 2) - envY) * 0.87) + envY;
+			var arrowA:Number = ((Math.cos((i - 1) * j - Math.PI/90)) * environment.width * 0.40) + (environment.width / 2) - (newNode.width / 2);
+			var arrowB:Number = ((Math.sin((i - 1) * j - Math.PI/90)) * environment.height * 0.40) + (environment.height / 2) - (newNode.height / 2);
+			arrowA = (((arrowA + newNode.width / 2) - envX) * 0.77) + envX;
+			arrowB = (((arrowB + newNode.height / 2) - envY) * 0.87) + envY;
+			var arrowX2:Number = ((Math.cos((i - 1) * j + Math.PI/30)) * environment.width * 0.40) + (environment.width / 2) - (newNode.width / 2);
+			var arrowY2:Number = ((Math.sin((i - 1) * j + Math.PI/30)) * environment.height * 0.40) + (environment.height / 2) - (newNode.height / 2);
+			arrowX2 = (((arrowX2 + newNode.width / 2) - envX) * 0.33) + envX;
+			arrowY2 = (((arrowY2 + newNode.height / 2) - envY) * 0.23) + envY;
+			var arrowA2:Number = ((Math.cos((i - 1) * j - Math.PI/30)) * environment.width * 0.40) + (environment.width / 2) - (newNode.width / 2);
+			var arrowB2:Number = ((Math.sin((i - 1) * j - Math.PI/30)) * environment.height * 0.40) + (environment.height / 2) - (newNode.height / 2);
+			arrowA2 = (((arrowA2 + newNode.width / 2) - envX) * 0.33) + envX;
+			arrowB2 = (((arrowB2 + newNode.height / 2) - envY) * 0.23) + envY;
+			//line color defined here
+			newLine.graphics.lineStyle(3, 0x666666, 1);
+			newLine.graphics.moveTo(outEndX, outEndY);
+			newLine.graphics.lineTo(inEndX, inEndY);
+			newLine.graphics.lineStyle(3, 0x666677, 1);
+			//draw inner arrow first
+			newLine.graphics.lineTo(arrowX2, arrowY2);
+			newLine.graphics.moveTo(inEndX, inEndY);
+			newLine.graphics.lineTo(arrowA2, arrowB2);
+			//draw outer arrow second
+			newLine.graphics.moveTo(outEndX, outEndY);
+			newLine.graphics.lineTo(arrowX, arrowY);
+			newLine.graphics.moveTo(outEndX, outEndY);
+			newLine.graphics.lineTo(arrowA, arrowB);
+			environment.addElement(newLine);
+		}
 	}
 }

@@ -7,7 +7,9 @@ Author: Rob McClure <mgracecubs@gmail.com>
 
 Graph service
 Currently only implements one level of link depth
-Currently takes the title of the node
+
+TODO: This could probably be cleaned up a bit
+      since the format of returned links is much nicer
 */
 	
 include 'config.php';
@@ -31,42 +33,31 @@ if ($page_id === 0)
 // Fetch all links with our target page as a source or destination
 // including page info (title, length)
 $link_data = $db->get_page_links($page_id);
-$links = array();
-$pages = array();
-$pages[$page_id] = null;
+$ids = array($page_id);
+$graph = array();
+$graph[$page_id] = array();
 foreach ($link_data as $link) {
-  $id_from = (int)($link["pl_from"]);
-  $id_to = (int)($link["pl_to"]);
+  $dst = (int)($link['plc_to']);
+  array_push($ids, $dst);
+  if ((int)($link['plc_out']) == 1) {
+    $graph[$page_id][$dst] = true;
+  }
 
-  // Set link data
-  if (!isset($links[$id_from]))
-    $links[$id_from] = array();
-  $links[$id_from][$id_to] = true;
-
-  // Update pages to get info for
-  $pages[$id_from] = true;
-  $pages[$id_to] = true;
+  if ((int)($link['plc_in']) == 1) {
+    if (!isset($graph[$dst]))
+      $graph[$dst] = array();
+    $graph[$dst][$page_id] = true;
+  }
 }
 
-// Collect all ids to find info for
-$ids = array();
-foreach ($pages as $id => $_) {
-  array_push($ids, $id);
-}
-
-// Put page data in array
-$page_data =  $db->get_page_info($ids);
+$pages = array();
+$page_data = $db->get_page_info($ids);
 foreach ($page_data as $page) {
-  $id = (int)($page["page_id"]);
-  $pages[$id] = array("title" => $page["page_title"],
-		      "len" => $page["page_len"],
-		      "is_ambig" => ($page["page_is_ambiguous"] == "1") ? "true" : "false");
-}
-
-// If page info for center node isn't set
-// then it doesn't exist
-if ($pages[$page_id] === null) {
-  error(404, "ID not found ($page_id).\n");
+  $id = (int)($page['page_id']);
+  $pages[$id] = array("title" => $page['page_title'],
+		      "len" => $page['page_len'],
+		      "is_ambig" => $page['page_is_ambiguous']
+		      );
 }
 
 // Now generate XML
@@ -77,21 +68,24 @@ print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
  xsi:noNamespaceSchemaLocation="graph.xsd">
 <?php
-  foreach ($pages as $id => $i) {
+  foreach ($ids as $id) {
+  $page = $pages[$id];
 ?>
-  <source id="<?= $id ?>" title="<?= htmlspecialchars($i["title"], ENT_QUOTES) ?>" len="<?= $i["len"] ?>" is_disambiguation="<?= $i["is_ambig"] ?>">
+  <source id="<?= $id ?>" title="<?= htmlspecialchars($page["title"], ENT_QUOTES) ?>" len="<?= $page["len"] ?>" is_disambiguation="<?= $page["is_ambig"] ?>">
 <?php
-  if (isset($links[$id]))
-      foreach ($links[$id] as $dst => $_) {
-	// Strength of a link is 1 if unidirectional
-	// 2 if bidirectional
-        $str = 1;
-	if (isset($links[$dst]) && isset($links[$dst][$id]))
-	  $str = 2;
+  if (isset($graph[$id]))
+      foreach ($graph[$id] as $dst => $_) {
+	if (in_array($dst, $ids)) {
+	  // Strength of a link is 1 if unidirectional
+	  // 2 if bidirectional
+	  $str = 1;
+	  if (isset($graph[$dst]) && isset($graph[$dst][$id]))
+	    $str = 2;
 ?>
     <dest id="<?= $dst ?>" str="<?= $str  ?>"/>
 <?php
-    }
+	}
+      }
 ?>
   </source>
 <?php

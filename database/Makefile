@@ -33,7 +33,7 @@ MYSQL = mysql --host=$(DBHOST) --port=$(DBPORT) --user=$(DBUSER) --password=$(DB
 # Some machines need echo -e
 ECHO = echo
 
-all: config.php page pagelinks transform abstract
+all: config.php page pagelinks transform pagelinks_cache abstract
 
 config.php : testconfig
 	$(ECHO) "<?php" > $(CONFIGLOC).tmp
@@ -68,12 +68,18 @@ pagelinks: pagelinks.sql
 transform:
 	$(MYSQL) < transform.sql
 
+pagelinks_cache: pagelinks_cache.sql
+	$(MYSQL) < pagelinks_cache.sql
+
 abstract: abstract.sql
 	$(MYSQL) < abstract.sql
 
 $(SQLFILES):
 	wget $(LINK)$@.gz -O $@.gz
 	gzip -d $@.gz
+
+pagelinks_cache.sql:
+	php cache_links.php
 
 abstract.sql: config.php 
 ifdef MULTIABSTRACT

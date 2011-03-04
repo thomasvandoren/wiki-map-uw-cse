@@ -58,9 +58,20 @@ package
 				searchIDs.pop();
 				size--;
 			}
+			firstOne = term;
 			searchTerms.unshift(term);
 			searchIDs.unshift(id);
 			size++;
+		}
+		
+		private var firstOne:String;
+		
+		/**
+		 * 
+		 * @return the current center node title
+		 */
+		public function getCurrentTitle():String {
+			return firstOne;
 		}
 		
 		/**
@@ -83,8 +94,11 @@ package
 		 */
 		private function doSearch(event : Event) : void {
 			var search : String = searchIDs[list.selectedIndex] as String;
-			removeRecord(int(list.selectedIndex));
-			graph.getGraph(search);
+			// Runs removeRecord & draw graph if the selected title is not the current
+			if(list.selectedIndex!=0){
+				removeRecord(int(list.selectedIndex));
+				graph.getGraph(search);
+			}
 			list.text = "Search History...";
 			list.selectedItem = null;
 		}
