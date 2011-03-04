@@ -81,7 +81,7 @@ package
 			this.addElement(this.abstractText);
 			this.createLoaderImg();
 			
-			abstractText.addEventListener(MouseEvent.CLICK, OpenArticle);
+			this.addEventListener(MouseEvent.CLICK, OpenArticle);
 			this.addEventListener(MouseEvent.MOUSE_OVER, KeepUp);
 			this.addEventListener(MouseEvent.MOUSE_OUT, RestartTimer);
 			
@@ -90,26 +90,6 @@ package
 			this.abstractTimer.addEventListener(TimerEvent.TIMER, TimerDing);
 			
 			this.getAbstract();
-			
-			// adds drag & drop for the tool tips
-			this.addEventListener(MouseEvent.MOUSE_DOWN, mousePress);
-			this.addEventListener(MouseEvent.MOUSE_UP, mouseRelease);
-		}
-		
-		/**
-		 * 
-		 * @param	event
-		 */
-		public function mousePress(event:MouseEvent):void {
-			this.startDrag();
-		}
-		
-		/**
-		 * 
-		 * @param	event
-		 */
-		public function mouseRelease(event:MouseEvent):void {
-			this.stopDrag();
 		}
 		
 		/**
@@ -139,7 +119,6 @@ package
 		 */
 		public function setText(data : XML) : void
 		{
-			//TODO: use the *ALL* of the abstract data (link especially).
 			var result : Abstract = Parse.parseAbstract(data);
 			
 			this.articleTitle = result.title;

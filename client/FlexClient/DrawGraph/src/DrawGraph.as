@@ -15,8 +15,8 @@ package
 		import mx.managers.ToolTipManager;
 		
 		
-		import com.greensock.TweenLite;
-		import com.greensock.easing.*;
+		/*import com.greensock.TweenLite;
+		import com.greensock.easing.*;*/
 	/** 
 	 * ...
 	 * @author Austin Nakamura
@@ -90,24 +90,21 @@ package
 						newNode.label.y = newNode.height / 6;
 						newNode.setStyle("cornerRadius", newNode.height / 2);
 						newNode.label.setStyle("fontSize", newNode.height / 3);
-						//newNode.x = newNode.getX(0.40, newNode);
-						//newNode.y = newNode.getY(0.40, newNode);
-						// location of all nodes are at center node from beginning
-						newNode.x = environment.width / 2 - newNode.width / 2;
-						newNode.y = environment.height / 2 - newNode.height / 2;
-						//trace(newNode.x + "," + newNode.y);
+						
+						newNode.x = newNode.getX(0.40, newNode);
+						newNode.y = newNode.getY(0.40, newNode);
+						
 						newNode.alpha = 1;
 						
 						environment.addElement(newNode);
+						
+						DrawOutArrow2(environment, newNode, i);
 					}
 					nodes.push(newNode);
 				}
 				// set graph environment is visible
 				environment.visible = true;
-				// do animation to stretch out graph nodes
-				openGraph(nodes, environment);
-				// draw 24 arrows
-				drawLines(nodes, environment);
+				
 				// add center node button
 				environment.addElement(centerNode);
 			}
@@ -147,13 +144,13 @@ package
 			trace("DrawGraph.openGraph");
 			
 			var isFancy:Boolean = (Math.round(Math.random() * 1) == 0);
-			for (var i:Number = 0; i < nodes.length; i++) {
+			/*for (var i:Number = 0; i < nodes.length; i++) {
 				var node:Node = nodes[i];
 				if(isFancy) // stretch out
 					TweenLite.to(node, 2, { x:node.getX(0.40, node), y:node.getY(0.40, node) , ease: Back.easeInOut } );
 				else // move left to right
 					TweenLite.to(node, 2, { x:node.getX(0.40, node), y:node.getY(0.40, node), ease: Back.easeInOut,onComplete:moveG(nodes)} );
-			}
+			}*/
 		}
 		
 		/**
