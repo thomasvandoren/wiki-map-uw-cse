@@ -64,7 +64,7 @@ package
 			this.visible = true;
 			this.isSearch = false;
 			
-			DrawGraph.DrawG(this.data, this, this.center);
+			DrawGraph.DrawG(this.data, this);
 			
 			show();
 		}

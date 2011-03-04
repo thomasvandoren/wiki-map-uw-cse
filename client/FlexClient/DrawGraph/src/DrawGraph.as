@@ -38,7 +38,7 @@ package
 		//tells the program to draw a bunch of nodes in the drawing area
 		//NOTE: DrawG now requires a center Node to be provided, as the returned
 		//list of nodes does not necessarily have the article itself come first
-		public static function DrawG(a:Array, graph:Graph, cNode:Node):void 
+		public static function DrawG(a:Array, graph:Graph):void 
 		{
 			ToolTipManager.enabled = false;
 			var environment : Group = graph.returnGraph();
@@ -55,15 +55,15 @@ package
 				}
 				
 				var centerNode:Node = new Node(graph,j,0); //the center node is created first, since it always belongs in the middle
-				if(cNode != null) {
-					centerNode.id = cNode.id;
-					centerNode.label.text = cNode.label.text;
-					centerNode.title = cNode.label.text;
+				centerNode.id = a[0][0];
+				centerNode.label.text = a[0][1];
+				centerNode.title = a[0][1];
+				if (a[0][2] == Number(1)) {
+					centerNode.is_disambiguation = true;
 				} else {
-					centerNode.id = a[0][0];
-					centerNode.label.text = a[0][1];
-					centerNode.title = a[0][1];
+					centerNode.is_disambiguation = false;
 				}
+				centerNode.dest = a[0][3];
 				centerNode.width = environment.width/6;
 				centerNode.height = environment.height / 13;
 				centerNode.label.width = centerNode.width;
@@ -86,6 +86,13 @@ package
 						newNode.title = a[i][1];
 						var title:String = new String(a[i][1]);
 						newNode.label.text = title.split("_").join(" ");
+						if (a[i][2] == Number(1)) {
+							newNode.is_disambiguation = true;
+						} else {
+							newNode.is_disambiguation = false;
+						}
+						newNode.dest = a[i][3];
+						trace(a[i][3]);
 						newNode.width = environment.width/8;
 						newNode.height = environment.height / 24;
 						newNode.label.width = newNode.width;
@@ -101,14 +108,14 @@ package
 						newNode.alpha = 1;
 						
 						environment.addElement(newNode);
+						nodes.push(newNode);
 					}
-					nodes.push(newNode);
 				}
 				// set graph environment is visible
 				environment.visible = true;
 				
 				// animate nodes to the correct position
-				openGraph(nodes, environment);
+				openGraph(nodes, centerNode, environment);
 				
 				// add center node button
 				environment.addElement(centerNode);
@@ -124,69 +131,50 @@ package
 		 * @param	environment
 		 * @param	j
 		 */
-		private static function drawLines(nodes:Array, environment:Group):void {
+		private static function drawLines(nodes:Array, centerNode : Node, environment:Group):void {
 			trace("DrawGraph.drawLines");
 			
-			for (var i : int; i < nodes.length; i++)
+			for (var i : int = 0; i < nodes.length; i++)
 			{
-				drawLine(nodes[i], environment);
+				var newNode : Node = nodes[i];
+				
+				var points_in:Boolean = false;
+				var points_out:Boolean = false;
+				
+				for (var dest_count : Number = 0; dest_count < newNode.dest.length; dest_count++) 
+				{ 
+					//checks to see if there's incoming relationship
+					if (Number(newNode.dest[dest_count]) == Number(centerNode.id)) 
+					{
+						points_in = true;
+						break;
+					}
+				}
+				for (dest_count = 0; dest_count < centerNode.dest.length; dest_count++) 
+				{ 
+					//checks to see if there's outgoing relationship
+					if (Number(centerNode.dest[dest_count]) == Number(newNode.id)) 
+					{
+						points_out = true;
+						break;
+					}
+				}
+				
+				if (points_in && points_out) 
+				{ 
+					//mutual
+					DrawMutualArrow(environment, newNode, i);
+				} 
+				else if (points_in && !points_out) 
+				{ 
+					//in arrow
+					DrawInArrow(environment, newNode, i);
+				} 
+				else if (!points_in && points_out) 
+				{
+					DrawOutArrow2(environment, newNode, i);
+				}
 			}
-			
-		}
-		
-		private static function drawLine(node : Node, environment : Group) : void
-		{
-			var newLine : UIComponent = new UIComponent();
-			
-			newLine.graphics.lineStyle(3, 0x666666, 1);	
-			
-			// Find the inside start at envX, envY
-			var envX : Number = (environment.width / 2); 
-			var envY : Number = (environment.height / 2); 
-			
-			// Find the outside end at endX, endY
-			var endX : Number = getArrowX(node, environment);
-			var endY : Number = getArrowY(node, environment);
-			
-			/*
-			var outEndX:Number = ((nodeX - envX) * 0.8) + envX;
-			var outEndY:Number = ((nodeY - envY) * 0.9) + envY;
-			var inEndX:Number = ((nodeX - envX) * 0.3) + envX;
-			var inEndY:Number = ((nodeY - envY) * 0.2) + envY;
-			*/
-			
-			// Draw the line from (envX, envY) to (endX, endY)
-			newLine.graphics.moveTo(envX, envY);
-			newLine.graphics.lineTo(endX, endY);
-			
-			// Add line to bottom of group (nodes should be displayed over lines)
-			environment.addElementAt(newLine, 0);
-		}
-		
-		/**
-		 * Returns the outside x value for the arrow head that should point at the
-		 * given node. It considers which quadrant the node is in and draws it
-		 * accordingly.
-		 * 
-		 * @param	node
-		 * @return
-		 */
-		private static function getArrowX(node : Node, environment : Group) : int
-		{
-			return node.x;
-		}
-		
-		/**
-		 * Returns the outside y value for the arrow head that should point at the
-		 * given node. It considers which quadrant the node is in and draws it
-		 * accordingly.
-		 * 
-		 * @param	node
-		 * @return
-		 */
-		private static function getArrowY(node : Node, environment : Group) : int
-		{
-			return node.y;
 		}
 		
 		/**
@@ -200,23 +188,39 @@ package
 		 * @param	nodes
 		 * @param	environment
 		 */
-		private static function openGraph(nodes:Array, environment:Group):void {
+		private static function openGraph(nodes:Array, centerNode : Node, environment:Group):void {
 			trace("DrawGraph.openGraph");
+			
+			var lastFn : Function = function () : void {
+				DrawGraph.drawLines(nodes, centerNode, environment)
+			};
 			
 			for (var i:Number = 0; i < nodes.length; i++) {
 				var node:Node = nodes[i];
 				
-				TweenLite.to(
-					node, 
-					DrawGraph.graphAnimationDuration, 
-					{ 
-						x: node.getX(0.40, node), 
-						y: node.getY(0.40, node), 
-						ease: Back.easeInOut,
-						onComplete: function () : void {
-							DrawGraph.drawLines(nodes, environment)
-						}
-					});
+				if ( i == nodes.length - 1)
+				{
+					TweenLite.to(
+						node, 
+						DrawGraph.graphAnimationDuration, 
+						{ 
+							x: node.getX(0.40, node), 
+							y: node.getY(0.40, node), 
+							ease: Back.easeInOut,
+							onComplete: lastFn
+						});
+				}
+				else
+				{
+					TweenLite.to(
+						node, 
+						DrawGraph.graphAnimationDuration, 
+						{ 
+							x: node.getX(0.40, node), 
+							y: node.getY(0.40, node), 
+							ease: Back.easeInOut
+						});
+				}
 			}
 			
 			// After the first animation, speed up the animations so that they are not
@@ -254,7 +258,7 @@ package
 				// my animation works? I will try to do it tomorrow but since you did this one so you will
 				// figure it out faster than me :) Thanks.
 				
-				environment.addElement(newLine);
+				environment.addElementAt(newLine, 0);
 			}
 		}
 		
@@ -293,7 +297,8 @@ package
 			newLine.graphics.lineTo(arrowX, arrowY);
 			newLine.graphics.moveTo(outEndX, outEndY);
 			newLine.graphics.lineTo(arrowA, arrowB);
-			environment.addElement(newLine);
+			
+			environment.addElementAt(newLine, 0);
 		}
 		
 		/**
@@ -314,15 +319,15 @@ package
 			//draw incoming line
 			//Do some computation
 			var inEndX:Number = ((nodeX - envX) * 0.3) + envX;
-			var inEndY:Number = ((nodeY - envY) * 0.2) + envY;
+			var inEndY:Number = ((nodeY - envY) * 0.3) + envY;
 			var arrowX:Number = ((Math.cos((i - 1) * j + Math.PI/30)) * environment.width * 0.40) + (environment.width / 2) - (newNode.width / 2);
 			var arrowY:Number = ((Math.sin((i - 1) * j + Math.PI/30)) * environment.height * 0.40) + (environment.height / 2) - (newNode.height / 2);
 			arrowX = (((arrowX + newNode.width / 2) - envX) * 0.33) + envX;
-			arrowY = (((arrowY + newNode.height / 2) - envY) * 0.23) + envY;
+			arrowY = (((arrowY + newNode.height / 2) - envY) * 0.33) + envY;
 			var arrowA:Number = ((Math.cos((i - 1) * j - Math.PI/30)) * environment.width * 0.40) + (environment.width / 2) - (newNode.width / 2);
 			var arrowB:Number = ((Math.sin((i - 1) * j - Math.PI/30)) * environment.height * 0.40) + (environment.height / 2) - (newNode.height / 2);
 			arrowA = (((arrowA + newNode.width / 2) - envX) * 0.33) + envX;
-			arrowB = (((arrowB + newNode.height / 2) - envY) * 0.23) + envY;
+			arrowB = (((arrowB + newNode.height / 2) - envY) * 0.33) + envY;
 			//line color defined here
 			newLine.graphics.lineStyle(3, 0x666666, 1);
 			newLine.graphics.moveTo(nodeX, nodeY);
@@ -331,7 +336,8 @@ package
 			newLine.graphics.lineTo(arrowX, arrowY);
 			newLine.graphics.moveTo(inEndX, inEndY);
 			newLine.graphics.lineTo(arrowA, arrowB);
-			environment.addElement(newLine);
+			
+			environment.addElementAt(newLine, 0);
 		}
 		
 		/**
@@ -354,7 +360,7 @@ package
 			var outEndX:Number = ((nodeX - envX) * 0.8) + envX;
 			var outEndY:Number = ((nodeY - envY) * 0.9) + envY;
 			var inEndX:Number = ((nodeX - envX) * 0.3) + envX;
-			var inEndY:Number = ((nodeY - envY) * 0.2) + envY;
+			var inEndY:Number = ((nodeY - envY) * 0.3) + envY;
 			var arrowX:Number = ((Math.cos((i - 1) * j + Math.PI/90)) * environment.width * 0.40) + (environment.width / 2) - (newNode.width / 2);
 			var arrowY:Number = ((Math.sin((i - 1) * j + Math.PI/90)) * environment.height * 0.40) + (environment.height / 2) - (newNode.height / 2);
 			arrowX = (((arrowX + newNode.width / 2) - envX) * 0.77) + envX;
@@ -366,11 +372,11 @@ package
 			var arrowX2:Number = ((Math.cos((i - 1) * j + Math.PI/30)) * environment.width * 0.40) + (environment.width / 2) - (newNode.width / 2);
 			var arrowY2:Number = ((Math.sin((i - 1) * j + Math.PI/30)) * environment.height * 0.40) + (environment.height / 2) - (newNode.height / 2);
 			arrowX2 = (((arrowX2 + newNode.width / 2) - envX) * 0.33) + envX;
-			arrowY2 = (((arrowY2 + newNode.height / 2) - envY) * 0.23) + envY;
+			arrowY2 = (((arrowY2 + newNode.height / 2) - envY) * 0.33) + envY;
 			var arrowA2:Number = ((Math.cos((i - 1) * j - Math.PI/30)) * environment.width * 0.40) + (environment.width / 2) - (newNode.width / 2);
 			var arrowB2:Number = ((Math.sin((i - 1) * j - Math.PI/30)) * environment.height * 0.40) + (environment.height / 2) - (newNode.height / 2);
 			arrowA2 = (((arrowA2 + newNode.width / 2) - envX) * 0.33) + envX;
-			arrowB2 = (((arrowB2 + newNode.height / 2) - envY) * 0.23) + envY;
+			arrowB2 = (((arrowB2 + newNode.height / 2) - envY) * 0.33) + envY;
 			//line color defined here
 			newLine.graphics.lineStyle(3, 0x666666, 1);
 			newLine.graphics.moveTo(outEndX, outEndY);
@@ -385,7 +391,8 @@ package
 			newLine.graphics.lineTo(arrowX, arrowY);
 			newLine.graphics.moveTo(outEndX, outEndY);
 			newLine.graphics.lineTo(arrowA, arrowB);
-			environment.addElement(newLine);
+			
+			environment.addElementAt(newLine, 0);
 		}
 	}
 }
