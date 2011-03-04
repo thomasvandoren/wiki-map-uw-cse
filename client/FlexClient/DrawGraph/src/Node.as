@@ -123,7 +123,7 @@ package
 				var meridian : int = environment.width / 2;
 				var equator : int = environment.height / 2;
 				
-				// if this.x is in first quad, then tool tip is below left
+				// if the node is in first quadrant, then its tool tip is displayed below left
 				if (this.x >= meridian && this.y < equator) 
 				{
 					abToolTip.x = this.x - abToolTip.width + xOffset;
@@ -172,7 +172,7 @@ package
 		 * @return
 		 */
 		public function getX(ratio:Number, obj:Object):Number {
-			return ((Math.cos((index - 1) * angleDiffer )) * environment.width * ratio) + (environment.width / 2) - (obj.width / 2);
+			return ((Math.cos((index - 1) * angleDiffer )) * environment.width * ratio) + (environment.width / 2) - obj.width/2;
 		}
 		
 		/**
@@ -183,7 +183,7 @@ package
 		 * @return
 		 */
 		public function getY(ratio:Number, obj:Object):Number {
-			return ((Math.sin((index - 1) * angleDiffer )) * environment.height * ratio) + (environment.height / 2) - (obj.height / 2);
+			return ((Math.sin((index - 1) * angleDiffer )) * environment.height * ratio) + (environment.height / 2) - obj.height/2;
 		}
 	}
 }

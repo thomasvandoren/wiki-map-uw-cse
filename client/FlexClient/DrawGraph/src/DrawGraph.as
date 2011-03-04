@@ -6,13 +6,18 @@ package
 		import mx.controls.TextArea;
 		import mx.core.Application;
 		import mx.core.UIComponent;
+		import mx.effects.Tween;
 		import mx.graphics.SolidColorStroke;
 		import mx.graphics.Stroke;
 		import spark.components.Group;
 		import spark.primitives.Line;
 		import mx.controls.Alert;
 		import mx.managers.ToolTipManager;
-	/**
+		
+		
+		import com.greensock.TweenLite;
+		import com.greensock.easing.*;
+	/** 
 	 * ...
 	 * @author Austin Nakamura
 	 */
@@ -25,12 +30,13 @@ package
 		import mx.states.AddChild;
 		import Node;
 		
+		private static var j:Number;
+		
 		//tells the program to draw a bunch of nodes in the drawing area
 		//NOTE: DrawG now requires a center Node to be provided, as the returned
 		//list of nodes does not necessarily have the article itself come first
 		public static function DrawG(a:Array, graph:Graph, cNode:Node):void 
 		{
-			
 			ToolTipManager.enabled = false;
 			var environment : Group = graph.returnGraph();
 			
@@ -38,7 +44,7 @@ package
 				environment.removeAllElements(); //clear the previous graph
 				
 				//presently this is how we're calculating the node's postion
-				var j:Number;
+				
 				if (a.length > 25 || a.length==1) {
 					j = (2 * Math.PI) / 24;
 				}else{
@@ -65,48 +71,149 @@ package
 				centerNode.x = (environment.width / 2) - (centerNode.width / 2);
 				centerNode.y = (environment.height / 2) - (centerNode.height / 2);
 				centerNode.alpha = 1;
-
+				
+				var nodes:Array = new Array();
+				
 				// draw lines and nodes
 				for (var i:Number = 1; i < 25 && i < a.length; i++) {
 					var lengthCheck:String = a[i][1];
 					if (lengthCheck.length > 0) {
-					var newNode:Node = new Node(graph,j,i);
-					newNode.id = a[i][0];
-					newNode.title = a[i][1];
-					var title:String = new String(a[i][1]);
-					newNode.label.text = title.split("_").join(" ");
-					newNode.width = environment.width/8;
-					newNode.height = environment.height / 24;
-					newNode.label.width = newNode.width;
-					newNode.label.height = newNode.height;
-					newNode.label.y = newNode.height / 6;
-					newNode.setStyle("cornerRadius", newNode.height / 2);
-					newNode.label.setStyle("fontSize", newNode.height / 3);
-					newNode.x = newNode.getX(0.40, newNode);
-					newNode.y = newNode.getY(0.40, newNode);
-					newNode.alpha = 1;
-					
-					//calls arrow function here
-					if (true) { //this will eventuall be a parameter check for in/out
-						//draw an outgoing arrow
-						DrawOutArrow(environment, newNode, i, j);
-					} else if (true) {
-						//draw an incoming arrow
-						DrawInArrow(environment, newNode, i, j);
-					} else {
-						//draw a mutual arrow
-						DrawMutualArrow(environment, newNode, i, j);
+						var newNode:Node = new Node(graph,j,i);
+						newNode.id = a[i][0];
+						newNode.title = a[i][1];
+						var title:String = new String(a[i][1]);
+						newNode.label.text = title.split("_").join(" ");
+						newNode.width = environment.width/8;
+						newNode.height = environment.height / 24;
+						newNode.label.width = newNode.width;
+						newNode.label.height = newNode.height;
+						newNode.label.y = newNode.height / 6;
+						newNode.setStyle("cornerRadius", newNode.height / 2);
+						newNode.label.setStyle("fontSize", newNode.height / 3);
+						//newNode.x = newNode.getX(0.40, newNode);
+						//newNode.y = newNode.getY(0.40, newNode);
+						// location of all nodes are at center node from beginning
+						newNode.x = environment.width / 2 - newNode.width / 2;
+						newNode.y = environment.height / 2 - newNode.height / 2;
+						//trace(newNode.x + "," + newNode.y);
+						newNode.alpha = 1;
+						
+						environment.addElement(newNode);
 					}
-					environment.addElement(newNode);
-					}
+					nodes.push(newNode);
 				}
+				// set graph environment is visible
+				environment.visible = true;
+				// do animation to stretch out graph nodes
+				openGraph(nodes, environment);
+				// draw 24 arrows
+				drawLines(nodes, environment);
 				// add center node button
 				environment.addElement(centerNode);
 			}
-			environment.visible = true;
+			
+			
 		}
 		
-		private static function DrawOutArrow(environment:Group, newNode:Node, i:Number, j:Number):void {
+		/**
+		 * draws 24 arrows from center node to others
+		 * 
+		 * @param	nodes
+		 * @param	environment
+		 * @param	j
+		 */
+		private static function drawLines(nodes:Array, environment:Group):void {
+			trace("DrawGraph.drawLines");
+			//calls arrow function here
+			if (true) { //this will eventuall be a parameter check for in/out
+				//draw an outgoing arrow
+				DrawOutArrow(nodes, environment);
+			} else if (true) {
+				//draw an incoming arrow
+				DrawInArrow(environment, newNode, i+1);
+			} else {
+				//draw a mutual arrow
+				DrawMutualArrow(environment, newNode, i+1);
+			}
+		}
+		
+		/**
+		 * stretchs out graph nodes or more left to right
+		 * 
+		 * @param	nodes
+		 * @param	environment
+		 */
+		private static function openGraph(nodes:Array, environment:Group):void {
+			trace("DrawGraph.openGraph");
+			
+			var isFancy:Boolean = (Math.round(Math.random() * 1) == 0);
+			for (var i:Number = 0; i < nodes.length; i++) {
+				var node:Node = nodes[i];
+				if(isFancy) // stretch out
+					TweenLite.to(node, 2, { x:node.getX(0.40, node), y:node.getY(0.40, node) , ease: Back.easeInOut } );
+				else // move left to right
+					TweenLite.to(node, 2, { x:node.getX(0.40, node), y:node.getY(0.40, node), ease: Back.easeInOut,onComplete:moveG(nodes)} );
+			}
+		}
+		
+		/**
+		 * moves nodes from left to right for animation
+		 * 
+		 * @param	nodes
+		 */
+		private static function moveG(nodes:Array):void {
+				trace("DrawGraph.moveG");
+				for (var i:Number = 0; i < nodes.length; i++) {
+					var node:Node = nodes[i];
+					// make animation start from the left side of graph and more to center
+					node.x -= node.width / 2;
+					node.y -= node.height / 2;
+				}
+		}
+		
+		/**
+		 * draws out arrow start from center node to others with arrows
+		 * 
+		 * @param	nodes
+		 * @param	environment
+		 */
+		private static function DrawOutArrow(nodes:Array, environment:Group):void {
+			var newLine:UIComponent = new UIComponent();
+			newLine.graphics.lineStyle(3, 0x666666, 1);	
+			var envX:Number = (environment.width / 2); 
+			var envY:Number = (environment.height / 2); 
+			for (var i:Number = 0; i < nodes.length; i++) {
+				var node:Node = nodes[i];
+				
+				var endX:Number = node.getX(0.32, node)+node.width/2;
+				var endY:Number = node.getY(0.32, node)+node.height/2;
+				// draws line from center node to others
+				newLine.graphics.moveTo(envX, envY);
+				newLine.graphics.lineTo(endX, endY);
+				// draws arrow for each line
+				// (will do later :D) 
+				// I tried to use DrawOutArrow from what Austin had but didn't work for my animation.
+				// The arrows are become a line start from center node. That's why I changed to my 
+				// code to make it works with animation move nodes from left to right, however I 
+				// don't know how to draw arrows now :D
+				
+				// Austin: Can you take a look and help me to add codes for this or change your code to make
+				// my animation works? I will try to do it tomorrow but since you did this one so you will
+				// figure it out faster than me :) Thanks.
+				
+				environment.addElement(newLine);
+			}
+		}
+		
+		/**
+		 * 
+		 * 
+		 * @param	environment
+		 * @param	newNode
+		 * @param	i
+		 * @param	j
+		 */
+		private static function DrawOutArrow2(environment:Group, newNode:Node, i:Number):void {
 			var newLine:UIComponent = new UIComponent();
 			//some variables to make line drawing a bit easier
 			var envX:Number = (environment.width / 2); //x center of the environment
@@ -136,7 +243,15 @@ package
 			environment.addElement(newLine);
 		}
 		
-		private static function DrawInArrow(environment:Group, newNode:Node, i:Number, j:Number):void {
+		/**
+		 * 
+		 * 
+		 * @param	environment
+		 * @param	newNode
+		 * @param	i
+		 * @param	j
+		 */
+		private static function DrawInArrow(environment:Group, newNode:Node, i:Number):void {
 			var newLine:UIComponent = new UIComponent();
 			//some variables to make line drawing a bit easier
 			var envX:Number = (environment.width / 2); //x center of the environment
@@ -166,7 +281,15 @@ package
 			environment.addElement(newLine);
 		}
 		
-		private static function DrawMutualArrow(environment:Group, newNode:Node, i:Number, j:Number):void {
+		/**
+		 * 
+		 * 
+		 * @param	environment
+		 * @param	newNode
+		 * @param	i
+		 * @param	j
+		 */
+		private static function DrawMutualArrow(environment:Group, newNode:Node, i:Number):void {
 			var newLine:UIComponent = new UIComponent();
 			//some variables to make line drawing a bit easier
 			var envX:Number = (environment.width / 2); //x center of the environment
