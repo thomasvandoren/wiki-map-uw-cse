@@ -20,7 +20,7 @@ package {
 			
 			// gets all children, called source, in a xml file
 			var node:XMLList = myXML.child("source");
-			Alert.show(myXML);
+			//Alert.show(myXML);
 			
 			// puts all the children's id & title in two dimention array called list
 			for (var i:Number = 0; i < node.length(); i++) 
