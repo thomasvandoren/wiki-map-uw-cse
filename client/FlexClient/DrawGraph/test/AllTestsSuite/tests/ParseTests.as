@@ -178,8 +178,8 @@ package AllTestsSuite.tests
 				Assert.failNull("null array returned", actual[i]);
 				Assert.failNull("null array returned", actual[i]);
 				
-				Assert.assertEquals(actual[i].length, 2);
-				Assert.assertEquals(actual[i].length, 2);
+				Assert.assertEquals(actual[i].length, expected[i].length);
+				Assert.assertEquals(actual[i].length, expected[i].length);
 				
 				Assert.assertEquals(actual[i][0], expected[i][0]);
 				Assert.assertEquals(actual[i][1], expected[i][1]);
@@ -249,18 +249,18 @@ package AllTestsSuite.tests
 				</info>;
 				
 			expectedGraphResult = new Array(
-				new Array("42", "A title for all"),
-				new Array("17", "Seventeen"),
-				new Array("101", "Dalmations"));
+				new Array("42", "A title for all", 0, new Array("17", "42")),
+				new Array("17", "Seventeen", 0, new Array()),
+				new Array("101", "Dalmations", 0, new Array()));
 			
 			testGraphXML = 
 				<graph center="42">
-					<source id="42" title="A title for all" len="" is_disambiguation="false">
+					<source id="42" title="A title for all" len="5" is_disambiguation="0">
 						<dest id="17" str="2"/>
 						<dest id="101" str="1"/>
 					</source>
-					<source id="17" title="Seventeen"></source>
-					<source id="101" title="Dalmations"></source>
+					<source id="17" title="Seventeen" len="4" is_disambiguation="0"></source>
+					<source id="101" title="Dalmations" len="2" is_disambiguation="0"></source>
 				</graph>;
 		}
 		
