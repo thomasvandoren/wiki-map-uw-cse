@@ -20,21 +20,28 @@ package {
 			
 			// gets all children, called source, in a xml file
 			var node:XMLList = myXML.child("source");
-			//Alert.show(myXML);
 			
 			// puts all the children's id & title in two dimention array called list
 			for (var i:Number = 0; i < node.length(); i++) 
 			{
-				var a:Array = new Array();
+				var a : Array = new Array();
 				
 				a[0] = node[i].@id;
 				a[1] = node[i].@title;
+				
+				//TODO: make this a boolean
 				a[2] = node[i].@is_disambiguation;
-				var dest:XMLList = myXML.source[i].dest.attributes();
-				var b:Array = new Array();
-				for (var j:Number = 0; j < dest.length(); j++) {
-					b.push(dest[j]); //add id's to the list
+				
+				var dest : XMLList = node[i].child("dest");
+				
+				var b : Array = new Array();
+				
+				for (var j:Number = 0; j < dest.length(); j++) 
+				{
+					//add id's to the list
+					b.push(dest[j].@id.toString());
 				}
+				
 				a[3] = b;
 				
 				list.push(a);
