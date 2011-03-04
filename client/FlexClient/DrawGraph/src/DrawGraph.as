@@ -36,8 +36,6 @@ package
 		private static var graphAnimationDuration :  Number = 2;
 		
 		//tells the program to draw a bunch of nodes in the drawing area
-		//NOTE: DrawG now requires a center Node to be provided, as the returned
-		//list of nodes does not necessarily have the article itself come first
 		public static function DrawG(a:Array, graph:Graph):void 
 		{
 			ToolTipManager.enabled = false;
@@ -46,7 +44,7 @@ package
 			if (a.length > 0) {
 				environment.removeAllElements(); //clear the previous graph
 				
-				//presently this is how we're calculating the node's postion
+				// calculate the node's postion
 				
 				if (a.length > 25 || a.length==1) {
 					j = (2 * Math.PI) / 24;
@@ -54,58 +52,49 @@ package
 					j = (2 * Math.PI) / (a.length - 1);
 				}
 				
-				var centerNode:Node = new Node(graph,j,0); //the center node is created first, since it always belongs in the middle
-				centerNode.id = a[0][0];
-				centerNode.label.text = a[0][1];
-				centerNode.title = a[0][1];
-				if (a[0][2] == Number(1)) {
-					centerNode.is_disambiguation = true;
-				} else {
-					centerNode.is_disambiguation = false;
-				}
-				centerNode.dest = a[0][3];
-				centerNode.width = environment.width/6;
-				centerNode.height = environment.height / 13;
-				centerNode.label.width = centerNode.width;
-				centerNode.label.height = centerNode.height;
-				centerNode.label.y = centerNode.height / 4;
-				centerNode.setStyle("cornerRadius", centerNode.height / 2);
-				centerNode.label.setStyle("fontSize", centerNode.height / 3);
-				centerNode.x = (environment.width / 2) - (centerNode.width / 2);
-				centerNode.y = (environment.height / 2) - (centerNode.height / 2);
-				centerNode.alpha = 1;
+				//the center node is created first, since it always belongs in the middle
+				var w : Number = environment.width / 6;
+				var h : Number = environment.width / 13;
 				
+				var centerNode : Node = makeNode(
+					graph, 
+					j, 
+					0, 
+					a[0][0], 
+					a[0][1], 
+					a[0][2] == Number(1),
+					a[0][3],
+					w,
+					h,
+					(environment.width / 2) - (w / 2),
+					(environment.height / 2) - (h / 2));
+					
 				var nodes:Array = new Array();
 				
 				// draw lines and nodes
+				
+				// default node width, height, and start position
+				w = environment.width / 8;
+				h = environment.height / 24;
+				var x : Number = (environment.width / 2) - (w / 2);
+				var y : Number = (environment.height / 2) - (h / 2);
+				
 				for (var i:Number = 1; i < 25 && i < a.length; i++) {
 					var lengthCheck:String = a[i][1];
 					if (lengthCheck.length > 0) {
-						var newNode:Node = new Node(graph,j,i);
-						newNode.id = a[i][0];
-						newNode.title = a[i][1];
-						var title:String = new String(a[i][1]);
-						newNode.label.text = title.split("_").join(" ");
-						if (a[i][2] == Number(1)) {
-							newNode.is_disambiguation = true;
-						} else {
-							newNode.is_disambiguation = false;
-						}
-						newNode.dest = a[i][3];
-						trace(a[i][3]);
-						newNode.width = environment.width/8;
-						newNode.height = environment.height / 24;
-						newNode.label.width = newNode.width;
-						newNode.label.height = newNode.height;
-						newNode.label.y = newNode.height / 6;
-						newNode.setStyle("cornerRadius", newNode.height / 2);
-						newNode.label.setStyle("fontSize", newNode.height / 3);
 						
-						// Nodes are placed at center to begin with
-						newNode.x = (environment.width - newNode.width) / 2;
-						newNode.y = (environment.height - newNode.height) / 2;
-						
-						newNode.alpha = 1;
+						var newNode : Node = makeNode(
+							graph, 
+							j, 
+							i, 
+							a[i][0], 				// id
+							a[i][1], 				// title
+							a[i][2] == Number(1),  	// isDisambiguation
+							a[i][3],				// destination nodes
+							w,
+							h,
+							x,
+							y);
 						
 						environment.addElement(newNode);
 						nodes.push(newNode);
@@ -121,7 +110,62 @@ package
 				environment.addElement(centerNode);
 			}
 			
+		}
+		
+		/**
+		 * Create a new node with the given parameters.
+		 * 
+		 * @param	graph
+		 * @param	j
+		 * @param	index
+		 * @param	id
+		 * @param	title
+		 * @param	isDisambiguation
+		 * @param	dest
+		 * @param	width
+		 * @param	height
+		 * @param	x
+		 * @param	y
+		 * @return
+		 */
+		private static function makeNode(
+			graph : Graph, 
+			j : Number, 
+			index : Number,
+			id : String,
+			title : String,
+			isDisambiguation : Boolean,
+			dest : Array,
+			width : Number,
+			height : Number,
+			x : Number,
+			y : Number) : Node 
+		{
+			var node:Node = new Node(graph, j, index); 
 			
+			node.id = id;
+			node.label.text = title;
+			node.title = title;
+			node.is_disambiguation = isDisambiguation;
+			
+			node.dest = dest;
+			
+			node.width = width;
+			node.height = height;
+			
+			node.label.width = node.width;
+			node.label.height = node.height;
+			node.label.y = node.height / 4;
+			
+			node.setStyle("cornerRadius", node.height / 2);
+			node.label.setStyle("fontSize", node.height / 3);
+			
+			node.x = x;
+			node.y = y;
+			
+			node.alpha = 1;
+			
+			return node;
 		}
 		
 		/**
