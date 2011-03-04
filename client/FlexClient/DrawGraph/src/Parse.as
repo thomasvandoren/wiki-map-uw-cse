@@ -8,6 +8,7 @@ package {
 		 * @param	myXML
 		 * @return
 		 */
+		import mx.controls.Alert;
 		public static function parseGraph(myXML : XML) : Array
 		{
 			if (myXML.name() != "graph")
@@ -19,6 +20,7 @@ package {
 			
 			// gets all children, called source, in a xml file
 			var node:XMLList = myXML.child("source");
+			Alert.show(myXML);
 			
 			// puts all the children's id & title in two dimention array called list
 			for (var i:Number = 0; i < node.length(); i++) 
@@ -27,6 +29,13 @@ package {
 				
 				a[0] = node[i].@id;
 				a[1] = node[i].@title;
+				a[2] = node[i].@is_disambiguation;
+				var dest:XMLList = myXML.source[i].dest.attributes();
+				var b:Array = new Array();
+				for (var j:Number = 0; j < dest.length(); j++) {
+					b.push(dest[j]); //add id's to the list
+				}
+				a[3] = b;
 				
 				list.push(a);
 			}

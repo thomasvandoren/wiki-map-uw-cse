@@ -30,6 +30,8 @@ package
 		private var index:Number;
 		public var title:String;
 		public var label:Label;
+		public var is_disambiguation:Boolean;
+		public var dest:Array;
 		
 		/**
 		 * Construct a new node. The environment it's created in must be specified
