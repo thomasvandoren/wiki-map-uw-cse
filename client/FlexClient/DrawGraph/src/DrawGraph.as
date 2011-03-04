@@ -207,16 +207,16 @@ package
 				if (points_in && points_out) 
 				{ 
 					//mutual
-					DrawMutualArrow(environment, newNode, i);
+					DrawMutualArrow(environment, newNode, i + 1);
 				} 
 				else if (points_in && !points_out) 
 				{ 
 					//in arrow
-					DrawInArrow(environment, newNode, i);
+					DrawInArrow(environment, newNode, i + 1);
 				} 
 				else if (!points_in && points_out) 
 				{
-					DrawOutArrow2(environment, newNode, i);
+					DrawOutArrow2(environment, newNode, i + 1);
 				}
 			}
 		}
