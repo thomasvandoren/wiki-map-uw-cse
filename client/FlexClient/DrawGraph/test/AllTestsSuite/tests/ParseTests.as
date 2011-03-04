@@ -27,7 +27,7 @@ package AllTestsSuite.tests
 		{
 			var res : Array = Parse.parseGraph(testGraphXML);
 			
-			validateResults(res, expectedGraphResult);
+			validateResults(res, expectedGraphResult, true);
 		}
 		
 		/**
@@ -167,7 +167,7 @@ package AllTestsSuite.tests
 		 * @param	expected
 		 * @param	actual
 		 */
-		private function validateResults(actual:Array, expected:Array) : void
+		private function validateResults(actual : Array, expected : Array, isGraph : Boolean = false) : void
 		{
 			Assert.failNull("null array returned", actual);
 			Assert.assertEquals(actual.length, expected.length);
@@ -185,11 +185,13 @@ package AllTestsSuite.tests
 				Assert.assertEquals(actual[i][1], expected[i][1]);
 				
 				//extended check for graph parser
-				if (expected[i].length > 2) {
+				if (isGraph) {
 					Assert.assertEquals(actual[i][2], expected[i][2]);
 					Assert.assertEquals(actual[i][3].length, expected[i][3].length);
-					//check to see that each element is equal
-					for (var j : int = 0; j < expected[i][3].length; j++) {
+					
+					// Check that destination ids are equivalent
+					for (var j : int = 0; j < expected[i][3].length; j++) 
+					{
 						Assert.assertEquals((actual[i][3])[j], (expected[i][3])[j]);
 					}
 				}
