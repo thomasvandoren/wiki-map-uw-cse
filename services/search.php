@@ -33,16 +33,22 @@ if($searchQuery == "") {
 //Fetch wikis search results
 $results =  $db->get_search_results($searchQuery);
 
-if (count($results) >= 1) {
-  $hasExactMatchOrAlone = count($results) == 1;
+if (count($results) > 0) {
+  $hasExactMatchOrAlone = FALSE;
+  $matchID = 0;
+  if (count($results) == 1) {
+    $hasExactMatchOrAlone = TRUE;
+    $matchID = $results[0]["page_id"];    
+  }
   foreach ($results as $row) {
     if ($row["page_title"] == $searchQuery) {
-      $hasExactMatch = TRUE;
+      $hasExactMatchOrAlone = TRUE;
+      $matchID = $row["page_id"];
     }
   } 
 
-  if ($hasExactMatch) {
-    header("Location: ../graph/" . $searchQuery . "/");  
+  if ($hasExactMatchOrAlone) {
+    header("Location: ../graph/" . $matchID . "/");  
   } else {
     header('Content-Type:text/xml');
     print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
