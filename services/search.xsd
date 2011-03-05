@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="search">
+    <xs:complexType>
+      <xs:sequence>
+	<xs:element name="item" type="itemType"
+		    minOccurs="0" maxOccurs="unbounded" />
+      </xs:sequence>
+      <xs:attribute name="query" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="itemType">
+    <xs:attribute name="id" type="xs:integer" use="required" />
+    <xs:attribute name="title" type="xs:string" use="required" />
+  </xs:complexType>
+
+</xs:schema>
