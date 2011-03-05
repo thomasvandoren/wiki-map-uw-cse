@@ -217,7 +217,7 @@ package
 			
 			// After the first animation, speed up the animations so that they are not
 			// distracting.
-			DrawGraph.graphAnimationDuration = 1;
+			DrawGraph.graphAnimationDuration = 0.75;
 		}
 		
 		/**
