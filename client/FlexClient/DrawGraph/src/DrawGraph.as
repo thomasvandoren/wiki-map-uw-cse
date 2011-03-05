@@ -5,6 +5,7 @@ package
 		import mx.containers.Canvas;
 		import mx.controls.TextArea;
 		import mx.core.Application;
+		import mx.core.IUIComponent;
 		import mx.core.UIComponent;
 		import mx.effects.Tween;
 		import mx.graphics.SolidColorStroke;
@@ -79,7 +80,8 @@ package
 				var x : Number = (environment.width / 2) - (w / 2);
 				var y : Number = (environment.height / 2) - (h / 2);
 				
-				for (var i:Number = 1; i < 25 && i < a.length; i++) {
+				for (var i : Number = 1; i < 25 && i < a.length; i++) 
+				{
 					var lengthCheck:String = a[i][1];
 					if (lengthCheck.length > 0) {
 						
@@ -232,59 +234,97 @@ package
 			var newLine:UIComponent = new UIComponent();
 			newLine.graphics.lineStyle(3, 0x666666, 1);	
 			
-			for (var i:Number = 0; i < nodes.length; i++) {
-				var node:Node = nodes[i];
-				
-				// get three points of in arrow
-				var inX:Number = node.getX(0.15, node,0)+node.width/2;
-				var inY:Number = node.getY(0.15, node,0) + node.height / 2;
-				var inArrowX1:Number = node.getX(0.18, node, 0.05) + node.width / 2;
-				var inArrowY1:Number = node.getY(0.18, node, 0.05) + node.height / 2;
-				var inArrowX2:Number = node.getX(0.18, node, -0.05) + node.width / 2;
-				var inArrowY2:Number = node.getY(0.18, node, -0.05) + node.height / 2;
-				
-				// get three points of out arrow
-				var outX:Number = node.getX(0.32, node,0)+node.width/2;
-				var outY:Number = node.getY(0.32, node,0)+node.height/2;
-				var outArrowX1:Number = node.getX(0.29, node, 0.05) + node.width / 2;
-				var outArrowY1:Number = node.getY(0.29, node, 0.05) + node.height / 2;
-				var outArrowX2:Number = node.getX(0.29, node, -0.05) + node.width / 2;
-				var outArrowY2:Number = node.getY(0.29, node, -0.05) + node.height / 2;
-				
-				// draws line from in to out arrow
-				newLine.graphics.moveTo(inX, inY);
-				newLine.graphics.lineTo(outX, outY);
-				
-				if(isPointsIn(centerNode, node)){
-					// draws in arrow
-					newLine.graphics.moveTo(inX, inY);
-					newLine.graphics.lineTo(inArrowX1, inArrowY1);
-					newLine.graphics.moveTo(inX, inY);
-					newLine.graphics.lineTo(inArrowX2, inArrowY2);
-				}
-				
-				if(isPointsOut(centerNode, node)){
-					// draws out arrow
-					newLine.graphics.moveTo(outX, outY);
-					newLine.graphics.lineTo(outArrowX1, outArrowY1);
-					newLine.graphics.moveTo(outX, outY);
-					newLine.graphics.lineTo(outArrowX2, outArrowY2);
-				}
-				
-				environment.addElement(newLine);
+			for (var i:Number = 0; i < nodes.length; i++) 
+			{
+				drawArrowLine(nodes[i], centerNode, newLine);
+			}
+			
+			environment.addElement(newLine);
+		}
+		
+		/**
+		 * Draw the line that connects the nodes, and needed arrow heads.
+		 * 
+		 * @param	node
+		 */
+		private static function drawArrowLine(node : Node, centerNode : Node, newLine : UIComponent) : void
+		{
+			var inX : Number = node.getX(0.15, node, 0) + node.width / 2;
+			var inY : Number = node.getY(0.15, node, 0) + node.height / 2;
+			var outX : Number = node.getX(0.32, node, 0) + node.width / 2;
+			var outY : Number = node.getY(0.32, node, 0) + node.height / 2;
+			
+			newLine.graphics.moveTo(inX, inY);
+			newLine.graphics.lineTo(outX, outY);
+		
+			if (isPointsIn(centerNode, node))
+			{
+				drawInArrowHead(inX, inY, node, newLine);
+			}
+			
+			if (isPointsOut(centerNode, node))
+			{
+				drawOutArrowHead(outX, outY, node, newLine);
 			}
 		}
 		
 		/**
-		 * returns true if there is incoming or outcoming relationship
+		 * Draw an inward pointing arrow head for the given node.
+		 * 
+		 * @param	x
+		 * @param	y
+		 * @param	node
+		 * @param	newLine
+		 */
+		private static function drawInArrowHead(
+			x : Number, 
+			y : Number, 
+			node : Node, 
+			newLine : UIComponent) : void
+		{
+			var inArrowX1:Number = node.getX(0.18, node, 0.05) + node.width / 2;
+			var inArrowY1:Number = node.getY(0.18, node, 0.05) + node.height / 2;
+			var inArrowX2:Number = node.getX(0.18, node, -0.05) + node.width / 2;
+			var inArrowY2:Number = node.getY(0.18, node, -0.05) + node.height / 2;
+			
+			newLine.graphics.moveTo(x, y);
+			newLine.graphics.lineTo(inArrowX1, inArrowY1);
+			
+			newLine.graphics.moveTo(x, y);
+			newLine.graphics.lineTo(inArrowX2, inArrowY2);
+		}
+		
+		private static function drawOutArrowHead(
+			x : Number, 
+			y : Number, 
+			node : Node, 
+			newLine : UIComponent) : void
+		{
+			var outArrowX1:Number = node.getX(0.29, node, 0.05) + node.width / 2;
+			var outArrowY1:Number = node.getY(0.29, node, 0.05) + node.height / 2;
+			var outArrowX2:Number = node.getX(0.29, node, -0.05) + node.width / 2;
+			var outArrowY2:Number = node.getY(0.29, node, -0.05) + node.height / 2;
+			
+			newLine.graphics.moveTo(x, y);
+			newLine.graphics.lineTo(outArrowX1, outArrowY1);
+			
+			newLine.graphics.moveTo(x, y);
+			newLine.graphics.lineTo(outArrowX2, outArrowY2);
+		}
+		
+		/**
+		 * Returns true if the source node has the destination node in its destination
+		 * list.
 		 * 
 		 * @param	centerNode
 		 * @param	newNode
 		 * @return
 		 */
-		private static function isPointsInOrOut(centerNode:Node, newNode:Node):Boolean {
-			for (var dest_count : Number = 0; dest_count < newNode.dest.length; dest_count++) { 
-				if (Number(newNode.dest[dest_count]) == Number(centerNode.id)) {
+		private static function areNodesRelated(destination : Node, source : Node) : Boolean {
+			for (var dest_count : Number = 0; dest_count < source.dest.length; dest_count++) 
+			{ 
+				if (Number(source.dest[dest_count]) == Number(destination.id)) 
+				{
 					return true;
 				}
 			}
@@ -292,25 +332,27 @@ package
 		}
 		
 		/**
-		 * return true if there is incoming relationship
+		 * Returns true if there is incoming relationship
 		 * 
 		 * @param	centerNode
 		 * @param	newNode
 		 * @return
 		 */
-		private static function isPointsIn(centerNode:Node, newNode:Node):Boolean {
-			return isPointsInOrOut(centerNode, newNode);
+		private static function isPointsIn(centerNode : Node, newNode : Node) : Boolean 
+		{
+			return areNodesRelated(centerNode, newNode);
 		}
 		
 		/**
-		 * return true if there is outcoming relationship
+		 * Returns true if there is outgoing relationship
 		 * 
 		 * @param	centerNode
 		 * @param	newNode
 		 * @return
 		 */
-		private static function isPointsOut(centerNode:Node, newNode:Node):Boolean {
-			return isPointsInOrOut(newNode, centerNode);
+		private static function isPointsOut(centerNode : Node, newNode : Node) : Boolean 
+		{
+			return areNodesRelated(newNode, centerNode);
 		}
 		
 		
