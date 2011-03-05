@@ -8,6 +8,8 @@ package
 	import spark.components.BorderContainer;
 	import spark.components.Group;
 	import mx.states.SetStyle;
+	import flash.net.navigateToURL;
+	import flash.net.URLRequest;
 	
 	/**
 	 * ...
@@ -51,9 +53,11 @@ package
 			this.abstractTimer.addEventListener(TimerEvent.TIMER, timerDing);
 			
 			//set up mouse events
-			addEventListener(MouseEvent.CLICK, getGraph);
-			addEventListener(MouseEvent.MOUSE_OVER, GetArticle);
-			addEventListener(MouseEvent.MOUSE_OUT, StopTimer);
+			this.doubleClickEnabled = true;
+			this.addEventListener(MouseEvent.CLICK, getGraph);
+			this.addEventListener(MouseEvent.DOUBLE_CLICK, openArticle);
+			this.addEventListener(MouseEvent.MOUSE_OVER, GetArticle);
+			this.addEventListener(MouseEvent.MOUSE_OUT, StopTimer);
 			
 			//set up abstract toolTip creation
 			this.tipCreated = false;
@@ -61,7 +65,7 @@ package
 			this.index = index;
 			
 			//create the text
-			label = new Label();
+			this.label = new Label();
 			this.addElement(label);
 			
 			//style the node
@@ -69,6 +73,26 @@ package
 			this.setStyle("backgroundColor", 0xEEEEEE);
 			this.setStyle("borderWeight", 2);
 			this.setStyle("borderColor", 0xBBBBBB);
+		}
+		
+		/**
+		 * Tries to open the article with the tooltip opener (and the link
+		 * that the services would have sent back). Otherwise it opens generates
+		 * a url based on the base url in the config file and the title.
+		 * 
+		 * @param	event
+		 */
+		private function openArticle(event : MouseEvent) : void
+		{
+			if (this.abToolTip != null && this.abToolTip.articleLink != null)
+			{
+				this.abToolTip.openArticle(event);
+			}
+			else
+			{
+				var url : URLRequest = new URLRequest(Config.wikiUrlBase + escape(this.title));
+				navigateToURL(url, "_blank");
+			}
 		}
 		
 		/**

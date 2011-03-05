@@ -371,7 +371,7 @@ package
 			node.label.text = title;
 			node.title = title;
 			node.is_disambiguation = isDisambiguation;
-			trace(isDisambiguation);
+			
 			if (!isDisambiguation) {
 				node.setStyle("color", 0x444444);
 			} else {
