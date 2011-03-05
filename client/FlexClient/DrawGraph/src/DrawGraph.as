@@ -93,12 +93,6 @@ package
 					var lengthCheck:String = a[i][1];
 					if (lengthCheck.length > 0) {
 						
-						if (!showAnim)
-						{
-							x = 5;
-							y = 5;
-						}
-						
 						var newNode : Node = makeNode(
 							graph, 
 							j, 
@@ -111,6 +105,12 @@ package
 							h,
 							x,
 							y);
+						
+						if (!showAnim)
+						{
+							newNode.x = newNode.getX(0.40, newNode, 0);
+							newNode.y = newNode.getY(0.40, newNode, 0);
+						}
 						
 						environment.addElement(newNode);
 						nodes.push(newNode);
