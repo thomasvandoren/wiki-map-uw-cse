@@ -45,7 +45,7 @@ package
 		private static var graphAnimationDuration :  Number = 2;
 		
 		//tells the program to draw a bunch of nodes in the drawing area
-		public static function DrawG(a:Array, graph:Graph):void 
+		public static function DrawG(a:Array, graph:Graph, showAnim : Boolean = true):void 
 		{
 			ToolTipManager.enabled = false;
 			var environment : Group = graph.returnGraph();
@@ -93,6 +93,12 @@ package
 					var lengthCheck:String = a[i][1];
 					if (lengthCheck.length > 0) {
 						
+						if (!showAnim)
+						{
+							x = 5;
+							y = 5;
+						}
+						
 						var newNode : Node = makeNode(
 							graph, 
 							j, 
@@ -114,7 +120,16 @@ package
 				environment.visible = true;
 				
 				// animate nodes to the correct position
-				openGraph(nodes, centerNode, environment);
+				if (showAnim)
+				{
+					openGraph(nodes, centerNode, environment);
+				}
+				
+				// If no animation, just draw the lines.
+				else
+				{
+					drawLines(nodes, centerNode, environment);
+				}
 				
 				// add center node button
 				environment.addElement(centerNode);
@@ -425,8 +440,8 @@ package
 						node, 
 						DrawGraph.graphAnimationDuration, 
 						{ 
-							x: node.getX(0.40, node,0), 
-							y: node.getY(0.40, node,0), 
+							x: node.getX(0.40, node, 0), 
+							y: node.getY(0.40, node, 0), 
 							ease: Back.easeInOut,
 							onComplete: lastFn
 						});

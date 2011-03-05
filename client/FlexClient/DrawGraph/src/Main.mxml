@@ -69,7 +69,7 @@
 		 * @param	event
 		 */
 		private function resizeHandler(event:Event):void {
-			graphObj.resize();
+			graphObj.resize(false);
 			
 			setTextInputSize(); 
 		}
