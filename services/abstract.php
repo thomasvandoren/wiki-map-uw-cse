@@ -13,7 +13,7 @@ Returns the title, abstract, and link
 
 include 'config.php';
 include 'util.php';
-
+$_REQUEST['id'] = (int)($argv[1]);
 // Die if no ID provided
 if (!isset($_REQUEST["id"])) {
   error(400, "No id provided\n");
@@ -40,8 +40,19 @@ if (count($abstract_results) == 1) {
 		   "/\[\[([^\]]*)(\]\]|$)/" => "$1",
 		   // [link]
 		   "/\[([^\]]*)(\]|$)/" => "$1",
+		   // Loose [ and ]
+		   "/\[/" => "",
+		   "/\]/" => "",
+		   // thumb|(pos)
+		   "/thumb\|([^\|]*\|)?((right)|(left)|(top)|(bottom))?/" => "",
 		   // |var= 
-		   "/\|[^=]*= ?/" => "");
+		   "/\|[^=]*= ?/" => "",
+		   // Loose |
+		   "/\|/" => "",
+		   // === Header ===
+		   "/=+([^=]*)=+/" => "$1",
+		   // ( )
+		   "/ *\( *\) */" => " ");
   $abstract_text = $abstract_results[0]["abstract_text"];
   foreach ($filters as $regex => $rep) {
     $abstract_text = preg_replace($regex, $rep, $abstract_text);
