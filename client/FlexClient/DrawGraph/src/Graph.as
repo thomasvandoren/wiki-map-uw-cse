@@ -57,14 +57,14 @@ package
 		/**
 		 * Draw the graph in the current environment.
 		 */
-		public function draw() : void
+		public function draw(showAnim : Boolean = true) : void
 		{
 			trace("draw");
 			
 			this.visible = true;
 			this.isSearch = false;
 			
-			DrawGraph.DrawG(this.data, this);
+			DrawGraph.DrawG(this.data, this, showAnim);
 			
 			show();
 		}
@@ -323,7 +323,7 @@ package
 		/**
 		 * Resize the graph to fill the environment.
 		 */
-		public function resize() : void
+		public function resize(showAnim : Boolean = true) : void
 		{
 			trace("Graph.resize");
 			
@@ -332,7 +332,7 @@ package
 			
 			if (this.isVisible() && !this.isSearch) 
 			{
-				this.draw();
+				this.draw(showAnim);
 			}
 			else if (this.isVisible() && this.isSearch)
 			{
