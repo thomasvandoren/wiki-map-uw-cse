@@ -125,9 +125,11 @@ package
 		
 		//Search for the suggestion if the user pressed enter
 		private function handleSelect(event:CustomEvent):void {
-			var item:Object = event.data;
+			var item : Object = event.data;
 			trace("Selected " + item[1].toString());
 			trace("Selected " + item[0].toString());
+			
+			searchText.text = item[1].toString();
 			
 			this.graph.getGraph(item[0][0]);
 		}
