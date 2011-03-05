@@ -13,7 +13,7 @@ Returns the title, abstract, and link
 
 include 'config.php';
 include 'util.php';
-$_REQUEST['id'] = (int)($argv[1]);
+
 // Die if no ID provided
 if (!isset($_REQUEST["id"])) {
   error(400, "No id provided\n");
