@@ -45,7 +45,7 @@ package
 		private static var graphAnimationDuration :  Number = 2;
 		
 		//tells the program to draw a bunch of nodes in the drawing area
-		public static function DrawG(a:Array, graph:Graph):void 
+		public static function DrawG(a:Array, graph:Graph, showAnim : Boolean = true):void 
 		{
 			ToolTipManager.enabled = false;
 			var environment : Group = graph.returnGraph();
@@ -106,6 +106,12 @@ package
 							x,
 							y);
 						
+						if (!showAnim)
+						{
+							newNode.x = newNode.getX(0.40, newNode, 0);
+							newNode.y = newNode.getY(0.40, newNode, 0);
+						}
+						
 						environment.addElement(newNode);
 						nodes.push(newNode);
 					}
@@ -114,7 +120,16 @@ package
 				environment.visible = true;
 				
 				// animate nodes to the correct position
-				openGraph(nodes, centerNode, environment);
+				if (showAnim)
+				{
+					openGraph(nodes, centerNode, environment);
+				}
+				
+				// If no animation, just draw the lines.
+				else
+				{
+					drawLines(nodes, centerNode, environment);
+				}
 				
 				// add center node button
 				environment.addElement(centerNode);
@@ -371,7 +386,7 @@ package
 			node.label.text = title;
 			node.title = title;
 			node.is_disambiguation = isDisambiguation;
-			trace(isDisambiguation);
+			
 			if (!isDisambiguation) {
 				node.setStyle("color", 0x444444);
 			} else {
@@ -425,29 +440,59 @@ package
 						node, 
 						DrawGraph.graphAnimationDuration, 
 						{ 
-							x: node.getX(0.40, node,0), 
-							y: node.getY(0.40, node,0), 
+							x: node.getX(0.40, node, 0), 
+							y: node.getY(0.40, node, 0), 
 							ease: Back.easeInOut,
 							onComplete: lastFn
 						});
 				}
 				else
 				{
-					TweenLite.to(
-						node, 
-						DrawGraph.graphAnimationDuration, 
-						{ 
-							x: node.getX(0.40, node,0), 
-							y: node.getY(0.40, node,0), 
-							ease: Back.easeInOut
-						});
+					if (nodes.length == 24) {
+						if (i>1&&i < 6 || i > 13 && i < 18) {
+							tween(node, -0.05);
+						}else if (i > 6 && i < 11 || i > 18 && i < 23) {
+							tween(node, 0.05);
+						}else {
+							tween(node, 0);
+						}
+					}else {
+						tween(node, 0);
+					}
 				}
 			}
 			
 			// After the first animation, speed up the animations so that they are not
 			// distracting.
+			
+			// I do agree that speed up the animations is good so users are not distracting
+			// but for my opinion 0.75 is still too fast which make me don't want to see 
+			// graph when I click the node from 24 nodes to 24 new nodes on graph. 
+			// It is fine if the number of nodes <24 but these cases are rarely happen. 
+			// I do agree that 2s is too long but why we care adding 0.# second?
+			// Also, if we want to speed up like this why we have to do animation?
+			// I don't know how other people feel but for me it doesn't make sense. I just
+			// want to tell you guys my opinion about this. 
 			DrawGraph.graphAnimationDuration = 0.75;
 		}
 		
+		/**
+		 * calls TweenLite to move given node to position x, y
+		 * 
+		 * @param	node
+		 * @param	offset
+		 */
+		private static function tween(node:Node, offset:Number):void {
+			TweenLite.to(
+						node, 
+						DrawGraph.graphAnimationDuration, 
+						{ 
+							x: node.getX(0.40, node, offset), 
+							y: node.getY(0.40, node, offset), 
+							ease: Back.easeInOut
+						});
+		}
 	}
+	
+	
 }

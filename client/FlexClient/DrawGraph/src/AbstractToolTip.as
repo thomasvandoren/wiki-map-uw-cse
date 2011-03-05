@@ -31,7 +31,7 @@ package
 		private var articleID : String;
 		private var articleTitle : String;
 		private var articleAbstract : String;
-		private var articleLink : String;
+		public var articleLink : String;
 		
 		private var loading : Boolean;
 		
@@ -81,12 +81,12 @@ package
 			this.addElement(this.abstractText);
 			this.createLoaderImg();
 			
-			this.addEventListener(MouseEvent.CLICK, OpenArticle);
+			this.addEventListener(MouseEvent.CLICK, openArticle);
 			this.addEventListener(MouseEvent.MOUSE_OVER, KeepUp);
 			this.addEventListener(MouseEvent.MOUSE_OUT, RestartTimer);
 			
 			// Setup the timer
-			this.abstractTimer = new Timer(400, 1);
+			this.abstractTimer = new Timer(500, 1);
 			this.abstractTimer.addEventListener(TimerEvent.TIMER, TimerDing);
 			
 			this.getAbstract();
@@ -226,7 +226,7 @@ package
 		 * 
 		 * @param	event
 		 */
-		private function OpenArticle(event:MouseEvent):void
+		public function openArticle(event:MouseEvent):void
 		{
 			if (!this.isLoading() && this.articleLink)
 			{

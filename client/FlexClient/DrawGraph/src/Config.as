@@ -18,7 +18,7 @@ package
 		public static var apiUrl : String = baseUrl + apiPath;
 		
 		// The article url base.
-		public static var wikiPath : String = "http://en.wikipedia.org/wiki/";
+		public static var wikiUrlBase : String = "http://en.wikipedia.org/wiki/";
 		
 	}
 }
