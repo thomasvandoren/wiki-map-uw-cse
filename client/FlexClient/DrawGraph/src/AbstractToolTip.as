@@ -86,7 +86,7 @@ package
 			this.addEventListener(MouseEvent.MOUSE_OUT, RestartTimer);
 			
 			// Setup the timer
-			this.abstractTimer = new Timer(400, 1);
+			this.abstractTimer = new Timer(550, 1);
 			this.abstractTimer.addEventListener(TimerEvent.TIMER, TimerDing);
 			
 			this.getAbstract();
