@@ -53,7 +53,7 @@ package
 			this.environment = graph.returnGraph();
 			
 			//set up timer
-			this.abstractTimer = new Timer(500, 1);
+			this.abstractTimer = new Timer(900, 1);
 			this.abstractTimer.addEventListener(TimerEvent.TIMER, timerDing);
 			
 			//set up mouse events

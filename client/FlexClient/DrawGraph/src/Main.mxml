@@ -14,6 +14,7 @@
 		
 		import flash.events.Event;
 		import mx.controls.Text;
+		import mx.events.FlexEvent;
 		import spark.components.Group;
 		
 		import DrawGraph;
@@ -27,12 +28,25 @@
 		private var graphObj : Graph;
 		
 		/**
+		 * This function sets the focus to the autocomplete Group once that
+		 * group has initialized.
+		 */
+		private var onLoadFocus : Function = function (event : Event) : void
+		{
+			trace("onLoadFocus");
+			focusManager.setFocus(this.auto);
+		}
+		
+		/**
 		 * Initialize the application.
 		 */
 		public function initu():void {
 			
 			// Create a class to handle graph operations.
 			graphObj = new Graph(graph, this);
+			
+			// Set the focus to the autocomplete Group once it has initialized.
+			this.auto.addEventListener(FlexEvent.INITIALIZE, onLoadFocus);
 			
 			// Create autocomplete bar object.
 			myAutoComplete = new CustomAutoComplete(auto, graphObj);
@@ -82,6 +96,7 @@
 			
 			this.myAutoComplete.clearText();
 			DrawSplash.DrawS(env);
+			this.myAutoComplete.focusOnSearch();
 		}
 		
 		public function buttonHover(node:BorderContainer):void {

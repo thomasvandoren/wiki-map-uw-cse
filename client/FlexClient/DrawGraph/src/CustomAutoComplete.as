@@ -9,7 +9,6 @@ package
 	{		
 		import flash.events.Event;
 		import mx.controls.Alert;
-		import mx.controls.TextInput;
 		import org.flashcommander.event.CustomEvent;
 		import flash.events.KeyboardEvent;
 		import flash.utils.Timer;
@@ -18,7 +17,9 @@ package
 		import flash.net.URLRequest;
 		import flash.ui.Keyboard;
 		import flash.events.IOErrorEvent;
+		import flash.events.FocusEvent;
 		import spark.components.Group;
+		import spark.components.TextInput;
 		
 		import Network;
 		import Graph;
@@ -47,6 +48,8 @@ package
 			
 			//Initialize an inner AutoComplete component
 			ac = new AutoComplete();
+			env.addEventListener(FocusEvent.FOCUS_IN, focusOnSearch);
+			
 			ac.id = "ac";
 			ac.requireSelection = true;
 			ac.labelFunction = customLabelFunction;
@@ -65,6 +68,18 @@ package
             myTimer.addEventListener("timer", timerTickHandler);
 			
 			searchText = new TextInput();
+		}
+		
+		/**
+		 * Set the focus on the search bar once it has loaded.
+		 * 
+		 * @param	event
+		 */
+		public function focusOnSearch(event : Event = null) : void
+		{
+			trace("FocusOnSearchBar");
+			
+			this.ac.inputTxt.setFocus();
 		}
 		
 		//After .5 seconds (if no characters were typed), reset the timer and query the search
