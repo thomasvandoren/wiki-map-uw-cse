@@ -30,8 +30,14 @@ package
 		
 		private var graph:Graph;
 		private var env:Group;
+		private var searchButton : SearchButton;
 		private var list:Array;
 		private var isLocked : Boolean;
+		
+		public function set searchBtn(searchButton : SearchButton) : void
+		{
+			this.searchButton = searchButton;
+		}
 		
 		public function CustomAutoComplete(environment:Group, g:Graph) 
 		{
@@ -48,13 +54,16 @@ package
 			ac.y = 10;
 			ac.height = 28;
 			ac.setStyle("fontSize", 18);
-			ac.addEventListener("select", handleSelect);
+			
+			ac.addEventListener("select", handleSelect, false, 1);
 			ac.addEventListener(KeyboardEvent.KEY_DOWN, timerKeyHandler);
+			
 			environment.addElement(ac); 
 			
-			//Initialize a timer that will determine when the search queries occur
-			myTimer = new Timer(500, 0);
+			//Initialize a timer that will determine when the autocomplete queries occur
+			myTimer = new Timer(250, 0);
             myTimer.addEventListener("timer", timerTickHandler);
+			
 			searchText = new TextInput();
 		}
 		
@@ -65,11 +74,20 @@ package
 			timerHandler();
 		}
 		
-		//After 4 characters have been pressed, query the search. Reset the timer on each character.
+		//After 4 characters have been pressed, query the autocomplete. Reset the timer on each character.
 		private function timerKeyHandler(event:KeyboardEvent):void {
-			if (event.keyCode != Keyboard.UP && 
-				event.keyCode != Keyboard.DOWN && 
-				event.keyCode != Keyboard.ENTER) 
+			if (event.keyCode == Keyboard.ENTER)
+			{
+				if (searchButton && !Network.isLocked)
+				{
+					// Search for the entered text if the user presses enter.
+					searchText.text = ac.text;
+					searchButton.handleSearch(event);
+				}
+			} 
+			else if (
+				event.keyCode != Keyboard.UP && 
+				event.keyCode != Keyboard.DOWN) 
 			{
 				keyCount = (keyCount + 1) % 4;
 				if (myTimer.running == false) {
@@ -83,7 +101,6 @@ package
 					myTimer.start();
 				}
 			}
-			
 		}
 		
 		//Query the search given in the autocomplete bar

@@ -39,6 +39,7 @@
 			
 			// Create class to handle search button activity.
 			searchBtn = new SearchButton(searchButton, myAutoComplete, graphObj);
+			myAutoComplete.searchBtn = searchBtn;
 			
 			// Set width of the text input and location of search button.
 			setTextInputSize();
