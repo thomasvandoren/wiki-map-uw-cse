@@ -238,18 +238,18 @@ package
 				// get three points of in arrow
 				var inX:Number = node.getX(0.15, node,0)+node.width/2;
 				var inY:Number = node.getY(0.15, node,0) + node.height / 2;
-				var inArrowX1:Number = node.getX(0.18, node, 0.1) + node.width / 2;
-				var inArrowY1:Number = node.getY(0.18, node, 0.1) + node.height / 2;
-				var inArrowX2:Number = node.getX(0.18, node, -0.1) + node.width / 2;
-				var inArrowY2:Number = node.getY(0.18, node, -0.1) + node.height / 2;
+				var inArrowX1:Number = node.getX(0.18, node, 0.05) + node.width / 2;
+				var inArrowY1:Number = node.getY(0.18, node, 0.05) + node.height / 2;
+				var inArrowX2:Number = node.getX(0.18, node, -0.05) + node.width / 2;
+				var inArrowY2:Number = node.getY(0.18, node, -0.05) + node.height / 2;
 				
 				// get three points of out arrow
 				var outX:Number = node.getX(0.32, node,0)+node.width/2;
 				var outY:Number = node.getY(0.32, node,0)+node.height/2;
-				var outArrowX1:Number = node.getX(0.28, node, 0.1) + node.width / 2;
-				var outArrowY1:Number = node.getY(0.28, node, 0.1) + node.height / 2;
-				var outArrowX2:Number = node.getX(0.28, node, -0.1) + node.width / 2;
-				var outArrowY2:Number = node.getY(0.28, node, -0.1) + node.height / 2;
+				var outArrowX1:Number = node.getX(0.29, node, 0.05) + node.width / 2;
+				var outArrowY1:Number = node.getY(0.29, node, 0.05) + node.height / 2;
+				var outArrowX2:Number = node.getX(0.29, node, -0.05) + node.width / 2;
+				var outArrowY2:Number = node.getY(0.29, node, -0.05) + node.height / 2;
 				
 				// draws line from in to out arrow
 				newLine.graphics.moveTo(inX, inY);
@@ -271,7 +271,7 @@ package
 					newLine.graphics.lineTo(outArrowX2, outArrowY2);
 				}
 				
-				environment.addElementAt(newLine, 0);
+				environment.addElement(newLine);
 			}
 		}
 		
