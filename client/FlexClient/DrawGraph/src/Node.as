@@ -173,8 +173,8 @@ package
 		 * @param	obj
 		 * @return
 		 */
-		public function getX(ratio:Number, obj:Object):Number {
-			return ((Math.cos((index - 1) * angleDiffer )) * environment.width * ratio) + (environment.width / 2) - obj.width/2;
+		public function getX(ratio:Number, obj:Object, offsetAngle:Number):Number {
+			return ((Math.cos((index - 1) * angleDiffer + offsetAngle)) * environment.width * ratio) + (environment.width / 2) - obj.width/2;
 		}
 		
 		/**
@@ -184,8 +184,8 @@ package
 		 * @param	obj
 		 * @return
 		 */
-		public function getY(ratio:Number, obj:Object):Number {
-			return ((Math.sin((index - 1) * angleDiffer )) * environment.height * ratio) + (environment.height / 2) - obj.height/2;
+		public function getY(ratio:Number, obj:Object, offsetAngle:Number):Number {
+			return ((Math.sin((index - 1) * angleDiffer +offsetAngle)) * environment.height * ratio) + (environment.height / 2) - obj.height/2;
 		}
 	}
 }
