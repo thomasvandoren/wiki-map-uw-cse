@@ -35,6 +35,10 @@ package
 		public var is_disambiguation:Boolean;
 		public var dest:Array;
 		
+		private var clickTimer : Timer;
+		private var lockTimer : Timer;
+		private var locked : Boolean = false;
+		
 		/**
 		 * Construct a new node. The environment it's created in must be specified
 		 * if we change this from a button, we'll modify it so it accepts text too
@@ -54,8 +58,10 @@ package
 			
 			//set up mouse events
 			this.doubleClickEnabled = true;
+			
+			this.addEventListener(MouseEvent.DOUBLE_CLICK, openArticle, false, 2);
 			this.addEventListener(MouseEvent.CLICK, getGraph);
-			this.addEventListener(MouseEvent.DOUBLE_CLICK, openArticle);
+			
 			this.addEventListener(MouseEvent.MOUSE_OVER, GetArticle);
 			this.addEventListener(MouseEvent.MOUSE_OUT, StopTimer);
 			
@@ -76,6 +82,26 @@ package
 		}
 		
 		/**
+		 * Lock the node, preventing graph requests for a bit.
+		 * 
+		 * @param	event
+		 */
+		private function lock(event : TimerEvent = null) : void
+		{
+			this.locked = true;
+		}
+		
+		/**
+		 * Unlock the node and allow graph requests.
+		 * 
+		 * @param	event
+		 */
+		private function unlock(event : TimerEvent = null) : void
+		{
+			this.locked = false;
+		}
+		
+		/**
 		 * Tries to open the article with the tooltip opener (and the link
 		 * that the services would have sent back). Otherwise it opens generates
 		 * a url based on the base url in the config file and the title.
@@ -84,6 +110,12 @@ package
 		 */
 		private function openArticle(event : MouseEvent) : void
 		{
+			lock();
+			
+			lockTimer = new Timer(650, 1);
+			lockTimer.addEventListener(TimerEvent.TIMER_COMPLETE, unlock);
+			lockTimer.start();
+			
 			if (this.abToolTip != null && this.abToolTip.articleLink != null)
 			{
 				this.abToolTip.openArticle(event);
@@ -96,13 +128,29 @@ package
 		}
 		
 		/**
-		 * User clicked on a node, retrieve the and draw the graph.
+		 * User clicked on a node, wait 500ms so that a double click event can register
+		 * if it is going to. Priority is given to double clicks.
 		 * 
 		 * @param	event
 		 */
 		private function getGraph(event:MouseEvent):void
 		{
-			graph.getGraph(id);
+			clickTimer = new Timer(500, 1);
+			clickTimer.addEventListener(TimerEvent.TIMER_COMPLETE, doGetGraph);
+			clickTimer.start();
+		}
+		
+		/**
+		 * Get graph on a click event.
+		 * 
+		 * @param	event
+		 */
+		private function doGetGraph(event : TimerEvent) : void
+		{
+			if (!this.locked)
+			{
+				graph.getGraph(id);
+			}
 		}
 		
 		/**
