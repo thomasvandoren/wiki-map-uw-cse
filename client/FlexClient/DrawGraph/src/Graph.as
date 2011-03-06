@@ -270,15 +270,16 @@ package
 			//TODO: does this need to be in a different place?
 			this.wrapper.setGraph(this.data[0][0]);
 			
-			// 
-			if (history.getCurrentTitle() != this.data[0][1]) {
+			// Do not display graph if the center node was clicked.
+			if (!this.isVisible() ||
+				this.isSearch ||
+				history.getCurrentTitle() != this.data[0][1]) 
+			{
 				trace("Graph.loadGraph");
 				this.draw();
 				
 				//Add search term and id to search history
 				this.history.addRecord(this.center.title, this.center.id);
-			}else {
-				trace("Graph doesn't load because click at the center node");
 			}
 		}
 		
