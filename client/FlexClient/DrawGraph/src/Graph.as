@@ -22,7 +22,7 @@ package
 		private var data : Array;
 		private var center : Node;
 		private var visible : Boolean;
-		private var isSearch : Boolean;
+		public var isSearch : Boolean;
 		private var wrapper : Wrapper;
 		private var history: History;
 		private var loaderImg : GIFPlayerComponent;

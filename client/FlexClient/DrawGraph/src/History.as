@@ -21,6 +21,8 @@ package
 		private var list : ComboBox;
 		private var graph : Graph;
 		
+		private var firstOne:String;
+		
 		/**
 		 * Construct a new graph that knows about the graph and its environment.
 		 * Set the graph to be located to the left of the autocomplete bar
@@ -42,8 +44,12 @@ package
 			list.y = 10;
 			list.setStyle("fontSize", 18);
 			list.dataProvider = searchTerms;
-			list.text = "Search History...";
-			list.addEventListener("change", doSearch);
+			
+			// this keeps the selectedIndex equal to -1 so that clicking the first item
+			// will fire the change event (it won't if list.text is used).
+			list.prompt = "Search History...";
+			
+			list.addEventListener(Event.CHANGE, doSearch);
 
 			environment.addElement(list);
 		}
@@ -81,8 +87,6 @@ package
 			return false;
 		}
 		
-		private var firstOne:String;
-		
 		/**
 		 * 
 		 * @return the current center node title
@@ -112,7 +116,10 @@ package
 		private function doSearch(event : Event) : void {
 			var search : String = searchIDs[list.selectedIndex] as String;
 			// Runs removeRecord & draw graph if the selected title is not the current
-			if (!graph.isVisible() || list.selectedIndex != 0)
+			trace(graph.isVisible().toString() + " " + graph.isSearch.toString() + " " + (list.selectedIndex != 0).toString());
+			if (!graph.isVisible() ||
+				graph.isSearch || 
+				list.selectedIndex != 0)
 			{
 				removeRecord(int(list.selectedIndex));
 				graph.getGraph(search);
