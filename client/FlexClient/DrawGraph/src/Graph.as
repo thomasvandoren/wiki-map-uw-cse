@@ -4,6 +4,9 @@ package
 	import spark.components.Group;
 	import mx.controls.Alert;
 	import mx.managers.ToolTipManager;
+	import GIFPlayerComponent;
+	import EmbedAssets;
+	import mx.core.ByteArrayAsset;
 	
 	/**
 	 * This class represents the graph state and behavior.
@@ -13,6 +16,7 @@ package
 	public class Graph 
 	{
 		
+		
 		private var graph : Group;
 		private var environment : Main;
 		private var data : Array;
@@ -21,6 +25,9 @@ package
 		private var isSearch : Boolean;
 		private var wrapper : Wrapper;
 		private var history: History;
+		private var loaderImg : GIFPlayerComponent;
+		private var loaderImgSrc : ByteArrayAsset = new EmbedAssets.LOADING_SMALL();
+		private var loading : Boolean;
 		
 		/**
 		 * Construct a new graph that knows about it environment.
@@ -36,6 +43,8 @@ package
 			this.history = new History(this, environment.history);
 			
 			this.wrapper = new Wrapper(this.loadGraphById);
+			
+			this.createLoaderImg();
 			
 			this.hide(false);
 			
@@ -195,7 +204,7 @@ package
 		public function getGraph(id : String) : void
 		{
 			trace("getGraph(" + id + ")");
-			
+			this.startLoad();
 			Network.graphGet(id, this.loadGraph, this.reportError, true);
 		}
 		
@@ -249,7 +258,7 @@ package
 		 */
 		public function loadGraph(data : XML) : void 
 		{
-			
+			this.stopLoad();
 			this.data = Parse.parseGraph(data);
 			
 			this.center = new Node(this, 0, 0);
@@ -311,6 +320,35 @@ package
 		}
 		
 		/**
+		 * Create the loading image and text and add it to the environment
+		 */
+		private function createLoaderImg() : void
+		{
+			this.loaderImg = new GIFPlayerComponent();
+			this.loaderImg.byteArray = this.loaderImgSrc;
+			environment.loading.visible = false;
+			environment.loadingImg.addElement(this.loaderImg);
+			environment.loadingText.text = "";
+		}
+		
+		/**
+		 * Updates and displays the loading visual
+		 */
+		private function startLoad() : void
+		{
+			environment.loadingText.text = "Loading...";
+			environment.loading.visible = true;
+		}
+		
+		/**
+		 * Hides the loading visual
+		 */
+		private function stopLoad() : void
+		{
+			environment.loading.visible = false;
+		}
+		
+		/**
 		 * Report error to user if graph request failed.
 		 * 
 		 * @param	data
@@ -361,6 +399,7 @@ package
 			
 			this.visible = true;
 			this.graph.visible = true;
+			this.stopLoad();
 		}
 		
 		/**

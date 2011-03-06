@@ -79,7 +79,7 @@ package
 			
 			// Add elements and events
 			this.addElement(this.abstractText);
-			this.createLoaderImg();
+			this.createLoaderImg();this.createLoaderImg();
 			
 			this.addEventListener(MouseEvent.CLICK, openArticle);
 			this.addEventListener(MouseEvent.MOUSE_OVER, KeepUp);
