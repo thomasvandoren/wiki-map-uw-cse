@@ -1,6 +1,7 @@
 package  
 {
 	import flash.display.Sprite;
+	import flash.text.TextField;
 	import flash.text.TextFormat;
 	import mx.controls.Label;
 	import mx.controls.Text;
@@ -11,6 +12,10 @@ package
 	import spark.components.Group;
 	import spark.primitives.Line;
 	import mx.controls.Alert;
+	
+	import com.greensock.*;
+	import com.greensock.easing.*;
+	
 	/**
 	 * ...
 	 * @author Austin Nakamura
@@ -18,13 +23,12 @@ package
 	//Just a quick splash page, will make it less crap later
 	public class DrawSplash extends Sprite
 	{	
+		private static var isDrawn:Boolean = false;		
 		public static function DrawS(environment:Group):void 
 		{
 			environment.removeAllElements(); //clear everything in env
 			var title:Text = new Text();
-			title.x = (environment.width / 4);
 			title.width = (environment.width / 3)*2;
-			title.y = (environment.height / 4);
 			title.htmlText = "<font size = '64'><b>WikiGraph</b></font><BR/>";
 			title.htmlText += "<font size = '24'>Instructions</font><BR/>";
 			title.htmlText += "<font size = '16'>1. Enter a search term in the search bar</font><BR/>";
@@ -33,6 +37,15 @@ package
 			title.visible = true;
 			environment.visible = true;
 			environment.addElement(title);
+			if (!isDrawn){
+				title.x = -title.width;
+				title.y = -title.height;
+				TweenLite.to(title, 1, { x:environment.width / 4, y:environment.height / 4, delay:1 } );
+			}else {
+				title.x = environment.width / 4;
+				title.y = environment.height / 4;
+			}
+			isDrawn = true;
 		}
 		
 		public static function resize(environment:Group):void {

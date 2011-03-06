@@ -42,7 +42,7 @@ package
 		private static var ArrowHeadLength : Number = 15;
 		
 		// The first animation duration.
-		private static var graphAnimationDuration :  Number = 2;
+		private static var graphAnimationDuration :  Number = 1.5;
 		
 		//tells the program to draw a bunch of nodes in the drawing area
 		public static function DrawG(a:Array, graph:Graph, showAnim : Boolean = true):void 
@@ -464,7 +464,7 @@ package
 			
 			// After the first animation, speed up the animations so that they are not
 			// distracting.
-			DrawGraph.graphAnimationDuration = 0.75;
+			DrawGraph.graphAnimationDuration = 0.85;
 		}
 		
 		/**
