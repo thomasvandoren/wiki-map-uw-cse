@@ -464,15 +464,6 @@ package
 			
 			// After the first animation, speed up the animations so that they are not
 			// distracting.
-			
-			// I do agree that speed up the animations is good so users are not distracting
-			// but for my opinion 0.75 is still too fast which make me don't want to see 
-			// graph when I click the node from 24 nodes to 24 new nodes on graph. 
-			// It is fine if the number of nodes <24 but these cases are rarely happen. 
-			// I do agree that 2s is too long but why we care adding 0.# second?
-			// Also, if we want to speed up like this why we have to do animation?
-			// I don't know how other people feel but for me it doesn't make sense. I just
-			// want to tell you guys my opinion about this. 
 			DrawGraph.graphAnimationDuration = 0.75;
 		}
 		

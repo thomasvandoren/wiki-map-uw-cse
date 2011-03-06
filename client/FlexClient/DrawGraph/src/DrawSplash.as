@@ -22,8 +22,8 @@ package
 		{
 			environment.removeAllElements(); //clear everything in env
 			var title:Text = new Text();
-			title.x = (environment.width / 6);
-			title.width = (environment.width / 8) * 6;
+			title.x = (environment.width / 4);
+			title.width = (environment.width / 3)*2;
 			title.y = (environment.height / 4);
 			title.htmlText = "<font size = '64'><b>WikiGraph</b></font><BR/>";
 			title.htmlText += "<font size = '24'>Instructions</font><BR/>";
@@ -34,6 +34,11 @@ package
 			environment.visible = true;
 			environment.addElement(title);
 		}
+		
+		public static function resize(environment:Group):void {
+			DrawS(environment);
+		}
 	}
+	
 
 }

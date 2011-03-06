@@ -113,7 +113,7 @@
 		#history {background-color: #FF00FF}
 	</fx:Style>
 
-	<s:Group id="graph" height="100%" width="100%" addedToStage="drawSplash(graph, false)">
+	<s:Group id="graph" height="100%" width="100%" y="25" addedToStage="drawSplash(graph, false)">
 	</s:Group>
 	
 	<s:BorderContainer id="toolBar" height="48" width="100%" backgroundColor="0xCCCCDD">

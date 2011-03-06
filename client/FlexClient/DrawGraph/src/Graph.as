@@ -337,6 +337,8 @@ package
 			else if (this.isVisible() && this.isSearch)
 			{
 				this.drawSearch();
+			}else {
+				DrawSplash.resize(graph);
 			}
 		}
 		
