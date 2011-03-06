@@ -41,7 +41,7 @@ if (count($results) > 0) {
     $matchID = $results[0]["page_id"];    
   }
   foreach ($results as $row) {
-    if ($row["page_title"] == $searchQuery) {
+    if (strcasecmp($row["page_title"], $searchQuery) == 0) {
       $hasExactMatchOrAlone = TRUE;
       $matchID = $row["page_id"];
     }
