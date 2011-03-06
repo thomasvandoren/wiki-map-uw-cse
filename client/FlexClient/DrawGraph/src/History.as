@@ -49,12 +49,16 @@ package
 		}
 		
 		/**
-		 * Add a new (term, id) pair to the search records. Only the 10 most recently searched terms will be stored.
+		 * Add a new (term, id) pair to the search records. Only the 10 most recently searched terms will be stored. 
+		 * Duplicates are removed and brought to the top of the list
 		 * 
 		 * @param	term
 		 * @param	id
 		 */
 		public function addRecord(term : String, id : String): void {
+			while (checkDuplicate(id)) {
+				removeRecord(searchIDs.indexOf(id));
+			}
 			if (size >= 10) {
 				searchTerms.pop();
 				searchIDs.pop();
@@ -64,6 +68,17 @@ package
 			searchTerms.unshift(term);
 			searchIDs.unshift(id);
 			size++;
+
+		}
+		
+		public function checkDuplicate(id : String): Boolean {
+			for (var i : int = 0; i < size; i++) {
+				if (searchIDs[i] == id) {
+					trace("###i = " + i + "; dup = " + id);
+					return true;
+				}
+			}
+			return false;
 		}
 		
 		private var firstOne:String;
