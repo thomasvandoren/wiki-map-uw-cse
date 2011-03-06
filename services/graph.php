@@ -70,16 +70,16 @@ print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
   $page = $pages[$id];
   ?>
   <source id="<?= $id ?>" title="<?= htmlspecialchars($page["title"], ENT_QUOTES) ?>" len="<?= $page["len"] ?>" is_disambiguation="<?= $page["is_ambig"] ?>">
-  <?php
+<?php
   if (isset($graph[$id]))
     foreach ($graph[$id] as $dst => $_) {
-      ?>
-      <dest id="<?= $dst ?>"/>
-      <?php
+?>
+    <dest id="<?= $dst ?>"/>
+<?php
     }
-  ?>
+?>
   </source>
-  <?php
+<?php
 }
 ?>
 </graph>

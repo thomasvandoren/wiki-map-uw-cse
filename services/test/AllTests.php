@@ -259,7 +259,10 @@ class AllTests extends PHPUnit_Framework_TestCase
 	$this->assertTrue($id === $src || $id === $dst);
 	
 	// Make sure this link actually exists
-	$this->assertContains(array($src, $dst), AllTests::$links);
+	if ($row['plc_out'] == '1')
+	  $this->assertContains(array($src, $dst), AllTests::$links);
+	if ($row['plc_in'] == '1')
+	  $this->assertContains(array($dst, $src), AllTests::$links);
       }
     }
   }
