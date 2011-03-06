@@ -1,15 +1,18 @@
 <?php
 /*
-WikiGraph
-Copyright (c) 2011
+  WikiGraph
+  Copyright (c) 2011
 
-Author: Rob McClure <mgracecubs@gmail.com>
+  Author: Rob McClure <mgracecubs@gmail.com>
 
-Autocomplete service
+  Autocomplete service
 */
 
-include 'config.php';
-include 'util.php';
+require_once('config.php');
+require_once('util.php');
+
+if (count($argv) == 2)
+  $_REQUEST['q'] = $argv[1];
 
 // Die if no query provided
 if (!isset($_REQUEST["q"])) {
@@ -28,13 +31,13 @@ header('Content-Type:text/xml');
 print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 ?>
 <list phrase="<?= htmlspecialchars($like, ENT_QUOTES) ?>"
- xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
- xsi:noNamespaceSchemaLocation="autocomplete.xsd">
-<?php
-foreach ($results as $row) {
-?>
-	<item id="<?= $row["page_id"] ?>" title="<?= htmlspecialchars($row["page_title"], ENT_QUOTES) ?>"/>
-<?php
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xsi:noNamespaceSchemaLocation="autocomplete.xsd">
+  <?php
+  foreach ($results as $row) {
+  ?>
+  <item id="<?= $row["page_id"] ?>" title="<?= htmlspecialchars($row["page_title"], ENT_QUOTES) ?>"/>
+  <?php
 }
 ?>
 </list>

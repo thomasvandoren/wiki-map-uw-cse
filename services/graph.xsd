@@ -23,6 +23,5 @@
 
   <xs:complexType name="destType">
     <xs:attribute name="id" type="xs:integer" use="required" />
-    <xs:attribute name="str" type="xs:integer" use="required" />
   </xs:complexType>
 </xs:schema>

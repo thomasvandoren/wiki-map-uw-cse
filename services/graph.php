@@ -1,19 +1,19 @@
 <?php
 /*
-WikiGraph
-Copyright (c) 2011
+  WikiGraph
+  Copyright (c) 2011
 
-Author: Rob McClure <mgracecubs@gmail.com>
+  Author: Rob McClure <mgracecubs@gmail.com>
 
-Graph service
-Currently only implements one level of link depth
-
-TODO: This could probably be cleaned up a bit
-      since the format of returned links is much nicer
+  Graph service
+  Currently only implements one level of link depth
 */
 	
-include 'config.php';
-include 'util.php';
+require_once('config.php');
+require_once('util.php');
+
+if (count($argv) == 2)
+  $_REQUEST["id"] = $argv[1];
 
 if (!isset($_REQUEST["id"]) || strlen($_REQUEST["id"]) == 0) {
   error(400, "No query provided.\n");
@@ -26,9 +26,9 @@ $db = new GraphDB($DB_HOST, $DB_USER, $DB_PASS, $DB_NAME);
 $page_id = (int)($_REQUEST["id"]);
 
 if ($page_id === 0)
-{
-  error(400, "Invalid ID ($page_id).\n");
-}
+  {
+    error(400, "Invalid ID ($page_id).\n");
+  }
 
 // Fetch all links with our target page as a source or destination
 // including page info (title, length)
@@ -44,9 +44,7 @@ foreach ($link_data as $link) {
   }
 
   if ((int)($link['plc_in']) == 1) {
-    if (!isset($graph[$dst]))
-      $graph[$dst] = array();
-    $graph[$dst][$page_id] = true;
+    $graph[$dst] = array($page_id => true);
   }
 }
 
@@ -65,30 +63,23 @@ header('Content-Type:text/xml');
 print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 ?>
 <graph center="<?= $page_id ?>"
- xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
- xsi:noNamespaceSchemaLocation="graph.xsd">
-<?php
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xsi:noNamespaceSchemaLocation="graph.xsd">
+  <?php
   foreach ($ids as $id) {
   $page = $pages[$id];
-?>
+  ?>
   <source id="<?= $id ?>" title="<?= htmlspecialchars($page["title"], ENT_QUOTES) ?>" len="<?= $page["len"] ?>" is_disambiguation="<?= $page["is_ambig"] ?>">
-<?php
+  <?php
   if (isset($graph[$id]))
-      foreach ($graph[$id] as $dst => $_) {
-	if (in_array($dst, $ids)) {
-	  // Strength of a link is 1 if unidirectional
-	  // 2 if bidirectional
-	  $str = 1;
-	  if (isset($graph[$dst]) && isset($graph[$dst][$id]))
-	    $str = 2;
-?>
-    <dest id="<?= $dst ?>" str="<?= $str  ?>"/>
-<?php
-	}
-      }
-?>
+    foreach ($graph[$id] as $dst => $_) {
+      ?>
+      <dest id="<?= $dst ?>"/>
+      <?php
+    }
+  ?>
   </source>
-<?php
+  <?php
 }
 ?>
 </graph>

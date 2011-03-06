@@ -1,15 +1,15 @@
 <?php
-  /**
-   * WikiGraph
-   * Copyright (c) 2011
-   *
-   * Author: Thomas Van Doren <thomas.vandoren@gmail.com>
-   *
-   * This class contains all of the services unit tests at this time.
-   * In the future they will likely be factored into other files and
-   * classes.
-   * 
-   */
+/**
+ * WikiGraph
+ * Copyright (c) 2011
+ *
+ * Author: Thomas Van Doren <thomas.vandoren@gmail.com>
+ *
+ * This class contains all of the services unit tests at this time.
+ * In the future they will likely be factored into other files and
+ * classes.
+ * 
+ */
 
 require_once('PHPUnit/Framework.php');
 require_once("config.php");
@@ -21,30 +21,30 @@ class AllTests extends PHPUnit_Framework_TestCase
 {
   // Pages to insert into the test database
   private static $pages = array(
-		      array(1, '"Title"', 0, 0, 100),
-		      array(2, '"Another title"', 0, 0, 200),
-		      array(3, '"Redirect to title"', 1, 0, 10),
-		      array(5, '"WikiGraph"', 0, 0, 300),
-		      array(6, '"WikiGraph Developers"', 0, 0, 100),
-		      array(8, '"WikiGraph (disambiguation)"', 0, 1, 10),
-		      array(9, '"Title 2"', 0, 0, 100)
-		      );
+				array(1, '"Title"', 0, 0, 100),
+				array(2, '"Another title"', 0, 0, 200),
+				array(3, '"Redirect to title"', 1, 0, 10),
+				array(5, '"WikiGraph"', 0, 0, 300),
+				array(6, '"WikiGraph Developers"', 0, 0, 100),
+				array(8, '"WikiGraph (disambiguation)"', 0, 1, 10),
+				array(9, '"Title 2"', 0, 0, 100)
+				);
   // Links to insert into the test database
   private static $links = array(
-		   array(1, 2),
-		   array(1, 5),
-		   array(2, 1),
-		   array(3, 1),
-		   array(5, 6),
-		   array(6, 5),
-		   array(8, 5)
-		   );
+				array(1, 2),
+				array(1, 5),
+				array(2, 1),
+				array(3, 1),
+				array(5, 6),
+				array(6, 5),
+				array(8, 5)
+				);
   // Abstracts to insert into the test database
   private static $abstracts = array(
-		       array(1, '"A page about something"'),
-		       array(5, '"The coolest project ever"'),
-		       array(6, '"People working on the coolest project ever"')
-		       );
+				    array(1, '"A page about something"'),
+				    array(5, '"The coolest project ever"'),
+				    array(6, '"People working on the coolest project ever"')
+				    );
 
   /**
    * Called before tests are run
@@ -423,6 +423,88 @@ class AllTests extends PHPUnit_Framework_TestCase
     }
   }
 
+
+  /**
+   * Test that the output from graph.php
+   * follows our schema
+   */
+  public function testXmlGraph() {
+    foreach (AllTests::$pages as $page) {
+      $id = $page[0];
+      system("php ../graph.php $id | xmllint --noout --schema ../graph.xsd - &> /dev/null", $result);
+      $this->assertEquals($result, 0);
+    }
+  }
+
+  /**
+   * Test that the output from autocomplete.php
+   * follows our schema
+   */
+  public function testXmlAutocomplete() {
+    $titles = array();
+    foreach (AllTests::$pages as $page) {
+      array_push($titles, str_replace('"', "", $page[1]));
+    }
+
+    foreach ($titles as $title) {
+      $len = strlen($title);
+      for ($i = 1; $i < $len; $i++) {
+        $search = substr($title, 0, $i);
+        system("php ../autocomplete.php \"$search\" | xmllint --noout --schema ../autocomplete.xsd - &> /dev/null", $result);
+        $this->assertEquals($result, 0);
+      }
+    }
+  }
+  
+  /**
+   * Test that the output from search.php
+   * follows our schema
+   */
+  public function testXmlSearch() {
+    $titles = array();
+    foreach (AllTests::$pages as $page) {
+      array_push($titles, str_replace('"', "", $page[1]));
+    }
+
+    foreach ($titles as $title) {
+      $len = strlen($title);
+      for ($i = 1; $i < $len; $i++) {
+        $search = substr($title, 0, $i);
+
+	$ans = array();
+	foreach ($titles as $title2) {
+	  $tmp1 = strtolower($search);
+	  $tmp2 = strtolower($title2);
+	  if (strpos($tmp2, $tmp1) === 0) {
+	    array_push($ans, $title2);
+	  }
+	  if ($tmp1 === $tmp2) {
+	    $ans = array();
+	    break;
+	  }
+	}
+
+        if (count($ans) > 1) {
+	  system("php ../search.php \"$search\" | xmllint --noout --schema ../search.xsd - &> /dev/null", $result);
+	  $this->assertEquals($result, 0);
+        }
+        
+      }
+    }
+  }
+  
+  /**
+   * Test that the output from abstract.php
+   * follows our schema
+   */
+  public function testXmlAbstract() {
+    foreach (AllTests::$pages as $page) {
+      $id = $page[0];
+      system("php ../abstract.php $id | xmllint --noout --schema ../abstract.xsd - &> /dev/null", $result);
+      $this->assertEquals($result, 0);
+    }
+  }
+  
   /**
    * @depends testCreation
    *
@@ -433,29 +515,29 @@ class AllTests extends PHPUnit_Framework_TestCase
     $db->close();
   }
 
-    /**
-     * Test that config.php is properly formatted and creates the expected
-     * environment when used in require_once.
-     */
-    public function testRequireConfig()
-    {
-	$this->assertFileExists('config.php');
+  /**
+   * Test that config.php is properly formatted and creates the expected
+   * environment when used in require_once.
+   */
+  public function testRequireConfig()
+  {
+    $this->assertFileExists('config.php');
 	
-	global $DB_HOST, $DB_USER, $DB_PASS, $DB_NAME, $LINK_URL;
+    global $DB_HOST, $DB_USER, $DB_PASS, $DB_NAME, $LINK_URL;
 	
-	// Check that all of the expected variables exist and are not null
+    // Check that all of the expected variables exist and are not null
 
-	$this->assertTrue(isset($DB_HOST));
-	$this->assertTrue(isset($DB_USER));
-	$this->assertTrue(isset($DB_PASS));
-	$this->assertTrue(isset($DB_NAME));
-	$this->assertTrue(isset($LINK_URL));
+    $this->assertTrue(isset($DB_HOST));
+    $this->assertTrue(isset($DB_USER));
+    $this->assertTrue(isset($DB_PASS));
+    $this->assertTrue(isset($DB_NAME));
+    $this->assertTrue(isset($LINK_URL));
 	
-	$this->assertNotNull($DB_HOST);
-	$this->assertNotNull($DB_USER);
-	$this->assertNotNull($DB_PASS);
-	$this->assertNotNull($DB_NAME);
-	$this->assertNotNull($LINK_URL);
-    }
+    $this->assertNotNull($DB_HOST);
+    $this->assertNotNull($DB_USER);
+    $this->assertNotNull($DB_PASS);
+    $this->assertNotNull($DB_NAME);
+    $this->assertNotNull($LINK_URL);
+  }
 }
 ?>
