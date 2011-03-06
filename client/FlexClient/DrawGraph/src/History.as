@@ -112,7 +112,8 @@ package
 		private function doSearch(event : Event) : void {
 			var search : String = searchIDs[list.selectedIndex] as String;
 			// Runs removeRecord & draw graph if the selected title is not the current
-			if(list.selectedIndex!=0){
+			if (!graph.isVisible() || list.selectedIndex != 0)
+			{
 				removeRecord(int(list.selectedIndex));
 				graph.getGraph(search);
 			}
