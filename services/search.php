@@ -38,7 +38,7 @@ $exactResults =  $db->get_search_results_exact($searchQuery);
 if (count($exactResults) == 1) {
   header("Location: ../graph/" . $exactResults[0]["page_id"] . "/");    
 } else if (count($exactResults) > 1) {
-  return_search_XML($exactResults);
+  return_search_XML($searchQuery, $exactResults);
 } else {
   $likeResults = $db->get_search_results_like($searchQuery);
   $soundexResults = $db->get_search_results_soundex($searchQuery);
@@ -62,13 +62,13 @@ if (count($exactResults) == 1) {
   } 
 
   if (count($combinedResults) >= 1) {
-    return_search_XML($combinedResults);   
+    return_search_XML($searchQuery, $combinedResults);   
   } else {
     error(404, "Query not found ($searchQuery)\n");
   }
 }
 
-function return_search_XML($array) {
+function return_search_XML($searchQuery, $array) {
   header('Content-Type:text/xml');
   print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 
@@ -77,7 +77,7 @@ function return_search_XML($array) {
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
     xsi:noNamespaceSchemaLocation="search.xsd">
   <?php			
-     foreach ($results as $row) {
+     foreach ($array as $row) {
   ?>	
        <item id="<?= $row["page_id"] ?>" title="<?= 
           htmlspecialchars($row["page_title"], ENT_QUOTES) ?>"/>	
