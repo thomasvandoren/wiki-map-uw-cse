@@ -68,7 +68,7 @@ package
 				
 				//the center node is created first, since it always belongs in the middle
 				var w : Number = environment.width / 6;
-				var h : Number = environment.width / 16;
+				var h : Number = environment.height / 9;
 				
 				centerNode = makeNode(
 					graph, 
@@ -89,8 +89,8 @@ package
 				// draw lines and nodes
 				
 				// default node width, height, and start position
-				w = environment.width / 8;
-				h = environment.height / 24;
+				w = environment.width / 7;
+				h = environment.height / 21;
 				var x : Number = (environment.width / 2) - (w / 2);
 				var y : Number = (environment.height / 2) - (h / 2);
 				
@@ -161,10 +161,14 @@ package
 			if (a.length > 24) {
 				i--;
 			}
-			if (i > 0 && i < 6 || i > 12 && i < 18) {
+			if (i == 1 || i == 13) {
 				return -0.05;
-			}else if (i > 6 && i < 12 || i > 18 && i < 24) {
+			}else if (i == 11 || i == 23) {
 				return 0.05;
+			}else if (i > 1 && i < 6 || i > 13 && i < 18) {
+				return -0.1;
+			}else if (i > 6 && i < 11 || i > 18 && i < 23) {
+				return 0.1;
 			}else {
 				return 0;
 			}
