@@ -1,0 +1,124 @@
+#!/bin/bash
+#
+# WikiGraph
+# Copyright (c) 2011
+#
+# Author: Thomas Van Doren <thomas.vandoren@gmail.com>
+#
+# This script allows a user to easily deploy a build to one of the wikigraph live endpoints.
+#
+
+C=$#
+P=$1
+B=$2
+N=$3
+
+# The possible build targets, and their destination folders,
+# are given in the following arrays
+targets=( Test-Services Test-FlashClient Services FlashClient )
+folders=( test-api      test             api      graph       )
+
+# These paths should be changed to fit the system
+WGROOT="/projects/instr/cubist/11wi/cse403/WikiMap-M/proj"
+BUILDROOT="/projects/instr/cubist/11wi/cse403/WikiMap-M/builds"
+
+
+BUILDBIN="$BUILDROOT/bin"
+
+echo "WikiGraph Deployment"
+echo "Copyright (c) 2011"
+echo ""
+
+if [[ $P == "suggest" ]]
+then
+    if [[ $B == "" ]]
+    then
+	B="all"
+    fi
+    echo "suggest: $B"
+    if [[ $B = "all" ]]
+    then
+	for target in ${targets[@]}
+	do
+	    ls -tr $BUILDROOT/WikiGraph-$target* | tail -n 1
+	done
+	NUM=`ls -tr $BUILDROOT/WikiGraph-${targets[0]}* | tail -n 1 | grep -o "[0-9]\+"`
+	echo
+	echo "Try building one with:"
+	echo "./deploy -b $NUM ${targets[0]}"
+	exit 0
+    else
+	for target in ${targets[@]}
+	do
+	    if [[ $2 == $target ]]
+	    then
+		ls -tr $BUILDROOT/WikiGraph-$2* | tail -n 3 | tac
+		NUM=`ls -tr $BUILDROOT/WikiGraph-$2* | tail -n 1 | grep -o "[0-9]\+"`
+		echo
+		echo "Try building with:"
+		echo "./deploy -b $NUM $2"
+		exit 0
+	    fi
+	done
+	echo
+	echo "No target found. Try one of:"
+	echo "${targets[@]}"
+	echo
+	echo "For example:"
+	echo "./deploy suggest ${targets[0]}"
+	exit 1
+    fi
+elif [[ $C -eq 3 ]]
+then
+    BUILDPKG="WikiGraph-$N/hudson-WikiGraph-$N-$B.tar.gz"
+
+    BUILDPKGSRC="$BUILDROOT/$BUILDPKG"
+    BUILDPKGDST="$BUILDBIN/$BUILDPKG"
+
+    DST=""
+
+    for (( i = 0; i < ${#targets[@]}; i++))
+    do
+	if [[ $N == ${targets[$i]} ]]
+	then
+	    if [ ! -e $BUILDPKGSRC ]
+	    then
+		echo "Invalid build: $B"
+		exit 1
+	    fi
+	    DST=${folders[$i]}
+	fi
+    done
+
+    if [[ $DST == "" ]]
+    then
+	echo "Invalid project name: $N"
+	exit 1
+    fi
+
+    echo "deploy build: #$B     project: $N to: /$DST "
+    DST="$WGROOT/$DST"
+
+    #
+    # Special Hudson version will just run the deployment. No need to ssh.
+    #
+
+    cp $BUILDPKGSRC $BUILDPKGDST ; tar -xzvf $BUILDPKGDST -C $BUILDBIN/WikiGraph-$N ; rm $BUILDPKGDST ; cp $BUILDBIN/WikiGraph-$N/*.* $DST/ ; rm -f $BUILDBIN/WikiGraph-$N/*.*
+    echo "status: $?"
+
+else
+    echo "Usage: deploy -b <build-number> <Project-Name>"
+    echo "       deploy suggest <Project-Name>"
+    echo ""
+    echo "  <Project-Name>: ${targets[@]}"
+    echo ""
+    echo "  In the first form it deploys the given project to the appropriate location."
+    echo ""
+    echo "  In the second form it suggests the most recent builds for each project"
+    echo "  For example:"
+    echo "    deploy suggest Test-Services # returns the newest build for WikiGraph-Test-Services"
+    echo "    deploy -b 28 Test-Services   # will deploy hudson-WikiGraph-Test-Services-28.tar.gz"
+    exit 1
+fi
+
+exit 0
