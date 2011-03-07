@@ -75,7 +75,7 @@ package
 			this.addElement(label);
 			
 			//style the node
-			this.label.setStyle("textAlign", "center")
+			this.label.setStyle("textAlign", "center");
 			this.setStyle("backgroundColor", 0xEEEEEE);
 			this.setStyle("borderWeight", 2);
 			this.setStyle("borderColor", 0xBBBBBB);

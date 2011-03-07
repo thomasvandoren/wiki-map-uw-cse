@@ -108,7 +108,6 @@ package
 						
 						if (!showAnim)
 						{
-							trace("length: " + a.length);
 							if (a.length == 25) {
 								var offset:Number = getOffset(a, newNode, i);
 								newNode.x = newNode.getX(0.40, newNode, offset);
@@ -156,12 +155,12 @@ package
 			if (a.length > 24) {
 				i--;
 			}
-			if (i > 1 && i < 6 || i > 11 && i < 18) {
-				trace("pass + " + i);
+			if (i > 0 && i < 6 || i > 12 && i < 18) {
 				return -0.05;
-			}else if (i > 6 && i < 11 || i > 18 && i < 23) {
+			}else if (i > 6 && i < 12 || i > 18 && i < 24) {
 				return 0.05;
 			}else {
+				trace(i);
 				return 0;
 			}
 		}
@@ -462,15 +461,15 @@ package
 			
 			for (var i:Number = 0; i < nodes.length; i++) {
 				var node:Node = nodes[i];
-				
+				var offset:Number = getOffset(nodes, node, i);
 				if ( i == nodes.length - 1)
 				{
 					TweenLite.to(
 						node, 
 						DrawGraph.graphAnimationDuration, 
 						{ 
-							x: node.getX(0.40, node, 0), 
-							y: node.getY(0.40, node, 0), 
+							x: node.getX(0.40, node, offset), 
+							y: node.getY(0.40, node, offset), 
 							ease: Back.easeInOut,
 							onComplete: lastFn
 						});
@@ -478,7 +477,6 @@ package
 				else
 				{
 					if (nodes.length == 24) {
-						var offset:Number = getOffset(nodes, node, i);
 						tween(node, offset);
 					}else {
 						tween(node, 0);
