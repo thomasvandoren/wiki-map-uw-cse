@@ -21,6 +21,8 @@ package
 		private var list : ComboBox;
 		private var graph : Graph;
 		
+		private var firstOne:String;
+		
 		/**
 		 * Construct a new graph that knows about the graph and its environment.
 		 * Set the graph to be located to the left of the autocomplete bar
@@ -42,19 +44,27 @@ package
 			list.y = 10;
 			list.setStyle("fontSize", 18);
 			list.dataProvider = searchTerms;
-			list.text = "Search History...";
-			list.addEventListener("change", doSearch);
+			
+			// this keeps the selectedIndex equal to -1 so that clicking the first item
+			// will fire the change event (it won't if list.text is used).
+			list.prompt = "Search History...";
+			
+			list.addEventListener(Event.CHANGE, doSearch);
 
 			environment.addElement(list);
 		}
 		
 		/**
-		 * Add a new (term, id) pair to the search records. Only the 10 most recently searched terms will be stored.
+		 * Add a new (term, id) pair to the search records. Only the 10 most recently searched terms will be stored. 
+		 * Duplicates are removed and brought to the top of the list
 		 * 
 		 * @param	term
 		 * @param	id
 		 */
 		public function addRecord(term : String, id : String): void {
+			while (checkDuplicate(id)) {
+				removeRecord(searchIDs.indexOf(id));
+			}
 			if (size >= 10) {
 				searchTerms.pop();
 				searchIDs.pop();
@@ -64,9 +74,18 @@ package
 			searchTerms.unshift(term);
 			searchIDs.unshift(id);
 			size++;
+
 		}
 		
-		private var firstOne:String;
+		public function checkDuplicate(id : String): Boolean {
+			for (var i : int = 0; i < size; i++) {
+				if (searchIDs[i] == id) {
+					trace("###i = " + i + "; dup = " + id);
+					return true;
+				}
+			}
+			return false;
+		}
 		
 		/**
 		 * 
@@ -97,7 +116,11 @@ package
 		private function doSearch(event : Event) : void {
 			var search : String = searchIDs[list.selectedIndex] as String;
 			// Runs removeRecord & draw graph if the selected title is not the current
-			if(list.selectedIndex!=0){
+			trace(graph.isVisible().toString() + " " + graph.isSearch.toString() + " " + (list.selectedIndex != 0).toString());
+			if (!graph.isVisible() ||
+				graph.isSearch || 
+				list.selectedIndex != 0)
+			{
 				removeRecord(int(list.selectedIndex));
 				graph.getGraph(search);
 			}

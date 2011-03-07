@@ -113,7 +113,7 @@
 		#history {background-color: #FF00FF}
 	</fx:Style>
 
-	<s:Group id="graph" height="100%" width="100%" addedToStage="drawSplash(graph, false)">
+	<s:Group id="graph" height="100%" width="100%" y="25" addedToStage="drawSplash(graph, false)">
 	</s:Group>
 	
 	<s:BorderContainer id="toolBar" height="48" width="100%" backgroundColor="0xCCCCDD">
@@ -129,13 +129,19 @@
 			<s:Group id="auto" height="100%" width="100%">
 			</s:Group>
 		</s:Group>
-
+		
 		<s:BorderContainer id="searchButton" y="8" width="100" height="32" backgroundColor="0xEEEEEE" cornerRadius="16" borderWeight="2" 
 		borderColor="0xBBBBBB" mouseOver="buttonHover(searchButton)" mouseOut="buttonAway(searchButton)">
 			<mx:Label id="searchButtonText" text="Search" color="0x444444" width="100" height="32" fontSize="18" textAlign="center" y="2"></mx:Label>
 		</s:BorderContainer>
 	</s:BorderContainer>
 	
-	
+	<s:Group id="loading">
+			<s:Group id="loadingImg" y ="50">
+			</s:Group>
+			
+			<mx:Text id="loadingText" y = "50" x="16">
+			</mx:Text>
+	</s:Group>
 	
 </s:Application>

@@ -1,18 +1,21 @@
 <?php
 /*
-WikiGraph
-Copyright (c) 2011
+  WikiGraph
+  Copyright (c) 2011
 
-Author: Rob McClure <mgracecubs@gmail.com>
+  Author: Rob McClure <mgracecubs@gmail.com>
 
-Abstract service
-Takes a page id (id)
-Returns the title, abstract, and link
+  Abstract service
+  Takes a page id (id)
+  Returns the title, abstract, and link
 
 */
 
-include 'config.php';
-include 'util.php';
+require_once('config.php');
+require_once('util.php');
+
+if  (count($argv) == 2)
+  $_REQUEST['id'] = $argv[1];
 
 // Die if no ID provided
 if (!isset($_REQUEST["id"])) {
@@ -63,17 +66,17 @@ if (count($abstract_results) == 1) {
 if (count($page_results) == 1) {
   header('Content-Type:text/xml');
   print("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-?>
-<info id="<?= $page_id ?>"
- xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
- xsi:noNamespaceSchemaLocation="abstract.xsd">
-  <title><?= htmlspecialchars($page_results[0]["page_title"], ENT_QUOTES) ?></title>
-  <abstract><?= htmlspecialchars($abstract_text, ENT_QUOTES) ?></abstract>
-  <link><?= $LINK_URL . urlencode(str_replace(" ", "_", $page_results[0]["page_title"])) ?></link>
-</info>
+  ?>
+  <info id="<?= $page_id ?>"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+     xsi:noNamespaceSchemaLocation="abstract.xsd">
+     <title><?= htmlspecialchars($page_results[0]["page_title"], ENT_QUOTES) ?></title>
+     <abstract><?= htmlspecialchars($abstract_text, ENT_QUOTES) ?></abstract>
+     <link><?= $LINK_URL . urlencode(str_replace(" ", "_", $page_results[0]["page_title"])) ?></link>
+     </info>
 
-<?php
-} else {
+     <?php
+     } else {
   error(404, "Page not found ($page_id)\n");
 }
 ?>

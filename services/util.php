@@ -110,21 +110,47 @@ class GraphDB {
     $results = $this->query($q);
     
     if (count($results) == 0) {
+      // Get a healthy mix of incoming and outgoing links
       $q = "SELECT pl_from, pl_to FROM pagelinks WHERE pl_from = $id LIMIT 24";
       $tmp = $this->query($q);
+      $q = "SELECT pl_from, pl_to FROM pagelinks WHERE pl_to = $id LIMIT 24";
+      $tmp2 = $this->query($q);
+
+      $tmp = array_merge($tmp, $tmp2);
 
       // If any links exist, start the caching
       if (count($tmp) > 0)
 	exec("php cache_link.php $id > /dev/null 2>&1 &");
 
-      $results = array();
+      $tmp_results = array();
       foreach ($tmp as $row) {
-	$to_push = array('plc_from' => $id,
-			 'plc_to' => (int)($row['pl_to']),
-			 'plc_out' => 1,
-			 'plc_in' => 0
-			 );
-	array_push($results, $to_push);
+	$to = (int)($row['pl_to']);
+	$from = (int)($row['pl_from']);
+	if ($from == $id) {
+	  if (!isset($tmp_results[$to]))
+	    $tmp_results[$to] = array('plc_from' => $id,
+				      'plc_to' => $to,
+				      'plc_out' => 0,
+				      'plc_in' => 0
+				      );
+	  $tmp_results[$to]['plc_out'] = 1;
+	} else if ($to == $id) {
+	  if (!isset($tmp_results[$from]))
+	    $tmp_results[$from] = array('plc_from' => $id,
+				      'plc_to' => $from,
+				      'plc_out' => 0,
+				      'plc_in' => 0
+				      );
+	  $tmp_results[$from]['plc_in'] = 1;
+	}
+      }
+
+      $results = array();
+      $count = 0;
+      foreach ($tmp_results as $i => $link) {
+	array_push($results, $link);
+	if (++$count == 24)
+	  break;
       }
     }
 
