@@ -60,8 +60,12 @@ if (count($exactResults) == 1) {
       break;
     }
   } 
-  
-  return_search_XML($combinedResults);
+
+  if (count($combinedResults) >= 1) {
+    return_search_XML($combinedResults);   
+  } else {
+    error(404, "Query not found ($searchQuery)\n");
+  }
 }
 
 function return_search_XML($array) {
