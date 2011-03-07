@@ -123,6 +123,7 @@ package
 		public function drawSearch() : void
 		{
 			this.clearGraph();
+			DrawGraph.clearData();
 			
 			var displayMax:int = 48;
 			

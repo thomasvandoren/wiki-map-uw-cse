@@ -68,7 +68,7 @@ package
 				
 				//the center node is created first, since it always belongs in the middle
 				var w : Number = environment.width / 6;
-				var h : Number = environment.width / 13;
+				var h : Number = environment.width / 16;
 				
 				centerNode = makeNode(
 					graph, 
@@ -434,10 +434,18 @@ package
 			
 			node.label.width = node.width;
 			node.label.height = node.height;
-			node.label.y = node.height / 5;
 			
 			node.setStyle("cornerRadius", node.height / 2);
-			node.label.setStyle("fontSize", node.height / 3);
+			
+			if (index != 0 || node.title.length < 12) { //settings for normal nodes or a center node with a low length
+				node.label.y = node.height / 5;
+				node.label.setStyle("fontSize", node.height / 3);
+				node.label.setStyle("fontWeight", "normal");
+			} else { //settings for the center nodes with long lengths
+				node.label.y = node.height / 3.5;
+				node.label.setStyle("fontSize", node.height / 5);
+				node.label.setStyle("fontWeight", "bold");
+			}
 			
 			node.x = x;
 			node.y = y;
@@ -513,28 +521,39 @@ package
 		}
 		
 		/**
+		 * wipe the nodes & lines arrays, as they interfere with the close graph animation
+		 */
+		public static function clearData():void {
+			nodes = null;
+			lines = null;
+		}
+		
+		/**
 		 * moves all the nodes around to center node
 		 */
 		public static function closeGraph():void {
+			// only do this if we're using a graph screen, doesn't work with search
+			if(lines != null && nodes != null) {
 			trace("DrawGraph.closeGraph");
 			
 			// remove lines
 			for (var j:Number = 0; j < lines.length; j++) {
-				environment.removeElement(lines[j]);
-			}
-			
-			// moves nodes to center
-			for (var i:Number = 0; i < nodes.length; i++) {
-				var node:Node = nodes[i];
+					environment.removeElement(lines[j]);
+				}
 				
-					TweenLite.to(
-						node, 
-						0.5, 
-						{ 
-							x: (environment.width / 2) - (node.width / 2), 
-							y: (environment.height / 2) - (node.height / 2), 
-							ease: Linear.easeInOut
-						});
+				// moves nodes to center
+				for (var i:Number = 0; i < nodes.length; i++) {
+					var node:Node = nodes[i];
+					
+						TweenLite.to(
+							node, 
+							0.5, 
+							{ 
+								x: (environment.width / 2) - (node.width / 2), 
+								y: (environment.height / 2) - (node.height / 2), 
+								ease: Linear.easeInOut
+							});
+				}
 			}
 		}
 	}

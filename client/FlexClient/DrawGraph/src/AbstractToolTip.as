@@ -60,6 +60,7 @@ package
 		public function AbstractToolTip(environment:Group, articleTitle:String, articleID:String) 
 		{
 			this.title = articleTitle;
+			this.setStyle("fontSize", 18);
 			
 			// Make the tooltip slightly transparent.
 			this.alpha = 0.9;
@@ -76,6 +77,7 @@ package
 			abstractText = new Text();
 			abstractText.width = this.width;
 			abstractText.selectable = false;
+			abstractText.setStyle("fontSize", 16);
 			
 			// Add elements and events
 			this.addElement(this.abstractText);

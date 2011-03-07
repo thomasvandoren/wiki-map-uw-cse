@@ -242,6 +242,13 @@ package
 		
 		/**
 		 * Returns X position of this graph's node
+		 * To be more specific, first the angle is calculated by taking the node's index and multiplying it by
+		 * a predetermined angle, and after adding on an offset value, the cosine of this is calculated, which
+		 * will determine where relative to the center it should be created. Next, this value is multiplied by
+		 * the width of the environment * a provided ratio in order to scale it accordingly. Next, width/2 is
+		 * used to position the x value relative to the center. Finally, obj.width/2 is there because cordinates
+		 * refer to the top-left position of the object, and since our object has width, we need to position that
+		 * object so that its center coresponds to our calculated position.
 		 * 
 		 * @param	ratio
 		 * @param	obj
@@ -253,7 +260,13 @@ package
 		
 		/**
 		 * Returns Y position of this graph's node
-		 * 
+		 * To be more specific, first the angle is calculated by taking the node's index and multiplying it by
+		 * a predetermined angle, and after adding on an offset value, the sine of this is calculated, which
+		 * will determine where relative to the center it should be created. Next, this value is multiplied by
+		 * the height of the environment * a provided ratio in order to scale it accordingly. Next, height/2 is
+		 * used to position the y value relative to the center. Finally, obj.height/2 is there because cordinates
+		 * refer to the top-left position of the object, and since our object has width, we need to position that
+		 * object so that its center coresponds to our calculated position.
 		 * @param	ratio
 		 * @param	obj
 		 * @return
