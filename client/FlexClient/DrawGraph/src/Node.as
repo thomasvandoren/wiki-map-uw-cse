@@ -38,6 +38,7 @@ package
 		private var clickTimer : Timer;
 		private var lockTimer : Timer;
 		private var locked : Boolean = false;
+		public var isCenterNode: Boolean = false;
 		
 		/**
 		 * Construct a new node. The environment it's created in must be specified
@@ -135,9 +136,11 @@ package
 		 */
 		private function getGraph(event:MouseEvent):void
 		{
-			clickTimer = new Timer(500, 1);
-			clickTimer.addEventListener(TimerEvent.TIMER_COMPLETE, doGetGraph);
-			clickTimer.start();
+			if(!isCenterNode){
+				clickTimer = new Timer(500, 1);
+				clickTimer.addEventListener(TimerEvent.TIMER_COMPLETE, doGetGraph);
+				clickTimer.start();
+			}
 		}
 		
 		/**

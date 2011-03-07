@@ -81,7 +81,8 @@ package
 					w,
 					h,
 					(environment.width / 2) - (w / 2),
-					(environment.height / 2) - (h / 2));
+					(environment.height / 2) - (h / 2),
+					true);
 					
 				nodes = new Array();
 				lines = new Array();
@@ -110,7 +111,8 @@ package
 							w,
 							h,
 							x,
-							y);
+							y,
+							false);
 						
 						if (!showAnim)
 						{
@@ -416,7 +418,7 @@ package
 			width : Number,
 			height : Number,
 			x : Number,
-			y : Number) : Node 
+			y : Number,isCenterNode:Boolean) : Node 
 		{
 			var node:Node = new Node(graph, j, index); 
 			
@@ -424,6 +426,7 @@ package
 			node.label.text = title;
 			node.title = title;
 			node.is_disambiguation = isDisambiguation;
+			node.isCenterNode = isCenterNode;
 			
 			if (!isDisambiguation) {
 				node.setStyle("color", 0x444444);
