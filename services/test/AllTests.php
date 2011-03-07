@@ -72,7 +72,8 @@ class AllTests extends PHPUnit_Framework_TestCase
       $q = "INSERT INTO page VALUES(" . implode(",", $page) . ")";
       mysql_query($q);
     }
-
+    mysql_query("ALTER TABLE page ADD page_title_soundex VARCHAR(4)");
+    mysql_query("UPDATE page SET page_title_soundex=LEFT(SOUNDEX(page_title),4)");
     // Init pagelinks table
     $q = "CREATE TABLE pagelinks ("
       .  "  pl_from INT(8),"
