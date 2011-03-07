@@ -321,11 +321,11 @@ class AllTests extends PHPUnit_Framework_TestCase
   /**
    * @depends testCreation
    *
-   * Tests the functionality of search queries
+   * Tests the functionality of like search queries
    *
    * Currently, this is exactly the same as autocorrect
    */
-  public function testSearch($db) {
+  public function testLikeSearch($db) {
     $titles = array();
     foreach (AllTests::$pages as $page) {
       array_push($titles, str_replace('"', "", $page[1]));
@@ -348,7 +348,7 @@ class AllTests extends PHPUnit_Framework_TestCase
 	  }
 	}
 
-	$arr = $db->get_search_results($search);
+	$arr = $db->get_search_results_like($search);
 	$this->assertEquals(count($arr), count($ans));
 	foreach ($arr as $row) {
 	  $this->assertArrayHasKey('page_title', $row);
@@ -363,7 +363,7 @@ class AllTests extends PHPUnit_Framework_TestCase
     $badstrs = array("Cat'; SELECT COUNT(*) FROM page;", "adkjfalkdjflakdf", "012345678910");
     foreach ($badstrs as $str) {
       $str = $db->escape($str);
-      $arr = $db->get_search_results($str);
+      $arr = $db->get_search_results_like($str);
       $this->assertEquals(count($arr), 0);
     } 
   }
