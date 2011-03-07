@@ -5,6 +5,7 @@ Copyright (c) 2011
 
 Author: Thomas Van Doren <thomas.vandoren@gmail.com>
         Rob McClure <mgracecubs@gmail.com>
+        Jeremy Lenz <no.jeremy1212@gmail.com> (just minor editing)
 
 This page contains common functions and classes
 in the WikiGraph services.
@@ -19,7 +20,9 @@ Classes in this file:
     get_page_info($ids)
     get_page_links($id)
     get_abstract($id)
-    get_search_results($like)
+    get_search_results_exact($like)
+    get_search_results_like($like)
+    get_search_results_soundex($like)
     get_autocomplete($like)
 
 */
@@ -160,11 +163,32 @@ class GraphDB {
   }
 
   /**
-   * Returns possible matches from a search
+   * Returns possible exact matches from a search
    * Takes the string to search for
    */
-  public function get_search_results($like) {
-    $q =  "SELECT page_id, page_title FROM page WHERE page_title LIKE '$like%' LIMIT 24";
+  public function get_search_results_exact($like) {
+    $q =  "SELECT page_id, page_title FROM page WHERE page_title = '$like' 
+LIMIT 150";
+    return $this->query($q);
+  }
+
+  /**
+   * Returns possible like matches from a search
+   * Takes the string to search for
+   */
+  public function get_search_results_like($like) {
+    $q =  "SELECT page_id, page_title FROM page WHERE page_title LIKE 
+'$like%' LIMIT 150";
+    return $this->query($q);
+  }
+
+  /**
+   * Returns possible soundex matches from a search
+   * Takes the string to search for
+   */
+  public function get_search_results_soundex($like) {
+    $q =  "SELECT page_id, page_title FROM page WHERE page_title_soundex = 
+LEFT(SOUNDEX('$like'),4) LIMIT 150";
     return $this->query($q);
   }
 
