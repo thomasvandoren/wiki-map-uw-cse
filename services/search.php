@@ -46,7 +46,7 @@ if (count($exactResults) == 1) {
   $counter = 0;
   
   foreach ($likeResults as $element) {
-    $combinedResults[counter] = $element;
+    $combinedResults[$counter] = $element;
     $counter++;
     if ($counter >= 149) {
       break;
@@ -54,7 +54,7 @@ if (count($exactResults) == 1) {
   }
 
   foreach ($soundexResults as $element) {
-    $combinedResults[counter] = $element;
+    $combinedResults[$counter] = $element;
     $counter++;
     if ($counter >= 149) {
       break;
