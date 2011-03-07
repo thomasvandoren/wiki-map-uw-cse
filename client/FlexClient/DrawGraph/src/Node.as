@@ -150,6 +150,8 @@ package
 			if (!this.locked)
 			{
 				graph.getGraph(id);
+				// move nodes around to center, doing this while loading
+				DrawGraph.closeGraph();
 			}
 		}
 		

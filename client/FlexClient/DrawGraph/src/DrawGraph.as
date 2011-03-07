@@ -35,6 +35,11 @@ package
 		
 		private static var j:Number;
 		
+		private static var nodes:Array;
+		private static var centerNode:Node;
+		private static var environment:Group;
+		private static var lines:Array;
+		
 		/**
 		 * Adjust these parameters to change the size and shape of the arrow heads.
 		 */
@@ -48,7 +53,7 @@ package
 		public static function DrawG(a:Array, graph:Graph, showAnim : Boolean = true):void 
 		{
 			ToolTipManager.enabled = false;
-			var environment : Group = graph.returnGraph();
+			environment = graph.returnGraph();
 			
 			if (a.length > 0) {
 				environment.removeAllElements(); //clear the previous graph
@@ -65,7 +70,7 @@ package
 				var w : Number = environment.width / 6;
 				var h : Number = environment.width / 13;
 				
-				var centerNode : Node = makeNode(
+				centerNode = makeNode(
 					graph, 
 					j, 
 					0, 
@@ -78,7 +83,8 @@ package
 					(environment.width / 2) - (w / 2),
 					(environment.height / 2) - (h / 2));
 					
-				var nodes:Array = new Array();
+				nodes = new Array();
+				lines = new Array();
 				
 				// draw lines and nodes
 				
@@ -128,7 +134,7 @@ package
 				// animate nodes to the correct position
 				if (showAnim)
 				{
-					openGraph(nodes, centerNode, environment);
+					openGraph();
 				}
 				
 				// If no animation, just draw the lines.
@@ -160,7 +166,6 @@ package
 			}else if (i > 6 && i < 12 || i > 18 && i < 24) {
 				return 0.05;
 			}else {
-				trace(i);
 				return 0;
 			}
 		}
@@ -234,6 +239,7 @@ package
 			}
 			
 			environment.addElement(newLine);
+			lines.push(newLine);
 		}
 		
 		/**
@@ -452,7 +458,7 @@ package
 		 * @param	nodes
 		 * @param	environment
 		 */
-		private static function openGraph(nodes:Array, centerNode : Node, environment:Group):void {
+		private static function openGraph():void {
 			trace("DrawGraph.openGraph");
 			
 			var lastFn : Function = function () : void {
@@ -486,7 +492,7 @@ package
 			
 			// After the first animation, speed up the animations so that they are not
 			// distracting.
-			DrawGraph.graphAnimationDuration = 1;
+			DrawGraph.graphAnimationDuration = 0.85;
 		}
 		
 		/**
@@ -504,6 +510,32 @@ package
 							y: node.getY(0.40, node, offset), 
 							ease: Back.easeInOut
 						});
+		}
+		
+		/**
+		 * moves all the nodes around to center node
+		 */
+		public static function closeGraph():void {
+			trace("DrawGraph.closeGraph");
+			
+			// remove lines
+			for (var j:Number = 0; j < lines.length; j++) {
+				environment.removeElement(lines[j]);
+			}
+			
+			// moves nodes to center
+			for (var i:Number = 0; i < nodes.length; i++) {
+				var node:Node = nodes[i];
+				
+					TweenLite.to(
+						node, 
+						0.5, 
+						{ 
+							x: (environment.width / 2) - (node.width / 2), 
+							y: (environment.height / 2) - (node.height / 2), 
+							ease: Linear.easeInOut
+						});
+			}
 		}
 	}
 	
