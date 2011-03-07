@@ -57,6 +57,7 @@ class AllTests extends PHPUnit_Framework_TestCase
     $db = mysql_connect($DB_HOST, $DB_USER, $DB_PASS);
     mysql_select_db($DB_NAME);
 
+    mysql_query("DROP TABLE IF EXISTS page, pagelinks, pagelinks_cache, abstract");
     // Init page table
     $q = "CREATE TABLE page ("
       .  "  page_id INT(8),"
@@ -476,13 +477,14 @@ class AllTests extends PHPUnit_Framework_TestCase
         $search = substr($title, 0, $i);
 
 	$ans = array();
+	$tmp1 = strtolower($search);
 	foreach ($titles as $title2) {
-	  $tmp1 = strtolower($search);
 	  $tmp2 = strtolower($title2);
 	  if (strpos($tmp2, $tmp1) === 0) {
 	    array_push($ans, $title2);
 	  }
-	  if ($tmp1 === $tmp2) {
+	  // Check for exact match, excluding whitespace
+	  if (trim($tmp1) == trim($tmp2)) {
 	    $ans = array();
 	    break;
 	  }
@@ -490,7 +492,7 @@ class AllTests extends PHPUnit_Framework_TestCase
 
         if (count($ans) > 1) {
 	  system("php ../search.php \"$search\" | xmllint --noout --schema ../search.xsd - &> /dev/null", $result);
-	  $this->assertEquals($result, 0);
+	  $this->assertEquals($result, 0, $search);
         }
         
       }
