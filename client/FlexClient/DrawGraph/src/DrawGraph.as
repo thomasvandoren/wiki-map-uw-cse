@@ -480,9 +480,14 @@ package
 				DrawGraph.drawLines(nodes, centerNode, environment)
 			};
 			
+			var offset:Number;
 			for (var i:Number = 0; i < nodes.length; i++) {
 				var node:Node = nodes[i];
-				var offset:Number = getOffset(nodes, node, i);
+				if(nodes.length == 24){
+					offset = getOffset(nodes, node, i);
+				}else {
+					offset = 0;
+				}
 				if ( i == nodes.length - 1)
 				{
 					TweenLite.to(
@@ -497,11 +502,7 @@ package
 				}
 				else
 				{
-					if (nodes.length == 24) {
-						tween(node, offset);
-					}else {
-						tween(node, 0);
-					}
+					tween(node, offset);
 				}
 			}
 			
