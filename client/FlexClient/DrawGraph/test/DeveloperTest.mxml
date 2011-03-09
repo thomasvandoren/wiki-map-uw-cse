@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+               xmlns:s="library://ns.adobe.com/flex/spark" 
+               xmlns:mx="library://ns.adobe.com/flex/halo"
+			   xmlns:adobe="http://www.adobe.com/2009/flexUnitUIRunner"
+				creationComplete="runTests()">
+	
+	<fx:Script>
+		<![CDATA[
+		/**
+		 * This class is configured to run the unit tests on a local
+		 * developer machine. It can be compiled in run in FlashDevelop
+		 * by right clicking on it in the Project Manager, selecting 
+		 * 'Always Compile' and then building/playing the project.
+		 * 
+		 * Please set /src/Main.mxml as the 'Always Compile' target 
+		 * before committing changes.
+		 * 
+		 * @author Thomas Van Doren <thomas.vandoren@gmail.com>
+		 */
+		
+		import AllTestsSuite.AllTestsSuite;
+		import org.flexunit.internals.TraceListener;
+		import org.flexunit.listeners.UIListener;
+		import org.flexunit.runner.FlexUnitCore;
+		
+		private var core:FlexUnitCore;
+		public function runTests():void
+		{
+			core = new FlexUnitCore();
+			
+			// Open up fancy adobe GUI for showing/reading results
+			core.addListener( new UIListener( uiListener ) );
+			
+			// Write output to stdout
+			core.addListener( new TraceListener() );
+			
+			core.run( AllTestsSuite );
+		}
+		
+		]]>
+	</fx:Script>
+	
+	<!--[CDATA[
+		This is a super fancy GUI that displays the results of the unit tests.
+	]]>-->
+	<adobe:TestRunnerBase id="uiListener" width="100%" height="100%" />
+</s:Application>
