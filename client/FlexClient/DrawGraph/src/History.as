@@ -124,7 +124,9 @@ package
 				removeRecord(int(list.selectedIndex));
 				graph.getGraph(search);
 			}
-			list.text = "Search History...";
+			
+			list.prompt = "Search History...";
+			list.selectedIndex = -1;
 			list.selectedItem = null;
 		}
 	}
