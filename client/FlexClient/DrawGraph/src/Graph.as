@@ -39,15 +39,16 @@ package
 		public function Graph(graph : Group, environment : Main) 
 		{
 			this.graph = graph;
-			this.environment = environment;
-			this.history = new History(this, environment.history);
+			if(environment != null) { //used for testing purposes because of a dependency
+				this.environment = environment;
+				this.history = new History(this, environment.history);
 			
-			this.wrapper = new Wrapper(this.loadGraphById);
+				this.wrapper = new Wrapper(this.loadGraphById);
 			
-			this.createLoaderImg();
+				this.createLoaderImg();
 			
-			this.hide(false);
-			
+				this.hide(false);
+			}
 			trace("Graph created");
 		}
 		
