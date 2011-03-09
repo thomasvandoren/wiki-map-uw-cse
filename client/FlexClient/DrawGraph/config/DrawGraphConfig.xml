@@ -46,11 +46,19 @@
     <optimize>true</optimize>
 
     <!--
+       The location of the libraries needed to compile SWFs.
+      -->
+    <library-path append="true">
+        <path-element>../lib</path-element>
+    </library-path>
+    
+    <!--
        This is the path to all source files, including MXML and ActionScript
        files.
       -->
     <source-path append="true">
       <path-element>../src</path-element>
+      <path-element>../test</path-element>
     </source-path>
 
   </compiler>
