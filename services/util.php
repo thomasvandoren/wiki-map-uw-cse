@@ -188,7 +188,7 @@ LIMIT 150";
   public function get_search_results_soundex($like) {
     $q =  "SELECT page_id, page_title FROM page WHERE page_title_soundex = 
 LEFT(SOUNDEX('$like'),4) AND page_id NOT IN (SELECT page_id FROM page WHERE 
-page_title LIKE '$like%' LIMIT 150) LIMIT 150";
+page_title LIKE '$like%') LIMIT 150";
     return $this->query($q);
   }
 
