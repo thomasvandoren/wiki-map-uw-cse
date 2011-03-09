@@ -29,7 +29,6 @@ package {
 				a[0] = node[i].@id;
 				a[1] = node[i].@title;
 				
-				//TODO: make this a boolean
 				a[2] = node[i].@is_disambiguation;
 				
 				var dest : XMLList = node[i].child("dest");

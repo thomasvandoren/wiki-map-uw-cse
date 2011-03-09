@@ -93,8 +93,6 @@ package
 		{
 			trace("Graph.drawNode()");
 			
-			//TODO: make a more relevant node for search results...
-			
 			var newNode:Node = new Node(this, 0, new Number(index));
 			
 			newNode.id = id;
@@ -269,7 +267,7 @@ package
 			this.center.title = this.data[0][1];
 			this.center.label.text = this.data[0][1];
 			
-			//TODO: does this need to be in a different place?
+			// Designate the unique url callback
 			this.wrapper.setGraph(this.data[0][0]);
 			
 			// Do not display graph if the center node was clicked.
@@ -295,8 +293,11 @@ package
 		{
 			trace("Main.loadGraph(" + id + ")");
 			
-			//TODO: validate/sanitize the id
-			this.getGraph(id);
+			// This id come directly from the wrapper. It needs to be 
+			// sanitized since a malicious user could designate odd values.
+			var cleanId : String = parseInt(escape(id)).toString();
+			
+			this.getGraph(cleanId);
 		}
 		
 		/**
@@ -378,7 +379,9 @@ package
 			else if (this.isVisible() && this.isSearch)
 			{
 				this.drawSearch();
-			}else{
+			}
+			else
+			{
 				DrawSplash.resize(graph);
 			}
 		}
