@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+   WikiGraph
+   Copyright (c) 2011
+
+   Author: Thomas Van Doren <thomas.vandoren@gmail.com>
+
+   The Adobe Flex compiler configuration for DrawGraph.
+-->
+<flex-config>
+  <!--
+     TODO: Can we get away with a lower version?
+    -->
+  <target-player>10.0.0</target-player>
+
+  <!--
+     Print detailed compile times to stdout.
+    -->
+  <benchmark>true</benchmark>
+
+  <!--
+     TODO: is this redundant? I think the default is true.
+    -->
+  <static-link-runtime-shared-libraries>true</static-link-runtime-shared-libraries>
+  
+  <!--
+     The compiler arguments
+    -->
+  <compiler>
+
+    <!--
+       This should be false for production environments.
+      -->
+    <debug>false</debug>
+
+    <!--
+       This forces the entire application to be recompiled. A value of false
+       will only compile modified source code (enhances performance).
+      -->
+    <incremental>false</incremental>
+
+    <!--
+       Enables the ActionScript optimizer which reduces file size and
+       increase performance by optimizing the SWF bytecode.
+      -->
+    <optimize>true</optimize>
+
+    <!--
+       The location of the libraries needed to compile SWFs.
+      -->
+    <library-path append="true">
+        <path-element>../lib</path-element>
+    </library-path>
+    
+    <!--
+       This is the path to all source files, including MXML and ActionScript
+       files.
+      -->
+    <source-path append="true">
+      <path-element>../src</path-element>
+      <path-element>../test</path-element>
+    </source-path>
+
+  </compiler>
+
+  <!--
+     This tells the compiler which file to compile.
+    -->
+  <!--
+  <file-specs>
+    <path-element>/home/thomas/Documents/UW/11wi/403/source/wiki-map-uw-cse/client/FlexClient/DrawGraph/src/Main.mxml</path-element>
+  </file-specs>
+  -->
+  
+  <!--
+     White background
+    -->
+  <default-background-color>#FFFFFF</default-background-color>
+
+  <!--
+     30 is better than 24 (the default).
+    -->
+  <default-frame-rate>30</default-frame-rate>
+
+  <!--
+     TODO: can/should this be 1024 x 768?
+    -->
+  <default-size>
+    <width>800</width>
+    <height>600</height>
+  </default-size>
+  
+</flex-config>
