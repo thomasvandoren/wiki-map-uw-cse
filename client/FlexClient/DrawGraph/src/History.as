@@ -47,7 +47,7 @@ package
 			
 			// this keeps the selectedIndex equal to -1 so that clicking the first item
 			// will fire the change event (it won't if list.text is used).
-			list.prompt = "Search History...";
+			list.prompt = "Graph History...";
 			
 			list.addEventListener(Event.CHANGE, doSearch);
 
@@ -141,7 +141,7 @@ package
 				graph.getGraph(search);
 			}
 			
-			list.prompt = "Search History...";
+			list.prompt = "Graph History...";
 			list.selectedIndex = -1;
 			list.selectedItem = null;
 		}

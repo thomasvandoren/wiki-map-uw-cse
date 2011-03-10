@@ -32,8 +32,10 @@ package
 			title.htmlText = "<font size = '64'><b>WikiGraph</b></font><BR/>";
 			title.htmlText += "<font size = '24'>Instructions</font><BR/>";
 			title.htmlText += "<font size = '16'>1. Enter a search term in the search bar</font><BR/>";
-			title.htmlText += "<font size = '16'>2. After the graph is drawn, click on nodes to traverse the graph</font><BR/>";
-			title.htmlText += "<font size = '16'>3. Hover over nodes to see the article abstracts, click the abstract to go to the article</font><BR/>";
+			title.htmlText += "<font size = '16'>2. Press enter, click search, or click a suggestion to draw the graph</font><BR/>";
+			title.htmlText += "<font size = '16'>3. After the graph is drawn, click the outer nodes to traverse the graph</font><BR/>";
+			title.htmlText += "<font size = '16'>4. Hover over nodes to view the article abstracts</font><BR/>";
+			title.htmlText += "<font size = '16'>5. Click the abstract or double click the node to view the article</font><BR/>";
 			title.visible = true;
 			title.alpha = 1;
 			environment.visible = true;
