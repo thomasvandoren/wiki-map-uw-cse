@@ -14,6 +14,51 @@ require_once('test_data.php');
 class SearchTest extends BaseTest {
 
   /**
+   * Tests the functionality of exact search queries
+   */
+  public function testExactSearch() {
+    global $pages;
+    $titles = array();
+    foreach ($pages as $page) {
+      array_push($titles, str_replace('"', "", $page[1]));
+    }
+
+    // Test search with all partial titles
+    // from the pages
+    foreach ($titles as $title) {
+      $search = $title;
+	
+      // Calculate the correct answers
+      $ans = array();
+      foreach ($titles as $title2) {
+	$tmp1 = strtolower($search);
+	$tmp2 = strtolower($title2);
+	if (strcasecmp($tmp2, $tmp1) === 0) {
+	  array_push($ans, $title2);
+	}
+      }
+
+      $arr = $this->db->get_search_results_exact($search);
+      $this->assertEquals(count($arr), count($ans));
+      foreach ($arr as $row) {
+	$this->assertArrayHasKey('page_title', $row);
+	$this->assertContains($row['page_title'], $ans);
+	$this->assertEquals(strtolower($search), strtolower($row['page_title']));
+      }
+      
+    }
+
+
+    // Test some bad search terms
+    $badstrs = array("Cat'; SELECT COUNT(*) FROM page;", "adkjfalkdjflakdf", "012345678910");
+    foreach ($badstrs as $str) {
+      $str = $this->db->escape($str);
+      $arr = $this->db->get_search_results_exact($str);
+      $this->assertEquals(count($arr), 0);
+    } 
+  }
+
+  /**
    * Tests the functionality of like search queries
    */
   public function testLikeSearch() {
@@ -59,6 +104,7 @@ class SearchTest extends BaseTest {
       $this->assertEquals(count($arr), 0);
     } 
   }
+
 
   /**
    * Test that the output from search.php
