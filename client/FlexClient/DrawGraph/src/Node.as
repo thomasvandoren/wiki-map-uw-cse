@@ -117,15 +117,8 @@ package
 			lockTimer.addEventListener(TimerEvent.TIMER_COMPLETE, unlock);
 			lockTimer.start();
 			
-			if (this.abToolTip != null && this.abToolTip.articleLink != null)
-			{
-				this.abToolTip.openArticle(event);
-			}
-			else
-			{
-				var url : URLRequest = new URLRequest(Config.wikiUrlBase + escape(this.title));
-				navigateToURL(url, "_blank");
-			}
+			var url : URLRequest = new URLRequest(Config.apiUrl + "link/?q=" + escape(this.title));
+			navigateToURL(url, "_blank");
 		}
 		
 		/**

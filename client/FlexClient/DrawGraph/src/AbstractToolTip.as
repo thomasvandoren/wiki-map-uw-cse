@@ -230,9 +230,10 @@ package
 		 */
 		public function openArticle(event:MouseEvent):void
 		{
-			if (!this.isLoading() && this.articleLink)
+			if (!this.isLoading() && this.articleTitle)
 			{
-				navigateToURL(new URLRequest(this.articleLink), "_blank");
+				var url : URLRequest = new URLRequest(Config.apiUrl + "link/?q=" + escape(this.articleTitle));
+				navigateToURL(url, "_blank");
 			}
 		}
 		
