@@ -1,0 +1,18 @@
+WikiGraph
+Copyright (c) 2011
+
+This directory contains some config files for oompilng the
+flash client.
+
+The XML files are compile settings used by MXMLC when it compiles
+the source code. TestDrawGraphConfig.xml is used for debugging, running the unit
+tests, and the dev branch build/deployment. DrawGraphConfig.xml is used for the
+release branch build/deployment. The only difference is that the debug property 
+is false on release and true on test.
+
+The action script files are copies of the Config class. The copies in this directory
+can be designated at build time (see the CLIENTCONFIG make flag) instead of the 
+default Config class. These use relative urls to access the services instead of the 
+hard coded http://wikigraph.cs.washington.edu/ domain name. Designating the domain
+name is useful for developers so that they can run the application from FlashDevelop
+without setting up a local instance of the services.
