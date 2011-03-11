@@ -22,14 +22,15 @@ If you are importing from a non-standard database, and have any extra columns, d
 
 # drop all columns besides page_id, page_namespace, page_title, page_is_redirect, page_len
 ALTER TABLE page 
-DROP COLUMN page_restrictions IF EXISTS,
-DROP COLUMN page_counter IF EXISTS,
-DROP COLUMN page_is_new IF EXISTS,
-DROP COLUMN page_random IF EXISTS,
-DROP COLUMN page_touched IF EXISTS,
-DROP COLUMN page_latest IF EXISTS,
-DROP COLUMN page_no_title_convert IF EXISTS,
-DROP INDEX page_title,
+DROP COLUMN page_restrictions,
+DROP COLUMN page_counter,
+DROP COLUMN page_is_new,
+DROP COLUMN page_random,
+DROP COLUMN page_touched,
+DROP COLUMN page_latest,
+#uncomment following line if using enwikibooks database
+#DROP COLUMN page_no_title_convert,
+DROP INDEX name_title;
 DROP INDEX page_len;
 
 # we only care about actual articles

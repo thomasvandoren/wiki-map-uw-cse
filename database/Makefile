@@ -1,9 +1,9 @@
 # Enter MySQL details here
-DBHOST = 
-DBUSER = 
-DBPASS = 
-DBPORT = 
-DBNAME  = 
+DBHOST =
+DBUSER =
+DBPASS =
+DBPORT =
+DBNAME  =
 LINKURL = 
 
 DBHOSTSTR = $(DBHOST)
@@ -14,7 +14,7 @@ endif
 # Possible SRC's:
 # enwikibooks
 # enwiki
-SRC = enwiki
+SRC = enwikibooks
 
 # Comment out the next line if the dump only has one abstract.xml file
 MULTIABSTRACT = true
