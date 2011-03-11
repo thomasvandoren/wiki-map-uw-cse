@@ -97,7 +97,7 @@ package
 			
 			newNode.id = id;
 			
-			newNode.title = "string";
+			newNode.title = title;
 			newNode.label.text = title;
 			
 			newNode.x = x;
