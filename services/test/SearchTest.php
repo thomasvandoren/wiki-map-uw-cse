@@ -105,6 +105,36 @@ class SearchTest extends BaseTest {
     } 
   }
 
+  /**
+   * Tests the functionality of soundex search queries
+   */
+  public function testSoundexSearch() {
+    global $pages;
+    $titles = array();
+    foreach ($pages as $page) {
+      array_push($titles, str_replace('"', "", $page[1]));
+    }
+
+    // check if soundex value of searched term 
+    //is same for all terms found
+    foreach ($titles as $search) {
+      $arr = $this->db->get_search_results_soundex($search);
+      $searchSoundexValue = soundex($search);
+      foreach ($arr as $row) {
+        $this->assertArrayHasKey('page_title', $row);
+	$this->assertTrue(strcmp($searchSoundexValue,soundex($row['page_title'])) === 0);
+      }
+    }
+
+
+    // Test some bad search terms
+    $badstrs = array("Cat'; SELECT COUNT(*) FROM page;", "adkjfalkdjflakdf", "012345678910");
+    foreach ($badstrs as $str) {
+      $str = $this->db->escape($str);
+      $arr = $this->db->get_search_results_soundex($str);
+      $this->assertEquals(count($arr), 0);
+    } 
+  }
 
   /**
    * Test that the output from search.php
